@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="common-ant-targets" basedir=".">
+
+    <!--
+        Some common settings for all project.
+    -->
+    <property name="builddir" value="${basedir}/build" />
+    <property name="scriptdir" value="${basedir}/setup/scripts" />
+
+    <target name="dist-ci" depends="build-ci-properties,dist" description="Continuous integration distribution build" />
+
+    <target name="build-ci-properties">
+        <buildnumber file="build-${project.version}${project.stability}.number" />
+
+        <property name="build.version" value="${project.version}build${build.number}" />
+        <property name="build.name" value="${ant.project.name}_ci" />
+        <property name="build.file" value="${build.name}-${build.version}" />
+
+        <property name="phar.archive.bootstrap" value="" />
+    </target>
+
+    <target name="dist" depends="build,tag,pack" description="Default distribution build" />
+
+    <target name="build-properties" unless="build.version">
+        <property name="build.version" value="${project.version}" />
+        <property name="build.name" value="${ant.project.name}" />
+        <property name="build.file" value="${build.name}-${build.version}" />
+
+        <property name="phar.archive.bootstrap" value="" />
+    </target>
+
+    <target name="clean">
+        <delete dir="${builddir}" includeemptydirs="true" />
+    </target>
+
+    <target name="update">
+        <exec dir="${basedir}" executable="svn">
+            <arg line="up" />
+        </exec>
+    </target>
+
+    <target name="prepare" depends="clean,update,build-properties">
+        <mkdir dir="${builddir}" />
+        <mkdir dir="${builddir}/logs" />
+        <mkdir dir="${builddir}/coverage" />
+    </target>
+
+    <!--
+        Tests several aspects of the project.
+
+        - Unit Tests
+        - Other Tests
+        - Static code analysis
+        - Lint checks
+    -->
+    <target name="test" depends="prepare,checkstyle,lint,alltest,unittest" />
+
+    <!--
+        Performance syntax error checks on the project sources.
+    -->
+    <target name="lint">
+        <apply executable="php" failonerror="true">
+            <arg value="-l" />
+            <fileset dir="${basedir}/source">
+                <include name="**/*.php" />
+            </fileset>
+            <fileset dir="${basedir}/test">
+                <include name="**/*.php" />
+                <exclude name="_source/**" />
+            </fileset>
+        </apply>
+    </target>
+
+    <!--
+        Executes all tests for a project, includes unit, functional, integration
+        or compatibility tests. 
+    -->
+    <target name="alltest">
+        <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
+            <arg line="AllTests.php" />
+        </exec>
+    </target>
+
+    <!--
+        Executes all unittests for a project and collects the coverage data for
+        the project sources.
+    -->
+    <target name="unittest">
+        <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
+            <arg line="--group unittest" />
+            <arg line="--coverage-html   ${basedir}/build/coverage" />
+            <arg line="--coverage-clover ${basedir}/build/logs/clover.xml" />
+            <arg line="--log-junit       ${basedir}/build/logs/junit.xml" />
+            <arg line="AllTests.php" />
+        </exec>
+    </target>
+
+    <!--
+        Validates that the project code is compatible with the project's coding
+        conventions.
+    -->
+    <target name="checkstyle">
+        <exec dir="${basedir}" failonerror="true" executable="phpcs">
+            <arg line="--standard=${coding.standard}" />
+            <arg line="--report=checkstyle" />
+            <arg line="--report-file=${basedir}/build/logs/checkstyle.xml" />
+            <arg line="${basedir}/source" />
+        </exec>
+    </target>
+
+    <!--
+        Creates different binary releases of the current project.
+    -->
+    <target name="pack" depends="pack-phar-archive,pack-pear-archive,pack-tar-archive" />
+
+    <!--
+        Creates a phar archive of the project source
+    -->
+    <target name="pack-phar-archive" depends="prepare">
+
+        <copy todir="${builddir}/phar-archive">
+            <fileset dir="${basedir}/source"/>
+        </copy>
+
+        <exec dir="${basedir}" executable="${scriptdir}/create.phar.php">
+            <arg line="${ant.project.name}" />
+            <arg line="${builddir}/${build.file}.phar" />
+            <arg line="${builddir}/phar-archive" />
+            <arg line="${phar.archive.bootstrap}" />
+        </exec>
+    </target>
+
+    <!--
+        Creates a pear archive of the project source
+    -->
+    <target name="pack-pear-archive" depends="prepare">
+
+        <copy todir="${builddir}/pear-archive/${ant.project.name}">
+            <fileset dir="${basedir}/source"/>
+        </copy>
+
+        <copy todir="${builddir}/pear-archive/docs">
+            <fileset dir="${basedir}/docs"/>
+            <filterchain>
+                <replacestring from="__DIR__ . '/../../source" to="'${ant.project.name}" />
+            </filterchain>
+        </copy>
+
+        <copy file="${basedir}/LICENSE" todir="${builddir}/pear-archive" />
+        <copy file="${basedir}/CHANGELOG" todir="${builddir}/pear-archive" />
+
+        <tstamp>
+            <format property="build.date" pattern="yyyy-MM-dd" />
+        </tstamp>
+
+        <copy file="${basedir}/package.xml" tofile="${builddir}/pear-archive/package.xml">
+            <filterchain>
+                <replacestring from="${ant.project.name}" to="${build.name}" />
+                <replacestring from='name="source"' to='name="${ant.project.name}"' />
+                <replacestring from="1970-01-01" to="${build.date}" />
+                <replacestring from="0.0.0" to="${build.version}" />
+                <replacestring from="devel" to="${project.stability}" />
+            </filterchain>
+        </copy>
+
+        <exec dir="${builddir}" executable="pear">
+            <arg line="package" />
+            <arg line="pear-archive/package.xml" />
+        </exec>
+
+    </target>
+
+    <!--
+        Creates a tar.bz2 archive of the project source
+    -->
+    <target name="pack-tar-archive" depends="prepare">
+        <copy todir="${builddir}/tar-archive/${ant.project.name}/source">
+            <fileset dir="${basedir}/source"/>
+        </copy>
+
+        <copy todir="${builddir}/tar-archive/${ant.project.name}/docs">
+            <fileset dir="${basedir}/docs"/>
+        </copy>
+
+        <copy file="${basedir}/LICENSE" todir="${builddir}/tar-archive/${ant.project.name}" />
+        <copy file="${basedir}/CHANGELOG" todir="${builddir}/tar-archive/${ant.project.name}" />
+        
+        <tar basedir="${builddir}/tar-archive"
+             destfile="${builddir}/${build.file}.tar.bz2"
+             compression="bzip2">
+
+            <include name="${ant.project.name}/**" />
+        </tar>
+    </target>
+
+    <!--
+        Automatically creates a repopositoy tag when all tests have passed.
+    -->
+    <target name="tag" depends="test-is-svn-checkout,tag-if-project-is-svn-checkout" />
+
+    <target name="test-is-svn-checkout">
+        <available file="${basedir}/.svn" property="is-svn-checkout" />
+    </target>
+
+    <target name="tag-if-project-is-svn-checkout" depends="init-repository-properties" if="is-svn-checkout">
+        <property name="tag.repo" value="${repository}/tags" />
+        <property name="tag.name" value="${build.name}-${build.version}" />
+
+        <property name="tag.msg" value="# Auto created tag '${build.version}' after successful build." />
+
+        <echo message="svn copy . ${tag.repo}/${tag.name}" />
+        <exec dir="${basedir}" executable="svn">
+            <arg line="copy -m '${tag.msg}' . ${tag.repo}/${tag.name}" />
+        </exec>
+    </target>
+
+    <!--
+        Initializes some properties based on the source repository.
+    -->
+    <target name="init-repository-properties" depends="prepare" if="is-svn-checkout">
+
+        <exec executable="svn" dir="${basedir}" output="${builddir}/~svn-info.xml">
+            <arg line="info --xml" />
+        </exec>
+
+        <xmlproperty file="${builddir}/~svn-info.xml"
+                     keepRoot="true"
+                     collapseAttributes="true" />
+
+        <property name="repository" value="${info.entry.repository.root}" />
+    </target>
+
+    <!--
+        Initializes some properties required for automatic tagging
+    -->
+    <target name="init-tag-properties" if="is-svn-checkout">
+        <tstamp>
+            <format property="build.date" pattern="yyyy-MM-dd" />
+        </tstamp>
+    </target>
+
+</project>
