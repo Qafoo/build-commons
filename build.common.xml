@@ -131,8 +131,7 @@
     <!--
         Creates a phar archive of the project source
     -->
-    <target name="pack-phar-archive" depends="prepare,copy-file-for-phar-archive">
-
+    <target name="pack-phar-archive" depends="prepare,copy-files-for-phar-archive">
         <exec dir="${basedir}" executable="${scriptdir}/create.phar.php">
             <arg line="${project.name}" />
             <arg line="${builddir}/${build.file}.phar" />
@@ -144,7 +143,7 @@
     <!--
         Copies all files for the project's phar archive.
     -->
-    <target name="copy-file-for-phar-archive">
+    <target name="copy-files-for-phar-archive">
         <copy todir="${builddir}/phar-archive">
             <fileset dir="${basedir}/source"/>
         </copy>
@@ -153,26 +152,25 @@
             <param name="output.dir" value="${builddir}/phar-archive" />
         </antcall>
 
-        <antcall target="do-copy-file-for-phar-archive">
+        <antcall target="do-copy-files-for-xyz-archive">
             <param name="output.dir" value="${builddir}/phar-archive" />
         </antcall>
     </target>
 
     <!--
-        Hook method for copying files for the project's phar archive.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
+        Creates a pear archive of the project source
     -->
-    <target name="do-copy-file-for-phar-archive">
-        <!-- Implement this target in the concrete project build.xml -->
+    <target name="pack-pear-archive" depends="prepare,copy-files-for-pear-archive">
+        <exec dir="${builddir}" executable="pear">
+            <arg line="package" />
+            <arg line="pear-archive/package.xml" />
+        </exec>
     </target>
 
     <!--
-        Creates a pear archive of the project source
+        Copies all files for the project's pear archive.
     -->
-    <target name="pack-pear-archive" depends="prepare">
-
+    <target name="copy-files-for-pear-archive">
         <copy todir="${builddir}/pear-archive/${project.dir}">
             <fileset dir="${basedir}/source"/>
             <fileset dir="${basedir}">
@@ -199,20 +197,29 @@
             </filterchain>
         </copy>
 
-        <exec dir="${builddir}" executable="pear">
-            <arg line="package" />
-            <arg line="pear-archive/package.xml" />
-        </exec>
-
+        <antcall target="do-copy-files-for-xyz-archive">
+            <param name="output.dir" value="${builddir}/pear-archive" />
+        </antcall>
     </target>
 
     <!--
         Creates a tar.bz2 archive of the project source
     -->
-    <target name="pack-tar-archive" depends="prepare">
-        
-        <property name="output.dir" value="${builddir}/tar-archive/${build.file}" />
+    <target name="pack-tar-archive" depends="prepare,copy-files-for-tar-archive">
+        <tar basedir="${builddir}/tar-archive"
+             destfile="${builddir}/${build.file}.tar.bz2"
+             compression="bzip2">
 
+            <include name="${build.file}/**" />
+        </tar>
+    </target>
+
+    <!--
+        Copies all files for the project's tar archive.
+    -->
+    <target name="copy-files-for-tar-archive">
+        <property name="output.dir" value="${builddir}/tar-archive/${build.file}" />
+        
         <copy todir="${output.dir}/source">
             <fileset dir="${basedir}/source"/>
         </copy>
@@ -223,13 +230,20 @@
 
         <copy file="${basedir}/LICENSE" todir="${output.dir}" />
         <copy file="${basedir}/CHANGELOG" todir="${output.dir}" />
-        
-        <tar basedir="${builddir}/tar-archive"
-             destfile="${builddir}/${build.file}.tar.bz2"
-             compression="bzip2">
 
-            <include name="${build.file}/**" />
-        </tar>
+        <antcall target="do-copy-files-for-xyz-archive">
+            <param name="output.dir" value="${output.dir}" />
+        </antcall>
+    </target>
+
+    <!--
+        Hook method for copying files for the project's xyz archive format.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="do-copy-files-for-xyz-archive">
+        <!-- Implement this target in the concrete project build.xml -->
     </target>
 
     <!--
