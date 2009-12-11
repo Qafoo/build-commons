@@ -131,18 +131,7 @@
     <!--
         Creates a phar archive of the project source
     -->
-    <target name="pack-phar-archive" depends="prepare">
-
-        <copy todir="${builddir}/phar-archive">
-            <fileset dir="${basedir}/source"/>
-            <fileset dir="${basedir}">
-                <include name="**.php" />
-            </fileset>
-        </copy>
-
-        <antcall target="copy-library-dir-if-exists">
-            <param name="output.dir" value="${builddir}/phar-archive" />
-        </antcall>
+    <target name="pack-phar-archive" depends="prepare,copy-file-for-phar-archive">
 
         <exec dir="${basedir}" executable="${scriptdir}/create.phar.php">
             <arg line="${project.name}" />
@@ -150,6 +139,33 @@
             <arg line="${builddir}/phar-archive" />
             <arg line="${phar.archive.bootstrap}" />
         </exec>
+    </target>
+
+    <!--
+        Copies all files for the project's phar archive.
+    -->
+    <target name="copy-file-for-phar-archive">
+        <copy todir="${builddir}/phar-archive">
+            <fileset dir="${basedir}/source"/>
+        </copy>
+
+        <antcall target="copy-library-dir-if-exists">
+            <param name="output.dir" value="${builddir}/phar-archive" />
+        </antcall>
+
+        <antcall target="do-copy-file-for-phar-archive">
+            <param name="output.dir" value="${builddir}/phar-archive" />
+        </antcall>
+    </target>
+
+    <!--
+        Hook method for copying files for the project's phar archive.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="do-copy-file-for-phar-archive">
+        <!-- Implement this target in the concrete project build.xml -->
     </target>
 
     <!--
