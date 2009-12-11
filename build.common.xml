@@ -2,18 +2,33 @@
 <project name="common-ant-targets" basedir=".">
 
     <!--
+        Default values for some customizeable project settings
+    -->
+    <property name="project.dir" value="${ant.project.name}" />
+    <property name="project.name" value="${ant.project.name}" />
+    <property name="project.version" value="0.0.1" />
+    <property name="project.stability" value="alpha" />
+
+    <!--
         Some common settings for all project.
     -->
     <property name="builddir" value="${basedir}/build" />
     <property name="scriptdir" value="${basedir}/setup/scripts" />
 
-    <target name="dist-ci" depends="build-ci-properties,dist" description="Continuous integration distribution build" />
+    <!--
+        Common build variables
+    -->
+    <tstamp>
+        <format property="build.date" pattern="yyyy-MM-dd" />
+    </tstamp>
 
-    <target name="build-ci-properties">
+    <target name="dist-continuous-integration" depends="init-continuous-integration-properties,dist" description="Continuous integration distribution build" />
+
+    <target name="init-continuous-integration-properties">
         <buildnumber file="build-${project.version}${project.stability}.number" />
 
         <property name="build.version" value="${project.version}build${build.number}" />
-        <property name="build.name" value="${ant.project.name}_ci" />
+        <property name="build.name" value="${project.name}_ci" />
         <property name="build.file" value="${build.name}-${build.version}" />
 
         <property name="phar.archive.bootstrap" value="" />
@@ -21,9 +36,9 @@
 
     <target name="dist" depends="build,tag,pack" description="Default distribution build" />
 
-    <target name="build-properties" unless="build.version">
+    <target name="init-properties" unless="build.version">
         <property name="build.version" value="${project.version}" />
-        <property name="build.name" value="${ant.project.name}" />
+        <property name="build.name" value="${project.name}" />
         <property name="build.file" value="${build.name}-${build.version}" />
 
         <property name="phar.archive.bootstrap" value="" />
@@ -39,7 +54,7 @@
         </exec>
     </target>
 
-    <target name="prepare" depends="clean,update,build-properties">
+    <target name="prepare" depends="clean,update,init-properties">
         <mkdir dir="${builddir}" />
         <mkdir dir="${builddir}/logs" />
         <mkdir dir="${builddir}/coverage" />
@@ -77,7 +92,7 @@
     -->
     <target name="alltest">
         <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
-            <arg line="AllTests.php" />
+            <arg line="${phpunit.testsuite}" />
         </exec>
     </target>
 
@@ -91,7 +106,7 @@
             <arg line="--coverage-html   ${basedir}/build/coverage" />
             <arg line="--coverage-clover ${basedir}/build/logs/clover.xml" />
             <arg line="--log-junit       ${basedir}/build/logs/junit.xml" />
-            <arg line="AllTests.php" />
+            <arg line="${phpunit.testsuite}" />
         </exec>
     </target>
 
@@ -120,10 +135,17 @@
 
         <copy todir="${builddir}/phar-archive">
             <fileset dir="${basedir}/source"/>
+            <fileset dir="${basedir}">
+                <include name="**.php" />
+            </fileset>
         </copy>
 
+        <antcall target="copy-library-dir-if-exists">
+            <param name="output.dir" value="${builddir}/phar-archive" />
+        </antcall>
+
         <exec dir="${basedir}" executable="${scriptdir}/create.phar.php">
-            <arg line="${ant.project.name}" />
+            <arg line="${project.name}" />
             <arg line="${builddir}/${build.file}.phar" />
             <arg line="${builddir}/phar-archive" />
             <arg line="${phar.archive.bootstrap}" />
@@ -135,28 +157,26 @@
     -->
     <target name="pack-pear-archive" depends="prepare">
 
-        <copy todir="${builddir}/pear-archive/${ant.project.name}">
+        <copy todir="${builddir}/pear-archive/${project.dir}">
             <fileset dir="${basedir}/source"/>
+            <fileset dir="${basedir}">
+                <include name="**.sh" />
+                <include name="**.php" />
+                <include name="**.bat" />
+            </fileset>
         </copy>
 
-        <copy todir="${builddir}/pear-archive/docs">
-            <fileset dir="${basedir}/docs"/>
-            <filterchain>
-                <replacestring from="__DIR__ . '/../../source" to="'${ant.project.name}" />
-            </filterchain>
-        </copy>
+        <antcall target="copy-docs-dir-if-exists">
+            <param name="output.dir" value="${builddir}/pear-archive" />
+        </antcall>
 
         <copy file="${basedir}/LICENSE" todir="${builddir}/pear-archive" />
         <copy file="${basedir}/CHANGELOG" todir="${builddir}/pear-archive" />
 
-        <tstamp>
-            <format property="build.date" pattern="yyyy-MM-dd" />
-        </tstamp>
-
         <copy file="${basedir}/package.xml" tofile="${builddir}/pear-archive/package.xml">
             <filterchain>
-                <replacestring from="${ant.project.name}" to="${build.name}" />
-                <replacestring from='name="source"' to='name="${ant.project.name}"' />
+                <replacestring from="${project.name}" to="${build.name}" />
+                <replacestring from='name="source"' to='name="${project.name}"' />
                 <replacestring from="1970-01-01" to="${build.date}" />
                 <replacestring from="0.0.0" to="${build.version}" />
                 <replacestring from="devel" to="${project.stability}" />
@@ -174,23 +194,95 @@
         Creates a tar.bz2 archive of the project source
     -->
     <target name="pack-tar-archive" depends="prepare">
-        <copy todir="${builddir}/tar-archive/${ant.project.name}/source">
+        
+        <property name="output.dir" value="${builddir}/tar-archive/${build.file}" />
+
+        <copy todir="${output.dir}/source">
             <fileset dir="${basedir}/source"/>
         </copy>
 
-        <copy todir="${builddir}/tar-archive/${ant.project.name}/docs">
-            <fileset dir="${basedir}/docs"/>
-        </copy>
+        <antcall target="copy-optional-dirs">
+            <param name="output.dir" value="${output.dir}" />
+        </antcall>
 
-        <copy file="${basedir}/LICENSE" todir="${builddir}/tar-archive/${ant.project.name}" />
-        <copy file="${basedir}/CHANGELOG" todir="${builddir}/tar-archive/${ant.project.name}" />
+        <copy file="${basedir}/LICENSE" todir="${output.dir}" />
+        <copy file="${basedir}/CHANGELOG" todir="${output.dir}" />
         
         <tar basedir="${builddir}/tar-archive"
              destfile="${builddir}/${build.file}.tar.bz2"
              compression="bzip2">
 
-            <include name="${ant.project.name}/**" />
+            <include name="${build.file}/**" />
         </tar>
+    </target>
+
+    <!--
+        Copies several optional directories into the output dir.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-optional-dirs" depends="copy-library-dir-if-exists,copy-docs-dir-if-exists" />
+
+    <!--
+        Optionally copies a library directory into a temporary build tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-library-dir-if-exists" depends="test-library-dir-exists,copy-library-dir" />
+
+    <!--
+        Checks if the current project contains a library folder with external
+        dependencies.
+    -->
+    <target name="test-library-dir-exists">
+        <available file="${basedir}/lib" property="library-dir-exists" />
+    </target>
+
+    <!--
+        Copies the library directory of the current project into a temporary
+        build source tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-library-dir" if="library-dir-exists">
+        <copy todir="${output.dir}/lib">
+            <fileset dir="${basedir}/lib" />
+        </copy>
+    </target>
+
+    <!--
+        Optionally copies a documentation directory into a temporary build
+        source tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-docs-dir-if-exists" depends="test-docs-dir-exists,copy-docs-dir" />
+
+    <!--
+        Checks if the current project has a document directory.
+    -->
+    <target name="test-docs-dir-exists">
+        <available file="${basedir}/docs" property="docs-dir-exists" />
+    </target>
+
+    <!--
+        Copies the documentation directory of the current project into a
+        temporary build source tree
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-docs-dir" if="docs-dir-exists">
+        <copy todir="${output.dir}/docs">
+            <fileset dir="${basedir}/docs" />
+            <filterchain>
+                <replacestring from="__DIR__ . '/../../source" to="'${project.name}" />
+            </filterchain>
+        </copy>
     </target>
 
     <!--
