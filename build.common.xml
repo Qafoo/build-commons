@@ -80,7 +80,7 @@
         </parallel>
     </target>
 
-    <target name="test-dynamic" depends="prepare, alltest, unittest" />
+    <target name="test-dynamic" depends="prepare, test-all, test-unit" />
 
     <!--
         Performance syntax error checks on the project sources.
@@ -128,7 +128,7 @@
         Executes all tests for a project, includes unit, functional, integration
         or compatibility tests. 
     -->
-    <target name="alltest">
+    <target name="test-all">
         <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
             <arg line="${phpunit.testsuite}" />
         </exec>
@@ -138,7 +138,7 @@
         Executes all unittests for a project and collects the coverage data for
         the project sources.
     -->
-    <target name="unittest">
+    <target name="test-unit">
         <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
             <arg line="--group unittest" />
             <arg line="--coverage-html   ${basedir}/build/coverage" />
