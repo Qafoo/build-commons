@@ -68,7 +68,19 @@
         - Static code analysis
         - Lint checks
     -->
-    <target name="test" depends="prepare,checkstyle,lint,alltest,unittest" />
+    <target name="test" depends="test-static, test-dynamic" />
+
+    <target name="test-static" depends="prepare">
+        <parallel>
+            <antcall target="lint" />
+            <antcall target="checkstyle" />
+            <antcall target="phpmd" />
+            <antcall target="pdepend" />
+            <antcall target="phpcpd" />
+        </parallel>
+    </target>
+
+    <target name="test-dynamic" depends="prepare, alltest, unittest" />
 
     <!--
         Performance syntax error checks on the project sources.
@@ -84,6 +96,32 @@
                 <exclude name="_source/**" />
             </fileset>
         </apply>
+    </target>
+
+    <target name="phpmd">
+        <exec dir="${basedir}" executable="phpmd" failonerror="false">
+            <arg line="source" />
+            <arg line="xml" />
+            <arg line="codesize,unusedcode" />
+            <arg line="--reportfile ${basedir}/build/logs/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="pdepend">
+        <exec dir="${basedir}" executable="pdepend" failonerror="false">
+            <arg line="--summary-xml=${basedir}/build/logs/pdepend.xml" />
+            <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+            <arg line="source" />
+        </exec>
+    </target>
+
+    <target name="phpcpd">
+<!--
+        <exec dir="${basedir}" executable="phpcpd" failonerror="false">
+            <arg line="- -log-pmd ${basedir}/build/logs/cpd.xml" />
+            <arg line="source" />
+        </exec>
+-->
     </target>
 
     <!--
