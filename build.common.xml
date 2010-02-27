@@ -116,12 +116,10 @@
     </target>
 
     <target name="phpcpd">
-<!--
         <exec dir="${basedir}" executable="phpcpd" failonerror="false">
             <arg line="- -log-pmd ${basedir}/build/logs/cpd.xml" />
             <arg line="source" />
         </exec>
--->
     </target>
 
     <!--
