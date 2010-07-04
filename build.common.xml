@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="common-ant-targets" basedir=".">
 
+    <import file="build.common.rcs.xml" />
+
     <!--
         Default values for some customizeable project settings
     -->
@@ -50,13 +52,7 @@
         <delete dir="${builddir}" includeemptydirs="true" />
     </target>
 
-    <target name="update">
-        <exec dir="${basedir}" executable="svn">
-            <arg line="up" />
-        </exec>
-    </target>
-
-    <target name="prepare" depends="clean,update,init-properties">
+    <target name="prepare" depends="clean, common-rcs-update, init-properties">
         <mkdir dir="${builddir}" />
         <mkdir dir="${builddir}/dist" />
         <mkdir dir="${builddir}/logs" />
@@ -174,7 +170,7 @@
     <target name="pack-phar-archive" depends="prepare,copy-files-for-phar-archive">
         <property name="phar.archive.filename" value="${builddir}/${build.file}.phar" />
 
-        <antcall target="~before-pack-phar-archive">
+        <antcall target="~pack-phar-archive-before">
             <param name="phar.archive.filename" value="${phar.archive.filename}" />
         </antcall>
 
@@ -187,7 +183,7 @@
 
         <chmod file="${phar.archive.filename}" perm="755" />
 
-        <antcall target="~after-pack-phar-archive">
+        <antcall target="~pack-phar-archive-after">
             <param name="phar.archive.filename" value="${phar.archive.filename}" />
         </antcall>
     </target>
@@ -198,7 +194,7 @@
         Parameters:
             ${phar.archive.filename}  Name of the phar file to create.
     -->
-    <target name="~before-pack-phar-archive" />
+    <target name="~pack-phar-archive-before" />
 
     <!--
         Hook target that will be called after the phar archive was created.
@@ -206,7 +202,7 @@
         Parameters:
             ${phar.archive.filename}  Name of the created phar file.
     -->
-    <target name="~after-pack-phar-archive" />
+    <target name="~pack-phar-archive-after" />
 
     <!--
         Copies all files for the project's phar archive.
@@ -229,25 +225,25 @@
         Creates a pear archive of the project source
     -->
     <target name="pack-pear-archive" depends="prepare,copy-files-for-pear-archive">
-        <antcall target="~before-pack-pear-archive" />
+        <antcall target="~pack-pear-archive-before" />
 
         <exec dir="${builddir}" executable="pear">
             <arg line="package" />
             <arg line="pear-archive/package.xml" />
         </exec>
 
-        <antcall target="~after-pack-pear-archive" />
+        <antcall target="~pack-pear-archive-after" />
     </target>
 
     <!--
         Empty hook target that will be called before the pear archive will be build.
     -->
-    <target name="~before-pack-pear-archive" />
+    <target name="~pack-pear-archive-before" />
 
     <!--
         Empty hook target that will be called after the pear archive was build.
     -->
-    <target name="~after-pack-pear-archive" />
+    <target name="~pack-pear-archive-after" />
 
     <!--
         Copies all files for the project's pear archive.
