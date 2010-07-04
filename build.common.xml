@@ -30,7 +30,7 @@
         <buildnumber file="build-${project.version}${project.stability}.number" />
 
         <property name="build.version" value="${project.version}build${build.number}" />
-        <property name="build.name" value="${project.name}_ci" />
+        <property name="build.name" value="${project.name}" />
         <property name="build.file" value="${build.name}-${build.version}" />
 
         <property name="phar.archive.bootstrap" value="" />
