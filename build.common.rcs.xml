@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This build file contains common targets for handling revision control
+    system tasks.
+
+    General markup guidelines:
+      - Targets starting with "-" are protected and should never be called
+        directly.
+      - Targets starting with "~" are hooks that can be overwritten to custom
+        functionality.
+-->
+<project name="common-rcs-ant-targets" basedir=".">
+
+    <property name=".common.rcs.git.remote" value="origin" />
+    <property name=".common.rcs.git.branch" value="master" />
+
+    <!--
+        Performs a source update on the current base directory
+    -->
+    <target name="common-rcs-update"
+            depends="common-rcs-svn-update,
+                     common-rcs-git-update">
+
+    </target>
+
+    <!--
+        Performs an update on a subversion checkout
+    -->
+    <target name="common-rcs-svn-update" depends="-common-rcs-is-svn" if=".common.rcs.is.svn">
+        <antcall target="~common-rcs-svn-update-before" />
+
+        <exec dir="${basedir}" executable="svn">
+            <arg line="up" />
+        </exec>
+
+        <antcall target="~common-rcs-svn-update-after" />
+    </target>
+
+    <!--
+        Checks if the current project is a subversion checkout.
+    -->
+    <target name="-common-rcs-is-svn">
+        <available file="${basedir}/.svn" property=".common.rcs.is.svn" />
+    </target>
+
+    <!--
+        Hook target that will be called before an svn update occurs.
+    -->
+    <target name="~common-rcs-svn-update-before" />
+
+    <!--
+        Hook target that will be called after an svn update has been done.
+    -->
+    <target name="~common-rcs-svn-update-after" />
+
+    <!--
+        Performs an update on a git checkout
+    -->
+    <target name="common-rcs-git-update" depends="-common-rcs-is-git" if=".common.rcs.is.git">
+        <antcall target="~common-rcs-git-update-after" />
+
+        <exec dir="${basedir}" executable="git">
+            <arg line="pull" />
+            <arg line="${.common.rcs.git.remote}" />
+            <arg line="${.common.rcs.git.branch}" />
+        </exec>
+
+        <antcall target="~common-rcs-git-update-after" />
+    </target>
+
+    <!--
+        Checks if the current project is a git checkout.
+    -->
+    <target name="-common-rcs-is-git">
+        <available file="${basedir}/.git" property=".common.rcs.is.git" />
+    </target>
+
+    <!--
+        Hook target that will be called before an git pull occurs.
+    -->
+    <target name="~common-rcs-git-update-before" />
+
+    <!--
+        Hook target that will be called after an git pull has been done.
+    -->
+    <target name="~common-rcs-git-update-after" />
+</project>
