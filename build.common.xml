@@ -29,7 +29,7 @@
             description="Continuous integration distribution build" />
 
     <target name="init-continuous-integration-properties">
-        <buildnumber file="build-${project.version}${project.stability}.number" />
+        <buildnumber file="build.number" />
 
         <property name="build.version" value="${project.version}build${build.number}" />
         <property name="build.name" value="${project.name}" />
