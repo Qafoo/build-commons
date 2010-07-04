@@ -290,7 +290,8 @@
     <target name="pack-tar-archive" depends="prepare,copy-files-for-tar-archive">
         <tar basedir="${builddir}/tar-archive"
              destfile="${builddir}/${build.file}.tar.bz2"
-             compression="bzip2">
+             compression="bzip2"
+             longfile="gnu">
 
             <include name="${build.file}/**" />
         </tar>
