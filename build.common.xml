@@ -107,21 +107,21 @@
             <arg line="source" />
             <arg line="xml" />
             <arg line="codesize,unusedcode" />
-            <arg line="--reportfile ${basedir}/build/logs/pmd.xml" />
+            <arg line="--reportfile ${builddir}/logs/pmd.xml" />
         </exec>
     </target>
 
     <target name="pdepend">
         <exec dir="${basedir}" executable="pdepend" failonerror="false">
-            <arg line="--summary-xml=${basedir}/build/logs/pdepend.xml" />
-            <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+            <arg line="--summary-xml=${builddir}/logs/pdepend.xml" />
+            <arg line="--jdepend-xml=${builddir}/logs/jdepend.xml" />
             <arg line="source" />
         </exec>
     </target>
 
     <target name="phpcpd">
         <exec dir="${basedir}" executable="phpcpd" failonerror="false">
-            <arg line="--log-pmd ${basedir}/build/logs/cpd.xml" />
+            <arg line="--log-pmd ${builddir}/logs/cpd.xml" />
             <arg line="source" />
         </exec>
     </target>
@@ -143,9 +143,9 @@
     <target name="test-unit">
         <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
             <arg line="--group unittest" />
-            <arg line="--coverage-html   ${basedir}/build/coverage" />
-            <arg line="--coverage-clover ${basedir}/build/logs/clover.xml" />
-            <arg line="--log-junit       ${basedir}/build/logs/junit.xml" />
+            <arg line="--coverage-html   ${builddir}/coverage" />
+            <arg line="--coverage-clover ${builddir}/logs/clover.xml" />
+            <arg line="--log-junit       ${builddir}/logs/junit.xml" />
             <arg line="${phpunit.testsuite}" />
         </exec>
     </target>
@@ -158,7 +158,7 @@
         <exec dir="${basedir}" failonerror="true" executable="phpcs">
             <arg line="--standard=${coding.standard}" />
             <arg line="--report=checkstyle" />
-            <arg line="--report-file=${basedir}/build/logs/checkstyle.xml" />
+            <arg line="--report-file=${builddir}/logs/checkstyle.xml" />
             <arg line="${basedir}/source" />
         </exec>
     </target>
