@@ -12,8 +12,8 @@
     <!--
         Some common settings for all project.
     -->
-    <property name="builddir" value="${basedir}/../build" />
-    <property name="scriptdir" value="${basedir}/setup/scripts" />
+    <property name="builddir" location="${basedir}/../build" />
+    <property name="scriptdir" location="${basedir}/setup/scripts" />
 
     <!--
         Common build variables
