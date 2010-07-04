@@ -23,4 +23,3 @@ else
 $phar = new Phar( $output, 0, $project );
 $phar->buildFromDirectory( $input );
 $phar->setStub( str_replace( '${archive.alias}', $project, $stub ) );
-$phar->compressFiles( Phar::GZ );
