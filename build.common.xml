@@ -34,7 +34,7 @@
         <property name="phar.archive.bootstrap" value="" />
     </target>
 
-    <target name="dist" depends="build,tag,pack" description="Default distribution build" />
+    <target name="dist" depends="build,pack,tag" description="Default distribution build" />
 
     <target name="init-properties" unless="build.version">
         <property name="build.version" value="${project.version}" />
@@ -169,13 +169,41 @@
         Creates a phar archive of the project source
     -->
     <target name="pack-phar-archive" depends="prepare,copy-files-for-phar-archive">
+        <property name="phar.archive.filename" value="${builddir}/${build.file}.phar" />
+
+        <antcall target="~before-pack-phar-archive">
+            <param name="phar.archive.filename" value="${phar.archive.filename}" />
+        </antcall>
+
         <exec dir="${basedir}" executable="${scriptdir}/create.phar.php">
             <arg line="${project.name}" />
-            <arg line="${builddir}/${build.file}.phar" />
+            <arg line="${phar.archive.filename}" />
             <arg line="${builddir}/phar-archive" />
             <arg line="${phar.archive.bootstrap}" />
         </exec>
+
+        <chmod file="${phar.archive.filename}" perm="755" />
+
+        <antcall target="~after-pack-phar-archive">
+            <param name="phar.archive.filename" value="${phar.archive.filename}" />
+        </antcall>
     </target>
+
+    <!--
+        Hook target that will be called before the phar archive will be created.
+
+        Parameters:
+            ${phar.archive.filename}  Name of the phar file to create.
+    -->
+    <target name="~before-pack-phar-archive" />
+
+    <!--
+        Hook target that will be called after the phar archive was created.
+
+        Parameters:
+            ${phar.archive.filename}  Name of the created phar file.
+    -->
+    <target name="~after-pack-phar-archive" />
 
     <!--
         Copies all files for the project's phar archive.
@@ -198,11 +226,25 @@
         Creates a pear archive of the project source
     -->
     <target name="pack-pear-archive" depends="prepare,copy-files-for-pear-archive">
+        <antcall target="~before-pack-pear-archive" />
+
         <exec dir="${builddir}" executable="pear">
             <arg line="package" />
             <arg line="pear-archive/package.xml" />
         </exec>
+
+        <antcall target="~after-pack-pear-archive" />
     </target>
+
+    <!--
+        Empty hook target that will be called before the pear archive will be build.
+    -->
+    <target name="~before-pack-pear-archive" />
+
+    <!--
+        Empty hook target that will be called after the pear archive was build.
+    -->
+    <target name="~after-pack-pear-archive" />
 
     <!--
         Copies all files for the project's pear archive.

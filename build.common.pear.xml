@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This build file contains common targets for handling pear and pear package
+    related tasks.
+
+    General markup guidelines:
+      - Targets starting with "-" are protected and should never be called
+        directly.
+      - Targets starting with "~" are hooks that can be overwritten to custom
+        functionality.
+-->
+<project name="common-pear-ant-targets" basedir=".">
+
+    <!--
+        Discovers a pear channel specified as parameter.
+
+        Parameters
+          ${pear-channel-uri}
+    -->
+    <target name="common-pear-channel-discover" depends="-common-pear-prepare">
+        <exec executable="pear" failonerror="true">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
+            <arg line="channel-discover" />
+            <arg line="${pear-channel-uri}" />
+        </exec>
+    </target>
+
+    <!--
+        Installs a remote pear package.
+
+        Parameters
+          ${pear-package}
+    -->
+    <target name="common-pear-install-remote" depends="-common-pear-prepare">
+        <exec executable="pear" failonerror="true">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
+            <arg line="install" />
+            <arg line="--alldeps" />
+            <arg line="--nobuild" />
+            <arg line="${pear-package}" />
+        </exec>
+    </target>
+
+    <!--
+        Installs a local pear package.
+
+        Parameters
+          ${pear-package-pattern}
+    -->
+    <target name="common-pear-install-local" depends="-common-pear-prepare">
+        <apply executable="pear">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
+            <arg line="install" />
+            <arg line="--alldeps" />
+            <arg line="--nobuild" />
+            <fileset dir="${builddir}">
+                <include name="${pear-package-pattern}*.tgz" />
+            </fileset>
+        </apply>
+    </target>
+
+    <!--
+        Creates a temporary pear environment and defines a few properties
+        required by most pear related targets:
+
+        Properties:
+          ${common-pear-base-dir}  The pear root directory.
+          ${common-pear-bin-dir}   The pear binary directory.
+          ${common-pear-root-dir}  The pear library install directory.
+          ${common-pear-config}    The pear configuration file.
+    -->
+    <target name="-common-pear-prepare"
+            depends="-common-pear-prepare-properties,
+                     -common-pear-prepare-test-exists,
+                     -common-pear-prepare-if-not-exists" />
+
+    <!--
+        Defines a few properties required by most pear related targets:
+
+        Properties:
+          ${common-pear-base-dir}  The pear root directory.
+          ${common-pear-bin-dir}   The pear binary directory.
+          ${common-pear-root-dir}  The pear library install directory.
+          ${common-pear-config}    The pear configuration file.
+    -->
+    <target name="-common-pear-prepare-properties">
+        <property name="common-pear-base-dir" value="${builddir}/pear" />
+        <property name="common-pear-bin-dir" value="${common-pear-base-dir}/pear" />
+        <property name="common-pear-root-dir" value="${common-pear-bin-dir}/php" />
+        <property name="common-pear-config" value="${common-pear-base-dir}/.pearrc" />
+    </target>
+
+    <!--
+        Checks if the temporary pear environment already exists. If it exists
+        this target will set the ${common-pear-prepare-exists} property.
+    -->
+    <target name="-common-pear-prepare-test-exists">
+        <available file="${common-pear-config}" property="common-pear-prepare-exists" />
+    </target>
+
+    <!--
+        Creates a temporary pear environment and defines two properties required
+        by most pear related targets:
+    -->
+    <target name="-common-pear-prepare-if-not-exists" unless="common-pear-prepare-exists">
+
+        <mkdir dir="${common-pear-base-dir}" />
+
+        <exec executable="pear" failonerror="true" output="/dev/null">
+            <arg line="config-create" />
+            <arg line="${common-pear-base-dir}" />
+            <arg line="${common-pear-config}" />
+        </exec>
+
+        <exec executable="pear" failonerror="true">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
+            <arg line="config-set" />
+            <arg line="preferred_state" />
+            <arg line="alpha" />
+        </exec>
+
+        <exec executable="pear" failonerror="true">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
+            <arg line="config-set" />
+            <arg line="auto_discover" />
+            <arg line="1" />
+        </exec>
+    </target>
+
+</project>
