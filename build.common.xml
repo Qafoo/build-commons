@@ -12,7 +12,7 @@
     <!--
         Some common settings for all project.
     -->
-    <property name="builddir" value="${basedir}/build" />
+    <property name="builddir" value="${basedir}/../build" />
     <property name="scriptdir" value="${basedir}/setup/scripts" />
 
     <!--
@@ -22,7 +22,9 @@
         <format property="build.date" pattern="yyyy-MM-dd" />
     </tstamp>
 
-    <target name="dist-continuous-integration" depends="init-continuous-integration-properties,dist" description="Continuous integration distribution build" />
+    <target name="dist-continuous-integration" 
+            depends="init-continuous-integration-properties, dist"
+            description="Continuous integration distribution build" />
 
     <target name="init-continuous-integration-properties">
         <buildnumber file="build-${project.version}${project.stability}.number" />
@@ -56,6 +58,7 @@
 
     <target name="prepare" depends="clean,update,init-properties">
         <mkdir dir="${builddir}" />
+        <mkdir dir="${builddir}/dist" />
         <mkdir dir="${builddir}/logs" />
         <mkdir dir="${builddir}/coverage" />
     </target>
