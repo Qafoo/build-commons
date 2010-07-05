@@ -11,22 +11,73 @@
 -->
 <project name="common-rcs-ant-targets" basedir=".">
 
-    <property name=".common.rcs.git.remote" value="origin" />
-    <property name=".common.rcs.git.branch" value="master" />
+    <!--
+        Import the default settings
+    -->
+    <property file="build.common.rcs.properties" />
+
+    <!--
+    ****************************************************************************
+    *
+    * Common revision control related targets
+    *
+    ****************************************************************************
+    -->
 
     <!--
         Performs a source update on the current base directory
     -->
     <target name="common-rcs-update"
-            depends="common-rcs-svn-update,
-                     common-rcs-git-update">
+            depends="-common-rcs-svn-update,
+                     -common-rcs-git-update" />
 
+    <!--
+        Sets a tag for the current project configuration.
+
+        Parameters:
+            ${common.rcs.tag.label}
+            ${common-rcs-tag-commit-message}
+    -->
+    <target name="common-rcs-tag"
+            depends="-common-rcs-tag-commit-message,
+                     -common-rcs-tag-label,
+                     -common-rcs-svn-tag,
+                     -common-rcs-git-tag" />
+
+    <!--
+        Generates a default tag label, when it wasn't specified/defined earlier.
+    -->
+    <target name="-common-rcs-tag-label" unless="common.rcs.tag.label">
+        <buildnumber file="build.number" />
+
+        <property name="common.rcs.tag.label"
+                  value="${project.name}-${project.version}build${build.number}" />
     </target>
+
+    <!--
+        Generates a default commit message for a new tag, when this property
+        wasn't specified/defined earlier.
+    -->
+    <target name="-common-rcs-tag-commit-message"
+            depends="-common-rcs-tag-label"
+            unless="common.rcs.tag.commit.message">
+
+        <property name="common.rcs.tag.commit.message"
+                  value="# Auto created tag '${common.rcs.tag.label}' after successful build." />
+    </target>
+
+    <!--
+    ****************************************************************************
+    *
+    * Subversion related targets
+    *
+    ****************************************************************************
+    -->
 
     <!--
         Performs an update on a subversion checkout
     -->
-    <target name="common-rcs-svn-update" depends="-common-rcs-is-svn" if=".common.rcs.is.svn">
+    <target name="-common-rcs-svn-update" depends="-common-rcs-is-svn" if=".common.rcs.is.svn">
         <antcall target="~common-rcs-svn-update-before" />
 
         <exec dir="${basedir}" executable="svn">
@@ -34,13 +85,6 @@
         </exec>
 
         <antcall target="~common-rcs-svn-update-after" />
-    </target>
-
-    <!--
-        Checks if the current project is a subversion checkout.
-    -->
-    <target name="-common-rcs-is-svn">
-        <available file="${basedir}/.svn" property=".common.rcs.is.svn" />
     </target>
 
     <!--
@@ -54,25 +98,97 @@
     <target name="~common-rcs-svn-update-after" />
 
     <!--
+        Sets a tag for the current software configuration in the remote repository.
+
+        Parameters:
+            ${common.rcs.tag.label}
+            ${common.rcs.tag.commit.message}
+    -->
+    <target name="-common-rcs-svn-tag"
+            depends="-common-rcs-is-svn,-common-rcs-svn-repository-info"
+            if=".common.rcs.is.svn">
+
+        <antcall target="~common-rcs-svn-tag-before" />
+
+        <property name="remote.branch" value="${.common.rcs.svn.branch}" />
+        <property name="remote.tag" value="${.common.rcs.svn.root}/tags/${common.rcs.tag.label}" />
+
+        <echo message="svn copy -m '${common.rcs.tag.commit.message}' ${remote.branch} ${remote.tag}" />
+
+        <antcall target="~common-rcs-svn-tag-after" />
+    </target>
+
+    <!--
+        Hook target that will be called before the project source will be tagged.
+
+        Parameters:
+            ${common.rcs.tag.label}
+    -->
+    <target name="~common-rcs-svn-tag-before" />
+
+    <!--
+        Hook target that will be called after the project source was tagged.
+
+        Parameters:
+            ${common.rcs.tag.label}
+    -->
+    <target name="~common-rcs-svn-tag-after" />
+
+    <!--
+        Checks if the current project is a subversion checkout.
+    -->
+    <target name="-common-rcs-is-svn">
+        <available file="${basedir}/.svn" property=".common.rcs.is.svn" />
+    </target>
+
+    <!--
+        This target extracts the metadata of the context subversion repository
+        and writes that data into the following properties.
+
+        Defined properties:
+            ${.common.rcs.svn.branch}  The currently checked out branch location,
+                                       for example: http://svn.example.com/trunk
+            ${.common.rcs.svn.root}    The repository root location, for example:
+                                       http://svn.example.com
+    -->
+    <target name="-common-rcs-svn-repository-info" unless=".common.rcs.svn.info.branch">
+        <tempfile prefix="~" suffix=".xml" property=".common.svn.info.tmp" />
+
+        <echo message="Writing svn info to: ${.common.svn.info.tmp}" level="verbose" />
+        <exec dir="${basedir}" executable="svn" failonerror="true" output="${.common.svn.info.tmp}">
+            <arg line="info" />
+            <arg line="--xml" />
+        </exec>
+
+        <xmlproperty file="${.common.svn.info.tmp}" />
+
+        <property name=".common.rcs.svn.branch" value="${info.entry.url}" />
+        <property name=".common.rcs.svn.root" value="${info.entry.repository.root}" />
+
+        <delete file="${.common.svn.info.tmp}" />
+    </target>
+
+    <!--
+    ****************************************************************************
+    *
+    * GIT related targets
+    *
+    ****************************************************************************
+    -->
+
+    <!--
         Performs an update on a git checkout
     -->
-    <target name="common-rcs-git-update" depends="-common-rcs-is-git" if=".common.rcs.is.git">
+    <target name="-common-rcs-git-update" depends="-common-rcs-is-git" if=".common.rcs.is.git">
         <antcall target="~common-rcs-git-update-after" />
 
         <exec dir="${basedir}" executable="git">
             <arg line="pull" />
-            <arg line="${.common.rcs.git.remote}" />
-            <arg line="${.common.rcs.git.branch}" />
+            <arg line="${common.rcs.git.remote}" />
+            <arg line="${common.rcs.git.branch}" />
         </exec>
 
         <antcall target="~common-rcs-git-update-after" />
-    </target>
-
-    <!--
-        Checks if the current project is a git checkout.
-    -->
-    <target name="-common-rcs-is-git">
-        <available file="${basedir}/.git" property=".common.rcs.is.git" />
     </target>
 
     <!--
@@ -84,4 +200,55 @@
         Hook target that will be called after an git pull has been done.
     -->
     <target name="~common-rcs-git-update-after" />
+
+    <!--
+        Sets a tag for the current software configuration and pushes it to the
+        remote repository.
+
+        Parameters:
+            ${common.rcs.tag.label}
+            ${common-rcs-tag-commit-message}
+    -->
+    <target name="-common-rcs-git-tag" depends="-common-rcs-is-git" if=".common.rcs.is.git">
+        <antcall target="~common-rcs-git-tag-before" />
+
+        <exec dir="${basedir}" executable="git">
+            <arg line="tag" />
+            <arg line="-m" />
+            <arg line="${common.rcs.tag.commit.message}" />
+            <arg line="${common.rcs.tag.label}" />
+        </exec>
+
+        <exec dir="${basedir}" executable="git">
+            <arg line="push" />
+            <arg line="${common.rcs.git.remote}" />
+            <arg line="--tags" />
+        </exec>
+
+        <antcall target="~common-rcs-git-tag-after" />
+    </target>
+
+    <!--
+        Hook target that will be called before the project source will be tagged.
+
+        Parameters:
+            ${common.rcs.tag.label}
+    -->
+    <target name="~common-rcs-git-tag-before" />
+
+    <!--
+        Hook target that will be called after the project source was tagged.
+
+        Parameters:
+            ${common.rcs.tag.label}
+    -->
+    <target name="~common-rcs-git-tag-after" />
+
+    <!--
+        Checks if the current project is a git checkout.
+    -->
+    <target name="-common-rcs-is-git">
+        <available file="${basedir}/.git" property=".common.rcs.is.git" />
+    </target>
+
 </project>
