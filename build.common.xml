@@ -52,10 +52,15 @@
         <delete dir="${builddir}" includeemptydirs="true" />
     </target>
 
+    <!--
+        Prepares some common build directories, updates the project sources and
+        initializes some build properties.
+    -->
     <target name="prepare" depends="clean, common-rcs-update, init-properties">
         <mkdir dir="${builddir}" />
         <mkdir dir="${builddir}/dist" />
         <mkdir dir="${builddir}/logs" />
+        <mkdir dir="${builddir}/phpcb" />
         <mkdir dir="${builddir}/coverage" />
     </target>
 
