@@ -180,7 +180,7 @@
         Performs an update on a git checkout
     -->
     <target name="-common-rcs-git-update" depends="-common-rcs-is-git" if=".common.rcs.is.git">
-        <antcall target="~common-rcs-git-update-after" />
+        <antcall target="~common-rcs-git-update-before" />
 
         <exec dir="${basedir}" executable="git">
             <arg line="pull" />

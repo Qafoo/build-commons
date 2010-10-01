@@ -232,7 +232,7 @@
     <target name="pack-pear-archive" depends="prepare,copy-files-for-pear-archive">
         <antcall target="~pack-pear-archive-before" />
 
-        <exec dir="${builddir}" executable="pear">
+        <exec dir="${builddir}" executable="pear" failonerror="true">
             <arg line="package" />
             <arg line="pear-archive/package.xml" />
         </exec>
