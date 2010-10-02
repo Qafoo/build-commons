@@ -2,6 +2,7 @@
 <project name="common-ant-targets" basedir=".">
 
     <import file="build.common.rcs.xml" />
+    <import file="build.common.pear.xml" />
 
     <!--
         Default values for some customizeable project settings
@@ -229,10 +230,18 @@
     <!--
         Creates a pear archive of the project source
     -->
-    <target name="pack-pear-archive" depends="prepare,copy-files-for-pear-archive">
+    <target name="pack-pear-archive" depends="prepare,
+                                              copy-files-for-pear-archive,
+                                              -common-pear-prepare">
         <antcall target="~pack-pear-archive-before" />
 
+        <antcall target="common-pear-channel-discover">
+            <param name="pear-channel-uri" value="${pear.channel.uri}" />
+        </antcall>
+
         <exec dir="${builddir}" executable="pear" failonerror="true">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
             <arg line="package" />
             <arg line="pear-archive/package.xml" />
         </exec>

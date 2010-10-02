@@ -18,6 +18,14 @@
           ${pear-channel-uri}
     -->
     <target name="common-pear-channel-discover" depends="-common-pear-prepare">
+        <!-- First try to delete a previous discovered channel -->
+        <exec executable="pear">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
+            <arg line="channel-delete" />
+            <arg line="${pear-channel-uri}" />
+        </exec>
+
         <exec executable="pear" failonerror="true">
             <arg line="-c" />
             <arg line="${common-pear-config}" />
