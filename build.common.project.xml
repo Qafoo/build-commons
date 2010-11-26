@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    This build file contains common targets for handling projects and project
+    related tasks.
+
+    General markup guidelines:
+      - Targets starting with "-" are protected and should never be called
+        directly.
+      - Targets starting with "~" are hooks that can be overwritten to custom
+        functionality.
+
+      - Properties names containing "-" are parameters and they should be
+        supplied by using ant's <param /> tag.
+      - Properties names containing "." are global properties that are defined
+        in a *.properties file or in a build file.
+-->
+<project name="common-project-ant-targets" basedir=".">
+
+    <target name="common-project-create">
+        <echo message="${project-dir}" />
+        <echo message="${project-name}" />
+
+    </target>
+</project>
