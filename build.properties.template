@@ -1,0 +1,10 @@
+project.name      = NameOfYourProject
+project.version   = 0.0.0
+project.stability = alpha
+
+coding.standard   = PEAR
+
+phpunit.testsuite.class = \Your\Main\TestSuite
+phpunit.testsuite.file  = Your/Main/TestSuite.php
+
+phar.archive.bootstrap = conf/phar_bootstrap.stub

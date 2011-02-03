@@ -148,8 +148,8 @@
         or compatibility tests. 
     -->
     <target name="test-all">
-        <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
-            <arg line="${phpunit.testsuite}" />
+        <exec dir="${basedir}" failonerror="true" executable="phpunit">
+            <arg line="test/${phpunit.testsuite.file}" />
         </exec>
     </target>
 
@@ -158,12 +158,12 @@
         the project sources.
     -->
     <target name="test-unit">
-        <exec dir="${basedir}/test" failonerror="true" executable="phpunit">
+        <exec dir="${basedir}" failonerror="true" executable="phpunit">
             <arg line="--group unittest" />
             <arg line="--coverage-html   ${builddir}/coverage" />
             <arg line="--coverage-clover ${builddir}/logs/clover.xml" />
             <arg line="--log-junit       ${builddir}/logs/junit.xml" />
-            <arg line="${phpunit.testsuite}" />
+            <arg line="test/${phpunit.testsuite.file}" />
         </exec>
     </target>
 
