@@ -113,7 +113,7 @@
             </fileset>
             <fileset dir="${basedir}/test">
                 <include name="**/*.php" />
-                <exclude name="_source/**" />
+                <exclude name="**/_source/**" />
                 <exclude name="**/_files/**" />
             </fileset>
         </apply>
