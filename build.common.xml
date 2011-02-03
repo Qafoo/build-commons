@@ -33,6 +33,12 @@
     <property name="builddir" location="${basedir}/../build" />
     <property name="scriptdir" location="${basedir}/setup/scripts" />
 
+    <property name="basedir.src" location="${basedir}/src/main" />
+    <property name="basedir.test" location="${basedir}/src/test" />
+
+    <property name="php.basedir.src" location="${basedir.src}/php" />
+    <property name="php.basedir.test" location="${basedir.test}/php" />
+
     <!--
         Common build variables
     -->
@@ -108,10 +114,10 @@
     <target name="lint">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
-            <fileset dir="${basedir}/source">
+            <fileset dir="${php.basedir.src}">
                 <include name="**/*.php" />
             </fileset>
-            <fileset dir="${basedir}/test">
+            <fileset dir="${php.basedir.test}">
                 <include name="**/*.php" />
                 <exclude name="**/_source/**" />
                 <exclude name="**/_files/**" />
@@ -121,7 +127,7 @@
 
     <target name="phpmd">
         <exec dir="${basedir}" executable="phpmd" failonerror="false">
-            <arg line="source" />
+            <arg line="${php.basedir.src}" />
             <arg line="xml" />
             <arg line="codesize,unusedcode" />
             <arg line="--reportfile ${builddir}/logs/pmd.xml" />
@@ -132,14 +138,14 @@
         <exec dir="${basedir}" executable="pdepend" failonerror="false">
             <arg line="--summary-xml=${builddir}/logs/pdepend.xml" />
             <arg line="--jdepend-xml=${builddir}/logs/jdepend.xml" />
-            <arg line="source" />
+            <arg line="${php.basedir.src}" />
         </exec>
     </target>
 
     <target name="phpcpd">
         <exec dir="${basedir}" executable="phpcpd" failonerror="false">
             <arg line="--log-pmd ${builddir}/logs/cpd.xml" />
-            <arg line="source" />
+            <arg line="${php.basedir.src}" />
         </exec>
     </target>
 
@@ -149,7 +155,7 @@
     -->
     <target name="test-all">
         <exec dir="${basedir}" failonerror="true" executable="phpunit">
-            <arg line="test/${phpunit.testsuite.file}" />
+            <arg line="${php.basedir.test}/${phpunit.testsuite.file}" />
         </exec>
     </target>
 
@@ -163,7 +169,7 @@
             <arg line="--coverage-html   ${builddir}/coverage" />
             <arg line="--coverage-clover ${builddir}/logs/clover.xml" />
             <arg line="--log-junit       ${builddir}/logs/junit.xml" />
-            <arg line="test/${phpunit.testsuite.file}" />
+            <arg line="${php.basedir.test}/${phpunit.testsuite.file}" />
         </exec>
     </target>
 
@@ -176,7 +182,7 @@
             <arg line="--standard=${coding.standard}" />
             <arg line="--report=checkstyle" />
             <arg line="--report-file=${builddir}/logs/checkstyle.xml" />
-            <arg line="${basedir}/source" />
+            <arg line="${php.basedir.src}" />
         </exec>
     </target>
 
@@ -230,7 +236,7 @@
     -->
     <target name="copy-files-for-phar-archive">
         <copy todir="${builddir}/phar-archive">
-            <fileset dir="${basedir}/source"/>
+            <fileset dir="${php.basedir.src}"/>
         </copy>
 
         <antcall target="copy-library-dir-if-exists">
@@ -279,7 +285,7 @@
     -->
     <target name="copy-files-for-pear-archive">
         <copy todir="${builddir}/pear-archive/${project.dir}">
-            <fileset dir="${basedir}/source"/>
+            <fileset dir="${php.basedir.src}"/>
             <fileset dir="${basedir}">
                 <include name="**.sh" />
                 <include name="**.php" />
@@ -329,7 +335,7 @@
         <property name="output.dir" value="${builddir}/tar-archive/${build.file}" />
         
         <copy todir="${output.dir}/source">
-            <fileset dir="${basedir}/source"/>
+            <fileset dir="${php.basedir.src}"/>
         </copy>
 
         <antcall target="copy-optional-dirs">
