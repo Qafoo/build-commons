@@ -16,28 +16,28 @@
 -->
 <project name="common-ant-targets" basedir=".">
 
-    <import file="build.common.rcs.xml" />
-    <import file="build.common.pear.xml" />
+    <!--
+        Declare basedir for commons
+    -->
+    <dirname property="common-ant-targets.basedir" file="${ant.file.common-ant-targets}" />
 
     <!--
-        Default values for some customizeable project settings
+        Import default properties. You should customize this properties in your
+        own build environment.
     -->
-    <property name="project.dir" value="${ant.project.name}" />
-    <property name="project.name" value="${ant.project.name}" />
-    <property name="project.version" value="0.0.1" />
-    <property name="project.stability" value="alpha" />
+    <property file="${common-ant-targets.basedir}/build.common.properties" />
+
+    <!--
+        Import commons build files
+    -->
+    <import file="build.common.rcs.xml" />
+    <import file="build.common.pear.xml" />
 
     <!--
         Some common settings for all project.
     -->
     <property name="builddir" location="${basedir}/../build" />
     <property name="scriptdir" location="${basedir}/setup/scripts" />
-
-    <property name="basedir.src" location="${basedir}/src/main" />
-    <property name="basedir.test" location="${basedir}/src/test" />
-
-    <property name="php.basedir.src" location="${basedir.src}/php" />
-    <property name="php.basedir.test" location="${basedir.test}/php" />
 
     <!--
         Common build variables
@@ -251,14 +251,14 @@
     <!--
         Creates a pear archive of the project source
     -->
-    <target name="pack-pear-archive" depends="prepare,
-                                              copy-files-for-pear-archive,
-                                              -common-pear-prepare">
+    <target name="pack-pear-archive"
+            description="Creates a PEAR archive with the project's source code."
+            depends="prepare,
+                     copy-files-for-pear-archive,
+                     -common-pear-prepare">
         <antcall target="~pack-pear-archive-before" />
 
-        <antcall target="common-pear-channel-discover">
-            <param name="pear-channel-uri" value="${pear.channel.uri}" />
-        </antcall>
+        <antcall target="common-pear-channel-discover" />
 
         <exec dir="${builddir}" executable="pear" failonerror="true">
             <arg line="-c" />
