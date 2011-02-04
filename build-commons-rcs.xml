@@ -17,6 +17,16 @@
 <project name="common-rcs-ant-targets" basedir=".">
 
     <!--
+        Declare basedir for commons pear
+    -->
+    <dirname property="common-rcs-ant-targets.basedir" file="${ant.file.common-rcs-ant-targets}" />
+
+    <!--
+        Import default settings
+    -->
+    <property file="${common-rcs-ant-targets.basedir}/build-commons-rcs.properties" />
+
+    <!--
         Import the default settings
     -->
     <property file="build.common.rcs.properties" />

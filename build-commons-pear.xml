@@ -24,7 +24,7 @@
     <!--
         Import default settings
     -->
-    <property file="${common-pear-ant-targets.basedir}/build.common.pear.properties" />
+    <property file="${common-pear-ant-targets.basedir}/build-commons-pear.properties" />
 
     <!--
         Discovers a pear channel specified as parameter.

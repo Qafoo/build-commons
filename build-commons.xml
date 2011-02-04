@@ -25,13 +25,13 @@
         Import default properties. You should customize this properties in your
         own build environment.
     -->
-    <property file="${common-ant-targets.basedir}/build.common.properties" />
+    <property file="${common-ant-targets.basedir}/build-commons.properties" />
 
     <!--
         Import commons build files
     -->
-    <import file="build.common.rcs.xml" />
-    <import file="build.common.pear.xml" />
+    <import file="build-commons-rcs.xml" />
+    <import file="build-commons-pear.xml" />
 
     <!--
         Some common settings for all project.
