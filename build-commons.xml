@@ -392,10 +392,41 @@
             output.dir      Output directory for the temporary build tree.
     -->
     <target name="copy-library-dir" if="library-dir-exists">
+        <property name="library.dir" value="${output.dir}/lib" />
+
+        <antcall target="~copy-library-dir-before">
+            <param name="output.dir" value="${output.dir}" />
+            <param name="library.dir" value="${library.dir}" /> 
+        </antcall>
+
         <copy todir="${output.dir}/lib">
             <fileset dir="${basedir}/lib" />
         </copy>
+
+        <antcall target="~copy-library-dir-after">
+            <param name="output.dir" value="${output.dir}" />
+            <param name="library.dir" value="${library.dir}" />
+        </antcall>
     </target>
+
+    <!--
+        Hook that will be called before we copy the project's library directory.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+            library.dir     The library directory in the temporary build tree.
+    -->
+    <target name="~copy-library-dir-before" />
+
+    <!--
+        Hook that will be called after we have copied the project's library
+        directory.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+            library.dir     The library directory in the temporary build tree.
+    -->
+    <target name="~copy-library-dir-after" />
 
     <!--
         Optionally copies a documentation directory into a temporary build
