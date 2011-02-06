@@ -38,6 +38,7 @@
     -->
     <property name="builddir" location="${basedir}/../build" />
     <property name="scriptdir" location="${basedir}/setup/scripts" />
+    <property name="tmpdir" location="${builddir}/tmp" />
 
     <!--
         Common build variables
@@ -80,6 +81,7 @@
     -->
     <target name="prepare" depends="clean, common-rcs-update, init-properties">
         <mkdir dir="${builddir}" />
+        <mkdir dir="${tmpdir}" />
         <mkdir dir="${builddir}/dist" />
         <mkdir dir="${builddir}/logs" />
         <mkdir dir="${builddir}/phpcb" />
@@ -121,6 +123,7 @@
                 <include name="**/*.php" />
                 <exclude name="**/_source/**" />
                 <exclude name="**/_files/**" />
+                <exclude name="**/_code/**" />
             </fileset>
         </apply>
     </target>
@@ -155,6 +158,7 @@
     -->
     <target name="test-all">
         <exec dir="${basedir}" failonerror="true" executable="phpunit">
+            <arg line="${phpunit.testsuite.class}" />
             <arg line="${php.basedir.test}/${phpunit.testsuite.file}" />
         </exec>
     </target>
@@ -169,6 +173,7 @@
             <arg line="--coverage-html   ${builddir}/coverage" />
             <arg line="--coverage-clover ${builddir}/logs/clover.xml" />
             <arg line="--log-junit       ${builddir}/logs/junit.xml" />
+            <arg line="${phpunit.testsuite.class}" />
             <arg line="${php.basedir.test}/${phpunit.testsuite.file}" />
         </exec>
     </target>
