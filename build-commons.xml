@@ -241,7 +241,10 @@
     -->
     <target name="copy-files-for-phar-archive">
         <copy todir="${builddir}/phar-archive">
-            <fileset dir="${php.basedir.src}"/>
+            <fileset dir="${php.basedir.src}" />
+            <filterchain>
+                <replacestring from="@package_version@" to="${project.version}" />
+            </filterchain>
         </copy>
 
         <antcall target="copy-library-dir-if-exists">
@@ -341,6 +344,9 @@
         
         <copy todir="${output.dir}/source">
             <fileset dir="${php.basedir.src}"/>
+            <filterchain>
+                <replacestring from="@package_version@" to="${project.version}" />
+            </filterchain>
         </copy>
 
         <antcall target="copy-optional-dirs">
