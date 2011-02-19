@@ -37,6 +37,7 @@
         Some common settings for all project.
     -->
     <property name="builddir" location="${basedir}/../build" />
+    <property name="distdir" location="${builddir}/dist" />
     <property name="scriptdir" location="${basedir}/setup/scripts" />
     <property name="tmpdir" location="${builddir}/tmp" />
 
@@ -82,7 +83,7 @@
     <target name="prepare" depends="clean, common-rcs-update, init-properties">
         <mkdir dir="${builddir}" />
         <mkdir dir="${tmpdir}" />
-        <mkdir dir="${builddir}/dist" />
+        <mkdir dir="${distdir}" />
         <mkdir dir="${builddir}/logs" />
         <mkdir dir="${builddir}/phpcb" />
         <mkdir dir="${builddir}/coverage" />
@@ -132,7 +133,7 @@
         <exec dir="${basedir}" executable="phpmd" failonerror="false">
             <arg line="${php.basedir.src}" />
             <arg line="xml" />
-            <arg line="codesize,unusedcode" />
+            <arg line="codesize,unusedcode,naming,design" />
             <arg line="--reportfile ${builddir}/logs/pmd.xml" />
         </exec>
     </target>
@@ -200,7 +201,7 @@
         Creates a phar archive of the project source
     -->
     <target name="pack-phar-archive" depends="prepare,copy-files-for-phar-archive">
-        <property name="phar.archive.filename" value="${builddir}/${build.file}.phar" />
+        <property name="phar.archive.filename" value="${distdir}/${build.file}.phar" />
 
         <antcall target="~pack-phar-archive-before">
             <param name="phar.archive.filename" value="${phar.archive.filename}" />
@@ -268,11 +269,11 @@
 
         <antcall target="common-pear-channel-discover" />
 
-        <exec dir="${builddir}" executable="pear" failonerror="true">
+        <exec dir="${distdir}" executable="pear" failonerror="true">
             <arg line="-c" />
             <arg line="${common-pear-config}" />
             <arg line="package" />
-            <arg line="pear-archive/package.xml" />
+            <arg line="${builddir}/pear-archive/package.xml" />
         </exec>
 
         <antcall target="~pack-pear-archive-after" />
@@ -328,7 +329,7 @@
     -->
     <target name="pack-tar-archive" depends="prepare,copy-files-for-tar-archive">
         <tar basedir="${builddir}/tar-archive"
-             destfile="${builddir}/${build.file}.tar.bz2"
+             destfile="${distdir}/${build.file}.tar.bz2"
              compression="bzip2"
              longfile="gnu">
 
