@@ -79,7 +79,7 @@
             <arg line="install" />
             <arg line="--alldeps" />
             <arg line="--nobuild" />
-            <fileset dir="${builddir}">
+            <fileset dir="${distdir}">
                 <include name="${pear-package-pattern}*.tgz" />
             </fileset>
         </apply>
