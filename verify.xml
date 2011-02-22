@@ -67,7 +67,7 @@
     <target name="-verify:coverage">
         <exec dir="${basedir}" failonerror="true" executable="phpunit">
             <arg value="--coverage-html" />
-            <arg value=" ${builddir}/coverage" />
+            <arg value="${builddir}/coverage" />
             <arg value="--coverage-clover" />
             <arg value="${logsdir}/clover.xml" />
             <arg value="--log-junit" />
