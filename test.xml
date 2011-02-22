@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ant-build-commons-test">
+
+    <description>
+        This is ant file contains targets that will execute the projects unit
+        tests.
+    </description>
+
+    <!--
+        Declare basedir for commons pear
+    -->
+    <dirname property="-test:basedir" file="${ant.file.ant-build-commons-test}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="compile.xml" />
+
+    <!--
+        Creates different binary releases of the current project.
+    -->
+    <target name="test"
+            depends="compile, -test"
+            description="-> Runs the unit tests for the project." />
+
+
+    <target name="-test"
+            depends="-test:before~hook,
+                     -test:test,
+                     -test:after~hook" />
+
+    <!--
+        Hook target that will be called by the build framework before it starts
+        the project's unittests.
+    -->
+    <target name="-test:before~hook" />
+
+    <!--
+        Hook target that will be called by the build framework after it has
+        executed the project's unittests.
+    -->
+    <target name="-test:after~hook" />
+
+    <!--
+        Executes the project's unittests.
+    -->
+    <target name="-test:test">
+        <exec dir="${basedir}" failonerror="true" executable="phpunit">
+            <arg value="--group" />
+            <arg value="unittest" />
+            <arg value="--log-junit" />
+            <arg value="${logsdir}/junit.xml" />
+            <arg value="${phpunit.testsuite.class}" />
+            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
+        </exec>
+    </target>
+</project>

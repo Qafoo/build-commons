@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ant-build-commons-package">
+
+    <description>
+        This is ant file contains targets for different package/distribution
+        formats used to deliver php application.
+    </description>
+
+    <!--
+        Declare basedir for commons pear
+    -->
+    <dirname property="-package:basedir" file="${ant.file.ant-build-commons-package}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="test.xml" />
+
+    <!--
+        Creates different binary releases of the current project.
+    -->
+    <!--<target name="package" depends="pack-phar-archive,pack-pear-archive,pack-tar-archive" />-->
+    <target name="package"
+            depends="test, package:phar, package:pear, package:archive"
+            description="-> Generates distributable packages of the project." />
+
+<!-- {{{ PHAR SUPPORT -->
+
+    <!--
+        Enable phar package format by default
+    -->
+    <property name="package.phar.enabled" value="true" />
+
+    <!--
+        Default phar bootstrap file is empty, which means we will generate a
+        phar archive without bootstrapper.
+    -->
+    <property name="package.phar.bootstrap.file" value="" />
+
+    <!--
+        Creates a phar archive of the project source
+    -->
+    <target name="package:phar"
+            if="-package:phar:is.enabled"
+            depends="prepare, -package:phar:is-enabled">
+
+        <antcall target="-package:phar" />
+    </target>
+
+    <!--
+        Tests if the phar package format is enabled?
+    -->
+    <target name="-package:phar:is-enabled">
+        <condition property="-package:phar:is.enabled">
+            <istrue value="${package.phar.enabled}" />
+        </condition>
+    </target>
+
+    <!--
+        Executes all steps required to generate a phar archive.
+    -->
+    <target name="-package:phar"
+            depends="-package:phar:prepare,
+                     -package:phar:before~hook,
+                     -package:phar:main,
+                     -package:phar:after~hook" />
+
+    <!--
+        Hook target that will be called before the phar archive will be created.
+
+        Parameters:
+            ${-package:phar:filename}  Name of the phar file to create.
+    -->
+    <target name="-package:phar:before~hook" />
+
+    <!--
+        Hook target that will be called after the phar archive was created.
+
+        Parameters:
+            ${-package:phar:filename}  Name of the created phar file.
+    -->
+    <target name="-package:phar:after~hook" />
+
+    <!--
+        Initializes the required environment to generate a phar archive
+    -->
+    <target name="-package:phar:prepare"
+            depends="-package:phar:prepare-properties,
+                     -package:phar:prepare-files" />
+
+    <!--
+        Initializes the required phar archive properties
+    -->
+    <target name="-package:phar:prepare-properties">
+        <property name="-package:phar:filename" value="${distdir}/${build.file}.phar" />
+        <property name="-package:phar:builddir" value="${builddir}/phar-archive" />
+    </target>
+
+    <!--
+        Copies all files for the project's phar archive.
+    -->
+    <target name="-package:phar:prepare-files">
+        <copy todir="${-package:phar:builddir}">
+            <fileset dir="${php.basedir.src}" />
+            <filterchain>
+                <replacestring from="@package_version@" to="${project.version}" />
+            </filterchain>
+        </copy>
+
+        <antcall target="copy-library-dir-if-exists">
+            <param name="output.dir" value="${-package:phar:builddir}" />
+        </antcall>
+
+        <antcall target="do-copy-files-for-xyz-archive">
+            <param name="output.dir" value="${-package:phar:builddir}" />
+        </antcall>
+    </target>
+
+    <!--
+        Primary ant target for the phar archive generation. This target will
+        generate the project's archive.
+    -->
+    <target name="-package:phar:main">
+        <exec dir="${basedir}"
+              failonerror="true"
+              executable="${scriptdir}/create.phar.php">
+
+            <arg line="${project.name}" />
+            <arg line="${-package:phar:filename}" />
+            <arg line="${-package:phar:builddir}" />
+            <arg line="${project.root}/${package.phar.bootstrap.file}" />
+        </exec>
+
+        <chmod file="${-package:phar:filename}" perm="755" />
+    </target>
+
+<!-- }}} PHAR SUPPORT -->
+
+<!-- {{{ PEAR SUPPORT -->
+
+    <!--
+        Enable pear package format by default
+    -->
+    <property name="package.pear.enabled" value="true" />
+
+    <!--
+        Creates a pear package of the project source
+    -->
+    <target name="package:pear"
+            if="-package:pear:is.enabled"
+            depends="prepare, -package:pear:is-enabled">
+
+        <antcall target="-package:pear" />
+    </target>
+
+    <!--
+        Tests if the pear package format is enabled for this project.
+    -->
+    <target name="-package:pear:is-enabled">
+        <condition property="-package:pear:is.enabled">
+            <istrue value="${package.pear.enabled}" />
+        </condition>
+    </target>
+
+    <!--
+        This target defines the main workflow required/used to generate a
+        pear package file.
+    -->
+    <target name="-package:pear"
+            depends="-package:pear:prepare,
+                     -package:pear:before~hook,
+                     -package:pear:main,
+                     -package:pear:after~hook" />
+    
+    <!--
+        Hook target that will be called before the pear package will be build.
+    -->
+    <target name="-package:pear:before~hook" />
+
+    <!--
+        Hook target that will be called after the pear package was build.
+    -->
+    <target name="-package:pear:after~hook" />
+
+    <!--
+        Initializes the required environment to generate pear package file.
+    -->
+    <target name="-package:pear:prepare"
+            depends="-package:pear:prepare-properties,
+                     -package:pear:prepare-files,
+                     -common-pear-prepare,
+                     common-pear-channel-discover" />
+
+    <!--
+        Defines all properties required for pear package generation.
+    -->
+    <target name="-package:pear:prepare-properties">
+        <property name="package.pear.builddir" location="${builddir}/pear-archive" />
+    </target>
+
+    <!--
+        Copies all files required to generate the project's pear package.
+    -->
+    <target name="-package:pear:prepare-files">
+        <copy todir="${package.pear.builddir}/${project.dir}">
+            <fileset dir="${php.basedir.src}"/>
+            <fileset dir="${project.root}/bin">
+                <include name="**.sh" />
+                <include name="**.php" />
+                <include name="**.bat" />
+            </fileset>
+        </copy>
+
+        <antcall target="copy-docs-dir-if-exists">
+            <param name="output.dir" value="${package.pear.builddir}" />
+        </antcall>
+
+        <copy file="${basedir}/LICENSE" todir="${package.pear.builddir}" />
+        <copy file="${basedir}/CHANGELOG" todir="${package.pear.builddir}" />
+
+        <copy file="${project.root}/conf/package.xml" todir="${package.pear.builddir}">
+            <filterchain>
+                <replacestring from="${project.name}" to="${build.name}" />
+                <replacestring from='name="source"' to='name="${project.name}"' />
+                <replacestring from="1970-01-01" to="${build.date}" />
+                <replacestring from="0.0.0" to="${build.version}" />
+                <replacestring from="devel" to="${project.stability}" />
+            </filterchain>
+        </copy>
+
+        <antcall target="do-copy-files-for-xyz-archive">
+            <param name="output.dir" value="${package.pear.builddir}" />
+        </antcall>
+    </target>
+
+    <!--
+        Creates a pear archive of the project source
+    -->
+    <target name="-package:pear:main">
+        <exec dir="${distdir}" executable="pear" failonerror="true">
+            <arg line="-c" />
+            <arg line="${common-pear-config}" />
+            <arg line="package" />
+            <arg line="${package.pear.builddir}/package.xml" />
+        </exec>
+    </target>
+
+<!-- }}} PEAR SUPPORT -->
+
+<!-- {{{ ARCHIVE SUPPORT -->
+
+    <!--
+        Enable archive package format by default
+    -->
+    <property name="package.archive.enabled" value="true" />
+
+    <!--
+        Creates a archive package of the project source
+    -->
+    <target name="package:archive"
+            if="-package:archive:is.enabled"
+            depends="prepare, -package:archive:is-enabled">
+
+        <antcall target="-package:archive" />
+    </target>
+
+    <!--
+        Tests if the archive package format is enabled for this project.
+    -->
+    <target name="-package:archive:is-enabled">
+        <condition property="-package:archive:is.enabled">
+            <istrue value="${package.archive.enabled}" />
+        </condition>
+    </target>
+
+    <!--
+        This target defines the main workflow required/used to generate a
+        archive package file.
+    -->
+    <target name="-package:archive"
+            depends="-package:archive:prepare,
+                     -package:archive:before~hook,
+                     -package:archive:main,
+                     -package:archive:after~hook" />
+
+    <!--
+        Hook target that will be called before the archive package will be build.
+    -->
+    <target name="-package:archive:before~hook" />
+
+    <!--
+        Hook target that will be called after the archive package was build.
+    -->
+    <target name="-package:archive:after~hook" />
+
+    <!--
+        Initializes the environment required to generated a project archive.
+    -->
+    <target name="-package:archive:prepare"
+            depends="-package:archive:prepare-properties,
+                     -package:archive:prepare-files" />
+
+    <!--
+        Defines the properties required to generate a project archive.
+    -->
+    <target name="-package:archive:prepare-properties">
+        <property name="-package:archive:builddir" location="${builddir}/tar-archive" />
+        <property name="-package:archive:filename" location="${distdir}/${build.file}.tar.bz2" />
+    </target>
+
+    <target name="-package:archive:prepare-files">
+        <property name="output.dir" value="${-package:archive:builddir}/${build.file}" />
+
+        <copy todir="${output.dir}/source">
+            <fileset dir="${php.basedir.src}"/>
+            <filterchain>
+                <replacestring from="@package_version@" to="${project.version}" />
+            </filterchain>
+        </copy>
+
+        <antcall target="copy-optional-dirs">
+            <param name="output.dir" value="${output.dir}" />
+        </antcall>
+
+        <copy file="${basedir}/LICENSE" todir="${output.dir}" />
+        <copy file="${basedir}/CHANGELOG" todir="${output.dir}" />
+
+        <antcall target="do-copy-files-for-xyz-archive">
+            <param name="output.dir" value="${output.dir}" />
+        </antcall>
+    </target>
+
+    <!--
+        Creates a tar.bz2 archive of the project source
+    -->
+    <target name="-package:archive:main">
+        <tar basedir="${-package:archive:builddir}"
+             destfile="${distdir}/${build.file}.tar.bz2"
+             compression="bzip2"
+             longfile="gnu">
+
+            <include name="${build.file}/**" />
+        </tar>
+    </target>
+
+<!-- }}} ARCHIVE SUPPORT -->
+
+    <!--
+        Hook method for copying files for the project's xyz archive format.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="do-copy-files-for-xyz-archive">
+        <!-- Implement this target in the concrete project build.xml -->
+    </target>
+
+    <!--
+        Copies several optional directories into the output dir.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-optional-dirs" depends="copy-library-dir-if-exists,copy-docs-dir-if-exists" />
+
+    <!--
+        Optionally copies a library directory into a temporary build tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-library-dir-if-exists" depends="test-library-dir-exists,copy-library-dir" />
+
+    <!--
+        Checks if the current project contains a library folder with external
+        dependencies.
+    -->
+    <target name="test-library-dir-exists">
+        <available file="${basedir}/lib" property="library-dir-exists" />
+    </target>
+
+    <!--
+        Copies the library directory of the current project into a temporary
+        build source tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-library-dir" if="library-dir-exists">
+        <property name="library.dir" value="${output.dir}/lib" />
+
+        <antcall target="~copy-library-dir-before">
+            <param name="output.dir" value="${output.dir}" />
+            <param name="library.dir" value="${library.dir}" />
+        </antcall>
+
+        <copy todir="${output.dir}/lib">
+            <fileset dir="${basedir}/lib" />
+        </copy>
+
+        <antcall target="~copy-library-dir-after">
+            <param name="output.dir" value="${output.dir}" />
+            <param name="library.dir" value="${library.dir}" />
+        </antcall>
+    </target>
+
+    <!--
+        Hook that will be called before we copy the project's library directory.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+            library.dir     The library directory in the temporary build tree.
+    -->
+    <target name="~copy-library-dir-before" />
+
+    <!--
+        Hook that will be called after we have copied the project's library
+        directory.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+            library.dir     The library directory in the temporary build tree.
+    -->
+    <target name="~copy-library-dir-after" />
+
+    <!--
+        Optionally copies a documentation directory into a temporary build
+        source tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-docs-dir-if-exists" depends="test-docs-dir-exists,copy-docs-dir" />
+
+    <!--
+        Checks if the current project has a document directory.
+    -->
+    <target name="test-docs-dir-exists">
+        <available file="${basedir}/docs" property="docs-dir-exists" />
+    </target>
+
+    <!--
+        Copies the documentation directory of the current project into a
+        temporary build source tree
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-docs-dir" if="docs-dir-exists">
+        <copy todir="${output.dir}/docs">
+            <fileset dir="${basedir}/docs" />
+            <filterchain>
+                <replacestring from="__DIR__ . '/../../source" to="'${project.name}" />
+            </filterchain>
+        </copy>
+    </target>
+
+</project>

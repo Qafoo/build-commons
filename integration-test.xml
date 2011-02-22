@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="and-build-commons-integration-test" basedir=".">
+
+    <description>
+        This ant build file contains targets that are used to perform
+        integration tests against the project's source code.
+    </description>
+
+    <!--
+        Declare basedir for the verify build file.
+    -->
+    <dirname property="-integration-test:basedir" file="${ant.file.ant-build-commons-integration-test}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="package.xml" />
+
+    <!--
+        Runs the project's integration tests.
+
+        TODO: These tests should run against the source in each package format.
+    -->
+    <target name="integration-test"
+            depends="package"
+            description="-> Runs all tests for the project." >
+
+        <exec dir="${basedir}" failonerror="true" executable="phpunit">
+            <arg value="--group" />
+            <arg value="integrationtest" />
+            <arg value="${phpunit.testsuite.class}" />
+            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
+        </exec>
+    </target>
+
+</project>

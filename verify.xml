@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ant-build-commons-verify" basedir="..">
+
+    <description>
+        This is ant file contains targets for different static analysis and
+        quality checks used for the project source.
+    </description>
+
+    <!--
+        Declare basedir for the verify build file.
+    -->
+    <dirname property="-verify:basedir" file="${ant.file.ant-build-commons-verify}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="integration-test.xml" />
+
+    <!--
+        Verifies that the source is valid and meets quality criterias.
+    -->
+    <target name="verify"
+            depends="integration-test, -verify"
+            description="-> Verifies that the source is valid and meets quality criterias." />
+
+    <!--
+        Internal verify implementation that defines the main workflow of the
+        verify target.
+    -->
+    <target name="-verify"
+            depends="-verify-before~hook,
+                     -verify:verify,
+                     -verify-after~hook" />
+
+    <!--
+        Hook target that will be called before the main verification phase
+        of the project's source starts.
+    -->
+    <target name="-verify-before~hook" />
+
+    <!--
+        Hook target that will be called after the main verification phase
+        of the project's source has finished.
+    -->
+    <target name="-verify-after~hook" />
+
+    <!--
+        This target calls several quality tools parallel and generates the
+        different reports.
+    -->
+    <target name="-verify:verify">
+        <parallel>
+            <antcall target="-verify:coverage" />
+            <antcall target="-verify:checkstyle" />
+            <antcall target="-verify:phpcpd" />
+            <antcall target="-verify:phploc" />
+            <sequential>
+                <antcall target="-verify:pdepend" />
+                <antcall target="-verify:phpmd" />
+            </sequential>
+        </parallel>
+    </target>
+
+    <!--
+        Executes all project tests and collects
+    -->
+    <target name="-verify:coverage">
+        <exec dir="${basedir}" failonerror="true" executable="phpunit">
+            <arg value="--coverage-html" />
+            <arg value=" ${builddir}/coverage" />
+            <arg value="--coverage-clover" />
+            <arg value="${logsdir}/clover.xml" />
+            <arg value="--log-junit" />
+            <arg value="${logsdir}/junit.xml" />
+            <arg value="${phpunit.testsuite.class}" />
+            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
+        </exec>
+    </target>
+    
+    <!--
+        Validates that the project code is compatible with the project's coding
+        conventions.
+    -->
+    <target name="-verify:checkstyle">
+        <exec dir="${basedir}" failonerror="true" executable="phpcs">
+            <arg line="--standard=${coding.standard}" />
+            <arg line="--report=checkstyle" />
+            <arg line="--report-file=${logsdir}/checkstyle.xml" />
+            <arg line="${php.basedir.src}" />
+        </exec>
+    </target>
+
+    <target name="-verify:phpmd">
+        <exec dir="${basedir}" executable="phpmd" failonerror="false">
+            <arg line="${php.basedir.src}" />
+            <arg line="xml" />
+            <arg line="codesize,unusedcode,naming,design" />
+            <arg line="--reportfile ${logsdir}/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="-verify:pdepend">
+        <exec dir="${basedir}" executable="pdepend" failonerror="false">
+            <arg line="--summary-xml=${logsdir}/pdepend.xml" />
+            <arg line="--jdepend-xml=${logsdir}/jdepend.xml" />
+            <arg line="${php.basedir.src}" />
+        </exec>
+    </target>
+
+    <target name="-verify:phpcpd">
+        <exec dir="${basedir}" executable="phpcpd" failonerror="false">
+            <arg line="--log-pmd ${logsdir}/cpd.xml" />
+            <arg line="${php.basedir.src}" />
+        </exec>
+    </target>
+
+    <target name="-verify:phploc">
+        <exec dir="${basedir}" executable="phpcpd" failonerror="false">
+            <arg value="--count-tests" />
+            <arg value="--log-xml" />
+            <arg value="${logsdir}/phploc.xml" />
+            <arg value="--log-csv" />
+            <arg value="${logsdir}/phploc.csv" />
+            <arg value="${php.basedir.src}" />
+        </exec>
+    </target>
+    
+</project>

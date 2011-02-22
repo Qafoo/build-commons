@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ant-build-commons-compile">
+
+    <description>
+        This build file cpntains compile/lint specific targets for the project
+        source code.
+    </description>
+
+    <!--
+        Main public target of this build file.
+    -->
+    <target name="compile"
+            depends="prepare, -compile"
+            description="-> Performs a static syntax check of the project." />
+
+    <!--
+        Internal target that defines the primary workflow of this build component.
+    -->
+    <target name="-compile"
+            depends="-compile:before~hook,
+                     -compile:compile,
+                     -compile:after~hook" />
+
+    <target name="-compile:before~hook" />
+
+    <target name="-compile:after~hook" />
+
+    <target name="-compile:compile">
+        <apply executable="php" failonerror="true" output="${logsdir}/compile.log">
+            <arg value="-l" />
+            <fileset dir="${php.basedir.src}">
+                <include name="**/*.php" />
+            </fileset>
+            <fileset dir="${php.basedir.test}">
+                <include name="**/*.php" />
+                <exclude name="**/_source/**" />
+                <exclude name="**/_files/**" />
+                <exclude name="**/_code/**" />
+            </fileset>
+        </apply>
+    </target>
+</project>
