@@ -7,4 +7,4 @@ coding.standard   = PEAR
 phpunit.testsuite.class = \Your\Main\TestSuite
 phpunit.testsuite.file  = Your/Main/TestSuite.php
 
-phar.archive.bootstrap = conf/phar_bootstrap.stub
+package.phar.bootstrap.file = conf/phar_bootstrap.stub

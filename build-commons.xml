@@ -32,13 +32,15 @@
     -->
     <import file="build-commons-rcs.xml" />
     <import file="build-commons-pear.xml" />
+    <import file="verify.xml" />
 
     <!--
         Some common settings for all project.
     -->
     <property name="builddir" location="${basedir}/../build" />
     <property name="distdir" location="${builddir}/dist" />
-    <property name="scriptdir" location="${basedir}/setup/scripts" />
+    <property name="logsdir" location="${builddir}/logs" />
+    <property name="scriptdir" location="${common-ant-targets.basedir}/scripts" />
     <property name="tmpdir" location="${builddir}/tmp" />
 
     <!--
@@ -47,7 +49,7 @@
     <tstamp>
         <format property="build.date" pattern="yyyy-MM-dd" />
     </tstamp>
-
+<!--
     <target name="dist-continuous-integration" 
             depends="init-continuous-integration-properties, dist"
             description="Continuous integration distribution build" />
@@ -58,18 +60,14 @@
         <property name="build.version" value="${project.version}build${build.number}" />
         <property name="build.name" value="${project.name}" />
         <property name="build.file" value="${build.name}-${build.version}" />
-
-        <property name="phar.archive.bootstrap" value="" />
     </target>
-
-    <target name="dist" depends="build,pack,tag" description="Default distribution build" />
+-->
+    <target name="dist" depends="build,package,tag" description="-> Default distribution build" />
 
     <target name="init-properties" unless="build.version">
         <property name="build.version" value="${project.version}" />
         <property name="build.name" value="${project.name}" />
         <property name="build.file" value="${build.name}-${build.version}" />
-
-        <property name="phar.archive.bootstrap" value="" />
     </target>
 
     <target name="clean">
@@ -84,392 +82,9 @@
         <mkdir dir="${builddir}" />
         <mkdir dir="${tmpdir}" />
         <mkdir dir="${distdir}" />
-        <mkdir dir="${builddir}/logs" />
+        <mkdir dir="${logsdir}" />
         <mkdir dir="${builddir}/phpcb" />
         <mkdir dir="${builddir}/coverage" />
-    </target>
-
-    <!--
-        Tests several aspects of the project.
-
-        - Unit Tests
-        - Other Tests
-        - Static code analysis
-        - Lint checks
-    -->
-    <target name="test" depends="test-static, test-dynamic" />
-
-    <target name="test-static" depends="prepare">
-        <parallel>
-            <antcall target="lint" />
-            <antcall target="checkstyle" />
-            <antcall target="phpmd" />
-            <antcall target="pdepend" />
-            <antcall target="phpcpd" />
-        </parallel>
-    </target>
-
-    <target name="test-dynamic" depends="prepare, test-all, test-unit" />
-
-    <!--
-        Performance syntax error checks on the project sources.
-    -->
-    <target name="lint">
-        <apply executable="php" failonerror="true">
-            <arg value="-l" />
-            <fileset dir="${php.basedir.src}">
-                <include name="**/*.php" />
-            </fileset>
-            <fileset dir="${php.basedir.test}">
-                <include name="**/*.php" />
-                <exclude name="**/_source/**" />
-                <exclude name="**/_files/**" />
-                <exclude name="**/_code/**" />
-            </fileset>
-        </apply>
-    </target>
-
-    <target name="phpmd">
-        <exec dir="${basedir}" executable="phpmd" failonerror="false">
-            <arg line="${php.basedir.src}" />
-            <arg line="xml" />
-            <arg line="codesize,unusedcode,naming,design" />
-            <arg line="--reportfile ${builddir}/logs/pmd.xml" />
-        </exec>
-    </target>
-
-    <target name="pdepend">
-        <exec dir="${basedir}" executable="pdepend" failonerror="false">
-            <arg line="--summary-xml=${builddir}/logs/pdepend.xml" />
-            <arg line="--jdepend-xml=${builddir}/logs/jdepend.xml" />
-            <arg line="${php.basedir.src}" />
-        </exec>
-    </target>
-
-    <target name="phpcpd">
-        <exec dir="${basedir}" executable="phpcpd" failonerror="false">
-            <arg line="--log-pmd ${builddir}/logs/cpd.xml" />
-            <arg line="${php.basedir.src}" />
-        </exec>
-    </target>
-
-    <!--
-        Executes all tests for a project, includes unit, functional, integration
-        or compatibility tests. 
-    -->
-    <target name="test-all">
-        <exec dir="${basedir}" failonerror="true" executable="phpunit">
-            <arg line="${phpunit.testsuite.class}" />
-            <arg line="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
-    </target>
-
-    <!--
-        Executes all unittests for a project and collects the coverage data for
-        the project sources.
-    -->
-    <target name="test-unit">
-        <exec dir="${basedir}" failonerror="true" executable="phpunit">
-            <arg line="--group unittest" />
-            <arg line="--coverage-html   ${builddir}/coverage" />
-            <arg line="--coverage-clover ${builddir}/logs/clover.xml" />
-            <arg line="--log-junit       ${builddir}/logs/junit.xml" />
-            <arg line="${phpunit.testsuite.class}" />
-            <arg line="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
-    </target>
-
-    <!--
-        Validates that the project code is compatible with the project's coding
-        conventions.
-    -->
-    <target name="checkstyle">
-        <exec dir="${basedir}" failonerror="true" executable="phpcs">
-            <arg line="--standard=${coding.standard}" />
-            <arg line="--report=checkstyle" />
-            <arg line="--report-file=${builddir}/logs/checkstyle.xml" />
-            <arg line="${php.basedir.src}" />
-        </exec>
-    </target>
-
-    <!--
-        Creates different binary releases of the current project.
-    -->
-    <target name="pack" depends="pack-phar-archive,pack-pear-archive,pack-tar-archive" />
-
-    <!--
-        Creates a phar archive of the project source
-    -->
-    <target name="pack-phar-archive" depends="prepare,copy-files-for-phar-archive">
-        <property name="phar.archive.filename" value="${distdir}/${build.file}.phar" />
-
-        <antcall target="~pack-phar-archive-before">
-            <param name="phar.archive.filename" value="${phar.archive.filename}" />
-        </antcall>
-
-        <exec dir="${basedir}" executable="${scriptdir}/create.phar.php">
-            <arg line="${project.name}" />
-            <arg line="${phar.archive.filename}" />
-            <arg line="${builddir}/phar-archive" />
-            <arg line="${phar.archive.bootstrap}" />
-        </exec>
-
-        <chmod file="${phar.archive.filename}" perm="755" />
-
-        <antcall target="~pack-phar-archive-after">
-            <param name="phar.archive.filename" value="${phar.archive.filename}" />
-        </antcall>
-    </target>
-
-    <!--
-        Hook target that will be called before the phar archive will be created.
-
-        Parameters:
-            ${phar.archive.filename}  Name of the phar file to create.
-    -->
-    <target name="~pack-phar-archive-before" />
-
-    <!--
-        Hook target that will be called after the phar archive was created.
-
-        Parameters:
-            ${phar.archive.filename}  Name of the created phar file.
-    -->
-    <target name="~pack-phar-archive-after" />
-
-    <!--
-        Copies all files for the project's phar archive.
-    -->
-    <target name="copy-files-for-phar-archive">
-        <copy todir="${builddir}/phar-archive">
-            <fileset dir="${php.basedir.src}" />
-            <filterchain>
-                <replacestring from="@package_version@" to="${project.version}" />
-            </filterchain>
-        </copy>
-
-        <antcall target="copy-library-dir-if-exists">
-            <param name="output.dir" value="${builddir}/phar-archive" />
-        </antcall>
-
-        <antcall target="do-copy-files-for-xyz-archive">
-            <param name="output.dir" value="${builddir}/phar-archive" />
-        </antcall>
-    </target>
-
-    <!--
-        Creates a pear archive of the project source
-    -->
-    <target name="pack-pear-archive"
-            description="Creates a PEAR archive with the project's source code."
-            depends="prepare,
-                     copy-files-for-pear-archive,
-                     -common-pear-prepare">
-        <antcall target="~pack-pear-archive-before" />
-
-        <antcall target="common-pear-channel-discover" />
-
-        <exec dir="${distdir}" executable="pear" failonerror="true">
-            <arg line="-c" />
-            <arg line="${common-pear-config}" />
-            <arg line="package" />
-            <arg line="${builddir}/pear-archive/package.xml" />
-        </exec>
-
-        <antcall target="~pack-pear-archive-after" />
-    </target>
-
-    <!--
-        Empty hook target that will be called before the pear archive will be build.
-    -->
-    <target name="~pack-pear-archive-before" />
-
-    <!--
-        Empty hook target that will be called after the pear archive was build.
-    -->
-    <target name="~pack-pear-archive-after" />
-
-    <!--
-        Copies all files for the project's pear archive.
-    -->
-    <target name="copy-files-for-pear-archive">
-        <copy todir="${builddir}/pear-archive/${project.dir}">
-            <fileset dir="${php.basedir.src}"/>
-            <fileset dir="${basedir}">
-                <include name="**.sh" />
-                <include name="**.php" />
-                <include name="**.bat" />
-            </fileset>
-        </copy>
-
-        <antcall target="copy-docs-dir-if-exists">
-            <param name="output.dir" value="${builddir}/pear-archive" />
-        </antcall>
-
-        <copy file="${basedir}/LICENSE" todir="${builddir}/pear-archive" />
-        <copy file="${basedir}/CHANGELOG" todir="${builddir}/pear-archive" />
-
-        <copy file="${basedir}/package.xml" tofile="${builddir}/pear-archive/package.xml">
-            <filterchain>
-                <replacestring from="${project.name}" to="${build.name}" />
-                <replacestring from='name="source"' to='name="${project.name}"' />
-                <replacestring from="1970-01-01" to="${build.date}" />
-                <replacestring from="0.0.0" to="${build.version}" />
-                <replacestring from="devel" to="${project.stability}" />
-            </filterchain>
-        </copy>
-
-        <antcall target="do-copy-files-for-xyz-archive">
-            <param name="output.dir" value="${builddir}/pear-archive" />
-        </antcall>
-    </target>
-
-    <!--
-        Creates a tar.bz2 archive of the project source
-    -->
-    <target name="pack-tar-archive" depends="prepare,copy-files-for-tar-archive">
-        <tar basedir="${builddir}/tar-archive"
-             destfile="${distdir}/${build.file}.tar.bz2"
-             compression="bzip2"
-             longfile="gnu">
-
-            <include name="${build.file}/**" />
-        </tar>
-    </target>
-
-    <!--
-        Copies all files for the project's tar archive.
-    -->
-    <target name="copy-files-for-tar-archive">
-        <property name="output.dir" value="${builddir}/tar-archive/${build.file}" />
-        
-        <copy todir="${output.dir}/source">
-            <fileset dir="${php.basedir.src}"/>
-            <filterchain>
-                <replacestring from="@package_version@" to="${project.version}" />
-            </filterchain>
-        </copy>
-
-        <antcall target="copy-optional-dirs">
-            <param name="output.dir" value="${output.dir}" />
-        </antcall>
-
-        <copy file="${basedir}/LICENSE" todir="${output.dir}" />
-        <copy file="${basedir}/CHANGELOG" todir="${output.dir}" />
-
-        <antcall target="do-copy-files-for-xyz-archive">
-            <param name="output.dir" value="${output.dir}" />
-        </antcall>
-    </target>
-
-    <!--
-        Hook method for copying files for the project's xyz archive format.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-    -->
-    <target name="do-copy-files-for-xyz-archive">
-        <!-- Implement this target in the concrete project build.xml -->
-    </target>
-
-    <!--
-        Copies several optional directories into the output dir.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-    -->
-    <target name="copy-optional-dirs" depends="copy-library-dir-if-exists,copy-docs-dir-if-exists" />
-
-    <!--
-        Optionally copies a library directory into a temporary build tree.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-    -->
-    <target name="copy-library-dir-if-exists" depends="test-library-dir-exists,copy-library-dir" />
-
-    <!--
-        Checks if the current project contains a library folder with external
-        dependencies.
-    -->
-    <target name="test-library-dir-exists">
-        <available file="${basedir}/lib" property="library-dir-exists" />
-    </target>
-
-    <!--
-        Copies the library directory of the current project into a temporary
-        build source tree.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-    -->
-    <target name="copy-library-dir" if="library-dir-exists">
-        <property name="library.dir" value="${output.dir}/lib" />
-
-        <antcall target="~copy-library-dir-before">
-            <param name="output.dir" value="${output.dir}" />
-            <param name="library.dir" value="${library.dir}" /> 
-        </antcall>
-
-        <copy todir="${output.dir}/lib">
-            <fileset dir="${basedir}/lib" />
-        </copy>
-
-        <antcall target="~copy-library-dir-after">
-            <param name="output.dir" value="${output.dir}" />
-            <param name="library.dir" value="${library.dir}" />
-        </antcall>
-    </target>
-
-    <!--
-        Hook that will be called before we copy the project's library directory.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-            library.dir     The library directory in the temporary build tree.
-    -->
-    <target name="~copy-library-dir-before" />
-
-    <!--
-        Hook that will be called after we have copied the project's library
-        directory.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-            library.dir     The library directory in the temporary build tree.
-    -->
-    <target name="~copy-library-dir-after" />
-
-    <!--
-        Optionally copies a documentation directory into a temporary build
-        source tree.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-    -->
-    <target name="copy-docs-dir-if-exists" depends="test-docs-dir-exists,copy-docs-dir" />
-
-    <!--
-        Checks if the current project has a document directory.
-    -->
-    <target name="test-docs-dir-exists">
-        <available file="${basedir}/docs" property="docs-dir-exists" />
-    </target>
-
-    <!--
-        Copies the documentation directory of the current project into a
-        temporary build source tree
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-    -->
-    <target name="copy-docs-dir" if="docs-dir-exists">
-        <copy todir="${output.dir}/docs">
-            <fileset dir="${basedir}/docs" />
-            <filterchain>
-                <replacestring from="__DIR__ . '/../../source" to="'${project.name}" />
-            </filterchain>
-        </copy>
     </target>
 
     <!--
