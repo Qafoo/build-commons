@@ -236,7 +236,7 @@
             depends="-package:bin-dir-test-exists"
             if="-package:bin.dir.exists">
 
-        <copy todir="${package.builddir}">
+        <copy todir="${-package.builddir}">
             <fileset dir="${project.root}/bin">
                 <include name="**.sh" />
                 <include name="**.php" />
