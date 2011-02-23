@@ -195,7 +195,7 @@
         Defines all properties required for pear package generation.
     -->
     <target name="-package:pear:prepare-properties">
-        <property name="package.pear.builddir" location="${builddir}/pear-archive/${project.dir}" />
+        <property name="package.pear.builddir" location="${builddir}/pear-archive" />
     </target>
 
     <!--
