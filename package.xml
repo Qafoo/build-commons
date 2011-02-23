@@ -195,21 +195,20 @@
         Defines all properties required for pear package generation.
     -->
     <target name="-package:pear:prepare-properties">
-        <property name="package.pear.builddir" location="${builddir}/pear-archive" />
+        <property name="package.pear.builddir" location="${builddir}/pear-archive/${project.dir}" />
     </target>
 
     <!--
         Copies all files required to generate the project's pear package.
     -->
     <target name="-package:pear:prepare-files">
-        <copy todir="${package.pear.builddir}/${project.dir}">
+        <copy todir="${package.pear.builddir}">
             <fileset dir="${php.basedir.src}"/>
-            <fileset dir="${project.root}/bin">
-                <include name="**.sh" />
-                <include name="**.php" />
-                <include name="**.bat" />
-            </fileset>
         </copy>
+
+        <antcall target="-package:bin-dir-copy-if-exists">
+            <param name="-package.builddir" value="${package.pear.builddir}" />
+        </antcall>
 
         <antcall target="copy-docs-dir-if-exists">
             <param name="output.dir" value="${package.pear.builddir}" />
@@ -231,6 +230,23 @@
         <antcall target="do-copy-files-for-xyz-archive">
             <param name="output.dir" value="${package.pear.builddir}" />
         </antcall>
+    </target>
+
+    <target name="-package:bin-dir-copy-if-exists"
+            depends="-package:bin-dir-test-exists"
+            if="-package:bin.dir.exists">
+
+        <copy todir="${package.builddir}">
+            <fileset dir="${project.root}/bin">
+                <include name="**.sh" />
+                <include name="**.php" />
+                <include name="**.bat" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-package:bin-dir-test-exists">
+        <available file="${project.root}/bin" property="-package:bin.dir.exists" />
     </target>
 
     <!--
