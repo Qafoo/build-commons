@@ -30,7 +30,7 @@
         Discovers a pear channel specified as parameter.
 
         Parameters
-          ${pear.channel.uri}
+          ${package.pear.channel.uri}
     -->
     <target name="common-pear-channel-discover" depends="-common-pear-prepare">
         <!-- First try to delete a previous discovered channel -->
@@ -38,14 +38,14 @@
             <arg line="-c" />
             <arg line="${common-pear-config}" />
             <arg line="channel-delete" />
-            <arg line="${pear.channel.uri}" />
+            <arg line="${package.pear.channel.uri}" />
         </exec>
 
         <exec executable="pear" failonerror="true">
             <arg line="-c" />
             <arg line="${common-pear-config}" />
             <arg line="channel-discover" />
-            <arg line="${pear.channel.uri}" />
+            <arg line="${package.pear.channel.uri}" />
         </exec>
     </target>
 
@@ -73,14 +73,14 @@
           ${pear-package-pattern}
     -->
     <target name="common-pear-install-local" depends="-common-pear-prepare">
-        <apply executable="pear">
+        <apply executable="pear" failonerror="true">
             <arg line="-c" />
             <arg line="${common-pear-config}" />
             <arg line="install" />
             <arg line="--alldeps" />
             <arg line="--nobuild" />
             <fileset dir="${distdir}">
-                <include name="${pear-package-pattern}*.tgz" />
+                <include name="*-${build.version}.tgz" />
             </fileset>
         </apply>
     </target>
