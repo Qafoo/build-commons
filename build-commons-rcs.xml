@@ -203,6 +203,13 @@
             <arg line="${common.rcs.git.branch}" />
         </exec>
 
+        <exec dir="${basedir}" executable="git" failonerror="true">
+            <arg value="submodule" />
+            <arg value="foreach" />
+            <arg value="--recursive" />
+            <arg value="git pull origin master" />
+        </exec>
+
         <antcall target="~common-rcs-git-update-after" />
     </target>
 

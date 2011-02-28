@@ -170,6 +170,7 @@
             depends="-package:pear:prepare,
                      -package:pear:before~hook,
                      -package:pear:main,
+                     -package:pear:verify,
                      -package:pear:after~hook" />
     
     <!--
@@ -260,6 +261,42 @@
             <arg line="${package.pear.builddir}/package.xml" />
         </exec>
     </target>
+
+    <!--
+        Installs the currently create pear archive into a clean pear environment
+    -->
+    <target name="-package:pear:verify"
+            depends="-package:pear:verify-prepare,
+                     -package:pear:verify-before~hook,
+                     -package:pear:verify-install,
+                     -package:pear:verify-after~hook" />
+
+    <!--
+        Prepares the pear environment
+    -->
+    <target name="-package:pear:verify-prepare">
+        <property name="pear-channel-uri" value="${package.pear.channel.uri}" />
+    </target>
+
+    <!--
+        This target will install the currently generated pear archive into a
+        local pear setup.
+    -->
+    <target name="-package:pear:verify-install"
+            depends="common-pear-channel-discover,
+                     common-pear-install-local" />
+
+    <!--
+        Empty hook target that will be called before the build process will
+        install the generated pear archive in a local pear setup.
+    -->
+    <target name="-package:pear:verify-before~hook" />
+
+    <!--
+        Empty hook target that will be called by the build process when the
+        generated pear archive is installed in a local pear setup.
+    -->
+    <target name="-package:pear:verify-after~hook" />
 
 <!-- }}} PEAR SUPPORT -->
 
