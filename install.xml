@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-install" basedir=".">
+
+    <description>
+        This build file contains targets related to local installation of the
+        current project.
+    </description>
+
+    <!--
+        Declare basedir for commons install
+    -->
+    <dirname property="-install:basedir" file="${ant.file.ant-build-commons-install}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="verify.xml" />
+
+    <!--
+        Shortcut for "install"
+    -->
+    <target name="install"
+            depends="install:install"
+            description="->  Installs the project local." />
+
+    <!--
+        Main target of this build file. Installs the fresh build project in
+        a local repository.
+    -->
+    <target name="install:install"
+            depends="verify,
+                     -install:before~hook,
+                     -install:install,
+                     -install:after~hook" />
+
+    <!--
+        Private target that performs a local installation of the fresh project
+        build.
+    -->
+    <target name="-install:install" />
+
+    <!--
+        Hook target that will be called during the build process, just before
+        the main install target starts.
+    -->
+    <target name="-install:before~hook" />
+
+    <!--
+        Hook target that will be called during the build process, when the main
+        install target has finished.
+    -->
+    <target name="-install:after~hook" />
+
+</project>

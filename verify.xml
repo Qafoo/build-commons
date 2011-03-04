@@ -17,11 +17,18 @@
     <import file="integration-test.xml" />
 
     <!--
-        Verifies that the source is valid and meets quality criterias.
+        Shortcut for "verify:verify"
     -->
     <target name="verify"
-            depends="integration-test, -verify"
-            description="-> Verifies that the source is valid and meets quality criterias." />
+            depends="verify:verify"
+            description="->  Verifies that the source is valid and meets quality criterias." />
+
+    <!--
+        Main target of this build file. Verifies that the source is valid and
+        meets quality criterias.
+    -->
+    <target name="verify:verify"
+            depends="integration-test, -verify" />
 
     <!--
         Internal verify implementation that defines the main workflow of the

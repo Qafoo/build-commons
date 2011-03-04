@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-clean" basedir=".">
+
+    <description>
+        This build file contains housekeeping targets for the project.
+    </description>
+
+    <!--
+        Declare basedir for commons clean
+    -->
+    <dirname property="-clean:basedir" file="${ant.file.ant-build-commons-clean}" />
+
+    <!--
+        Shortcut for "clean:clean"
+    -->
+    <target name="clean"
+            depends="clean:clean"
+            description="->  Removes all temporary artifacts from previous builds" />
+
+    <!--
+        Main target of this build file. It will remove all temporary project
+        artifacts from previous builds.
+    -->
+    <target name="clean:clean"
+            depends="-clean:before~hook,
+                     -clean:clean,
+                     -clean:after~hook" />
+
+    <!--
+        Private main target that will remove all old build artifacts.
+    -->
+    <target name="-clean:clean">
+        <delete dir="${builddir}" includeemptydirs="true" />
+    </target>
+
+    <!--
+        Hook target that will be called during the build process, just before
+        the clean target starts.
+    -->
+    <target name="-clean:before~hook" />
+
+    <!--
+        Hook target that will be called during the build process, when the clean
+        target has finished.
+    -->
+    <target name="-clean:after~hook" />
+
+</project>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant--build-commons-validate" basedir=".">
+
+    <!--
+        Shortcut for "validate:validate"
+    -->
+    <target name="validate"
+            depends="validate:validate"
+            description="->  Validates the project configuration." />
+
+    <!--
+        Main target of this build file.
+    -->
+    <target name="validate:validate"
+            depends="-validate:before~hook,
+                     -validate:validate,
+                     -validate:after~hook" />
+
+    <target name="-validate:before~hook" />
+
+    <target name="-validate:after~hook" />
+
+    <target name="-validate:validate" />
+    
+</project>

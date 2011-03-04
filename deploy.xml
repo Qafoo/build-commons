@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-deploy" basedir=".">
+
+    <description>
+        This build file contains all those targets that are related to the
+        project's deploy process.
+    </description>
+
+    <!--
+        Declare basedir for commons deploy
+    -->
+    <dirname property="-deploy:basedir" file="${ant.file.ant-build-commons-deploy}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="install.xml" />
+
+    <!--
+        Shortcut for "deploy:deploy"
+    -->
+    <target name="deploy"
+            depends="deploy:deploy"
+            description="->  Starts a remote deployment of the project build" />
+
+    <!--
+        Main target of this build file. Executes a remote deployment of a fresh
+        project build.
+    -->
+    <target name="deploy:deploy"
+            depends="install,
+                     -deploy:before~hook,
+                     -deploy:deploy,
+                     -deploy:after~hook" />
+
+    <!--
+        Private target that executes remote deployment.
+    -->
+    <target name="-deploy:deploy" />
+
+    <!--
+        Hook target that will be called during the build process, just before
+        the main deploy target starts.
+    -->
+    <target name="-deploy:before~hook" />
+
+    <!--
+        Hook target that will be called during the build process, when the main
+        deploy target has finished.
+    -->
+    <target name="-deploy:after~hook" />
+
+    
+</project>

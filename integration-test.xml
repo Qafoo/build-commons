@@ -23,7 +23,7 @@
     -->
     <target name="integration-test"
             depends="package"
-            description="-> Runs all tests for the project." >
+            description="->  Runs all tests for the project." >
 
         <exec dir="${basedir}" failonerror="true" executable="phpunit">
             <arg value="--group" />

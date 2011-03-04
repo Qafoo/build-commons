@@ -21,7 +21,12 @@
     -->
     <target name="test"
             depends="compile, -test"
-            description="-> Runs the unit tests for the project." />
+            description="->  Runs the unit tests for the project." />
+
+    <!--
+        Alias for "test"
+    -->
+    <target name="test:test" depends="test" />
 
 
     <target name="-test"

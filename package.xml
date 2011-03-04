@@ -22,7 +22,7 @@
     <!--<target name="package" depends="pack-phar-archive,pack-pear-archive,pack-tar-archive" />-->
     <target name="package"
             depends="test, package:phar, package:pear, package:archive"
-            description="-> Generates distributable packages of the project." />
+            description="->  Generates distributable packages of the project." />
 
 <!-- {{{ PHAR SUPPORT -->
 
@@ -42,7 +42,7 @@
     -->
     <target name="package:phar"
             if="-package:phar:is.enabled"
-            depends="prepare, -package:phar:is-enabled">
+            depends="initialize, -package:phar:is-enabled">
 
         <antcall target="-package:phar" />
     </target>
@@ -148,7 +148,7 @@
     -->
     <target name="package:pear"
             if="-package:pear:is.enabled"
-            depends="prepare, -package:pear:is-enabled">
+            depends="initialize, -package:pear:is-enabled">
 
         <antcall target="-package:pear" />
     </target>
@@ -312,7 +312,7 @@
     -->
     <target name="package:archive"
             if="-package:archive:is.enabled"
-            depends="prepare, -package:archive:is-enabled">
+            depends="initialize, -package:archive:is-enabled">
 
         <antcall target="-package:archive" />
     </target>

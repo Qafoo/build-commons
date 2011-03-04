@@ -30,9 +30,9 @@
     <!--
         Import commons build files
     -->
-    <import file="build-commons-rcs.xml" />
     <import file="build-commons-pear.xml" />
-    <import file="verify.xml" />
+    <import file="clean.xml" />
+    <import file="deploy.xml" />
 
     <!--
         Some common settings for all project.
@@ -62,30 +62,7 @@
         <property name="build.file" value="${build.name}-${build.version}" />
     </target>
 -->
-    <target name="dist" depends="build,package,tag" description="-> Default distribution build" />
-
-    <target name="init-properties" unless="build.version">
-        <property name="build.version" value="${project.version}" />
-        <property name="build.name" value="${project.name}" />
-        <property name="build.file" value="${build.name}-${build.version}" />
-    </target>
-
-    <target name="clean">
-        <delete dir="${builddir}" includeemptydirs="true" />
-    </target>
-
-    <!--
-        Prepares some common build directories, updates the project sources and
-        initializes some build properties.
-    -->
-    <target name="prepare" depends="clean, common-rcs-update, init-properties">
-        <mkdir dir="${builddir}" />
-        <mkdir dir="${tmpdir}" />
-        <mkdir dir="${distdir}" />
-        <mkdir dir="${logsdir}" />
-        <mkdir dir="${builddir}/phpcb" />
-        <mkdir dir="${builddir}/coverage" />
-    </target>
+    <target name="dist" depends="build,package,tag" />
 
     <!--
         Automatically creates a repopositoy tag when all tests have passed.
@@ -111,7 +88,7 @@
     <!--
         Initializes some properties based on the source repository.
     -->
-    <target name="init-repository-properties" depends="prepare" if="is-svn-checkout">
+    <target name="init-repository-properties" depends="initialize" if="is-svn-checkout">
 
         <exec executable="svn" dir="${basedir}" output="${builddir}/~svn-info.xml">
             <arg line="info --xml" />

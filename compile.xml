@@ -7,11 +7,21 @@
     </description>
 
     <!--
+        Declare basedir for commons pear
+    -->
+    <dirname property="-compile:basedir" file="${ant.file.ant-build-commons-compile}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="initialize.xml" />
+
+    <!--
         Main public target of this build file.
     -->
     <target name="compile"
-            depends="prepare, -compile"
-            description="-> Performs a static syntax check of the project." />
+            depends="initialize, -compile"
+            description="->  Performs a static syntax check of the project." />
 
     <!--
         Internal target that defines the primary workflow of this build component.

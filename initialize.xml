@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-initialize" basedir=".">
+
+    <description>
+        This build file contains the initialization targets for the project
+        source code.
+    </description>
+
+    <!--
+        Declare basedir for commons pear
+    -->
+    <dirname property="-initialize:basedir" file="${ant.file.ant-build-commons-initialize}" />
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="validate.xml" />
+
+    <!--
+        Import the scm related targets.
+    -->
+    <import file="src/main/xml/exts/scm.xml" />
+
+    <!--
+        Main public target of this build file.
+    -->
+    <target name="initialize"
+            depends="initialize:initialize"
+            description="->  Initializes the project build environment." />
+
+    <!--
+        Starts the projects initialization process.
+    -->
+    <target name="initialize:initialize"
+            depends="validate:validate,
+                     -initialize:before~hook,
+                     -initialize:initialize,
+                     -initialize:after~hook" />
+
+    <!--
+        Private main target of this build file. This target triggers all sub
+        targets required to initialze the build environment. This includes
+        required directories, properties etc.
+    -->
+    <target name="-initialize:initialize"
+            depends="scm:update,
+                     -initialize:properties,
+                     -initialize:directories"/>
+
+    <!--
+        Initializes all properties required for a project build.
+    -->
+    <target name="-initialize:properties">
+        <property name="build.version" value="${project.version}" />
+        <property name="build.name" value="${project.name}" />
+        <property name="build.file" value="${build.name}-${build.version}" />
+    </target>
+
+    <!--
+        Creates all directories required for a project build.
+    -->
+    <target name="-initialize:directories">
+        <mkdir dir="${builddir}" />
+        <mkdir dir="${tmpdir}" />
+        <mkdir dir="${distdir}" />
+        <mkdir dir="${logsdir}" />
+        <mkdir dir="${builddir}/phpcb" />
+        <mkdir dir="${builddir}/coverage" />
+    </target>
+
+    <!--
+        Hook target that will be called before the initialization phase in the
+        build process starts.
+    -->
+    <target name="-initialize:before~hook" />
+
+    <!--
+        Hook target that will be called after the initialization phase in the
+        build process has finished.
+    -->
+    <target name="-initialize:after~hook" />
+
+</project>

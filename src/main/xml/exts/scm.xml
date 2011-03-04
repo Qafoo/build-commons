@@ -1,35 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    This build file contains common targets for handling revision control
-    system tasks.
+<project name="ant-build-commons-extensions-scm" basedir=".">
 
-    General markup guidelines:
-      - Targets starting with "-" are protected and should never be called
-        directly.
-      - Targets starting with "~" are hooks that can be overwritten to custom
-        functionality.
+    <description>
+        This build file contains all targets related to source control
+        management systems.
+    </description>
 
-      - Properties names containing "-" are parameters and they should be
-        supplied by using ant's <param /> tag.
-      - Properties names containing "." are global properties that are defined
-        in a *.properties file or in a build file.
--->
-<project name="common-rcs-ant-targets" basedir=".">
 
     <!--
         Declare basedir for commons pear
     -->
-    <dirname property="common-rcs-ant-targets.basedir" file="${ant.file.common-rcs-ant-targets}" />
+    <dirname property="scm-ant-targets.basedir" file="${ant.file.scm-ant-targets}" />
 
     <!--
         Import default settings
     -->
-    <property file="${common-rcs-ant-targets.basedir}/build-commons-rcs.properties" />
+    <property file="${scm-ant-targets.basedir}/build-commons-rcs.properties" />
 
     <!--
         Import the default settings
     -->
-    <property file="build.common.rcs.properties" />
+    <property file="scm.properties" />
 
     <!--
     ****************************************************************************
@@ -42,27 +33,27 @@
     <!--
         Performs a source update on the current base directory
     -->
-    <target name="common-rcs-update"
-            depends="-common-rcs-svn-update,
-                     -common-rcs-git-update" />
+    <target name="scm:update"
+            depends="-scm-svn-update,
+                     -scm-git-update" />
 
     <!--
         Sets a tag for the current project configuration.
 
         Parameters:
             ${common.rcs.tag.label}
-            ${common-rcs-tag-commit-message}
+            ${scm-tag-commit-message}
     -->
-    <target name="common-rcs-tag"
-            depends="-common-rcs-tag-commit-message,
-                     -common-rcs-tag-label,
-                     -common-rcs-svn-tag,
-                     -common-rcs-git-tag" />
+    <target name="scm-tag"
+            depends="-scm-tag-commit-message,
+                     -scm-tag-label,
+                     -scm-svn-tag,
+                     -scm-git-tag" />
 
     <!--
         Generates a default tag label, when it wasn't specified/defined earlier.
     -->
-    <target name="-common-rcs-tag-label" unless="common.rcs.tag.label">
+    <target name="-scm-tag-label" unless="common.rcs.tag.label">
         <buildnumber file="build.number" />
 
         <property name="common.rcs.tag.label"
@@ -73,8 +64,8 @@
         Generates a default commit message for a new tag, when this property
         wasn't specified/defined earlier.
     -->
-    <target name="-common-rcs-tag-commit-message"
-            depends="-common-rcs-tag-label"
+    <target name="-scm-tag-commit-message"
+            depends="-scm-tag-label"
             unless="common.rcs.tag.commit.message">
 
         <property name="common.rcs.tag.commit.message"
@@ -92,25 +83,25 @@
     <!--
         Performs an update on a subversion checkout
     -->
-    <target name="-common-rcs-svn-update" depends="-common-rcs-is-svn" if=".common.rcs.is.svn">
-        <antcall target="~common-rcs-svn-update-before" />
+    <target name="-scm-svn-update" depends="-scm-is-svn" if=".common.rcs.is.svn">
+        <antcall target="~scm-svn-update-before" />
 
         <exec dir="${basedir}" executable="svn">
             <arg line="up" />
         </exec>
 
-        <antcall target="~common-rcs-svn-update-after" />
+        <antcall target="~scm-svn-update-after" />
     </target>
 
     <!--
         Hook target that will be called before an svn update occurs.
     -->
-    <target name="~common-rcs-svn-update-before" />
+    <target name="~scm-svn-update-before" />
 
     <!--
         Hook target that will be called after an svn update has been done.
     -->
-    <target name="~common-rcs-svn-update-after" />
+    <target name="~scm-svn-update-after" />
 
     <!--
         Sets a tag for the current software configuration in the remote repository.
@@ -119,18 +110,18 @@
             ${common.rcs.tag.label}
             ${common.rcs.tag.commit.message}
     -->
-    <target name="-common-rcs-svn-tag"
-            depends="-common-rcs-is-svn,-common-rcs-svn-repository-info"
+    <target name="-scm-svn-tag"
+            depends="-scm-is-svn,-scm-svn-repository-info"
             if=".common.rcs.is.svn">
 
-        <antcall target="~common-rcs-svn-tag-before" />
+        <antcall target="~scm-svn-tag-before" />
 
         <property name="remote.branch" value="${.common.rcs.svn.branch}" />
         <property name="remote.tag" value="${.common.rcs.svn.root}/tags/${common.rcs.tag.label}" />
 
         <echo message="svn copy -m '${common.rcs.tag.commit.message}' ${remote.branch} ${remote.tag}" />
 
-        <antcall target="~common-rcs-svn-tag-after" />
+        <antcall target="~scm-svn-tag-after" />
     </target>
 
     <!--
@@ -139,7 +130,7 @@
         Parameters:
             ${common.rcs.tag.label}
     -->
-    <target name="~common-rcs-svn-tag-before" />
+    <target name="~scm-svn-tag-before" />
 
     <!--
         Hook target that will be called after the project source was tagged.
@@ -147,12 +138,12 @@
         Parameters:
             ${common.rcs.tag.label}
     -->
-    <target name="~common-rcs-svn-tag-after" />
+    <target name="~scm-svn-tag-after" />
 
     <!--
         Checks if the current project is a subversion checkout.
     -->
-    <target name="-common-rcs-is-svn">
+    <target name="-scm-is-svn">
         <available file="${basedir}/.svn" property=".common.rcs.is.svn" />
     </target>
 
@@ -166,7 +157,7 @@
             ${.common.rcs.svn.root}    The repository root location, for example:
                                        http://svn.example.com
     -->
-    <target name="-common-rcs-svn-repository-info" unless=".common.rcs.svn.info.branch">
+    <target name="-scm-svn-repository-info" unless=".common.rcs.svn.info.branch">
         <tempfile prefix="~" suffix=".xml" property=".common.svn.info.tmp" />
 
         <echo message="Writing svn info to: ${.common.svn.info.tmp}" level="verbose" />
@@ -194,13 +185,13 @@
     <!--
         Performs an update on a git checkout
     -->
-    <target name="-common-rcs-git-update" depends="-common-rcs-is-git" if=".common.rcs.is.git">
-        <antcall target="~common-rcs-git-update-before" />
+    <target name="-scm-git-update" depends="-scm-is-git" if=".common.rcs.is.git">
+        <antcall target="~scm-git-update-before" />
 
         <exec dir="${basedir}" executable="git">
             <arg line="pull" />
-            <arg line="${common.rcs.git.remote}" />
-            <arg line="${common.rcs.git.branch}" />
+            <arg line="${scm.git.remote}" />
+            <arg line="${scm.git.branch}" />
         </exec>
 
         <exec dir="${basedir}" executable="git" failonerror="true">
@@ -210,18 +201,18 @@
             <arg value="git pull origin master" />
         </exec>
 
-        <antcall target="~common-rcs-git-update-after" />
+        <antcall target="~scm-git-update-after" />
     </target>
 
     <!--
         Hook target that will be called before an git pull occurs.
     -->
-    <target name="~common-rcs-git-update-before" />
+    <target name="~scm-git-update-before" />
 
     <!--
         Hook target that will be called after an git pull has been done.
     -->
-    <target name="~common-rcs-git-update-after" />
+    <target name="~scm-git-update-after" />
 
     <!--
         Sets a tag for the current software configuration and pushes it to the
@@ -229,10 +220,10 @@
 
         Parameters:
             ${common.rcs.tag.label}
-            ${common-rcs-tag-commit-message}
+            ${scm-tag-commit-message}
     -->
-    <target name="-common-rcs-git-tag" depends="-common-rcs-is-git" if=".common.rcs.is.git">
-        <antcall target="~common-rcs-git-tag-before" />
+    <target name="-scm-git-tag" depends="-scm-is-git" if=".common.rcs.is.git">
+        <antcall target="~scm-git-tag-before" />
 
         <exec dir="${basedir}" executable="git">
             <arg line="tag" />
@@ -243,11 +234,11 @@
 
         <exec dir="${basedir}" executable="git">
             <arg line="push" />
-            <arg line="${common.rcs.git.remote}" />
+            <arg line="${scm.git.remote}" />
             <arg line="--tags" />
         </exec>
 
-        <antcall target="~common-rcs-git-tag-after" />
+        <antcall target="~scm-git-tag-after" />
     </target>
 
     <!--
@@ -256,7 +247,7 @@
         Parameters:
             ${common.rcs.tag.label}
     -->
-    <target name="~common-rcs-git-tag-before" />
+    <target name="~scm-git-tag-before" />
 
     <!--
         Hook target that will be called after the project source was tagged.
@@ -264,13 +255,13 @@
         Parameters:
             ${common.rcs.tag.label}
     -->
-    <target name="~common-rcs-git-tag-after" />
+    <target name="~scm-git-tag-after" />
 
     <!--
         Checks if the current project is a git checkout.
     -->
-    <target name="-common-rcs-is-git">
+    <target name="-scm-is-git">
         <available file="${basedir}/.git" property=".common.rcs.is.git" />
     </target>
-
+    
 </project>
