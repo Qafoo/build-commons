@@ -15,7 +15,7 @@
     <!--
         Import default settings
     -->
-    <property file="${scm-ant-targets.basedir}/build-commons-rcs.properties" />
+    <property file="${scm-ant-targets.basedir}/scm.properties" />
 
     <!--
         Import the default settings

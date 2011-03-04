@@ -19,7 +19,7 @@
     <!--
         Import the scm related targets.
     -->
-    <import file="src/main/xml/exts/scm.xml" />
+    <import file="exts/scm.xml" />
 
     <!--
         Main public target of this build file.

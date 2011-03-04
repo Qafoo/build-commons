@@ -30,9 +30,9 @@
     <!--
         Import commons build files
     -->
-    <import file="build-commons-pear.xml" />
-    <import file="clean.xml" />
-    <import file="deploy.xml" />
+    <import file="src/main/xml/exts/pear.xml" />
+    <import file="src/main/xml/clean.xml" />
+    <import file="src/main/xml/deploy.xml" />
 
     <!--
         Some common settings for all project.
