@@ -14,12 +14,12 @@
       - Properties names containing "." are global properties that are defined
         in a *.properties file or in a build file.
 -->
-<project name="common-pear-ant-targets" basedir=".">
+<project name="ant-build-commons-extensions-pear" basedir=".">
     
     <!--
         Declare basedir for commons pear
     -->
-    <dirname property="common-pear-ant-targets.basedir" file="${ant.file.common-pear-ant-targets}" />
+    <dirname property="common-pear-ant-targets.basedir" file="${ant.file.ant-build-commons-extensions-pear}" />
 
     <!--
         Import default settings

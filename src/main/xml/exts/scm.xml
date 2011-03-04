@@ -10,12 +10,12 @@
     <!--
         Declare basedir for commons pear
     -->
-    <dirname property="scm-ant-targets.basedir" file="${ant.file.scm-ant-targets}" />
+    <dirname property="scm-ant-targets.basedir" file="${ant.file.ant-build-commons-extensions-scm}" />
 
     <!--
         Import default settings
     -->
-    <property file="${scm-ant-targets.basedir}/scm.properties" />
+    <property file="${scm-ant-targets.basedir}/build-commons-rcs.properties" />
 
     <!--
         Import the default settings
