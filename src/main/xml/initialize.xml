@@ -21,6 +21,10 @@
     -->
     <import file="exts/scm.xml" />
 
+    <tstamp>
+
+    </tstamp>
+
     <!--
         Main public target of this build file.
     -->
@@ -50,10 +54,27 @@
     <!--
         Initializes all properties required for a project build.
     -->
-    <target name="-initialize:properties">
+    <target name="-initialize:properties" depends="-initialize:properties-snapshot">
         <property name="build.version" value="${project.version}" />
+
+        <property name="build.version.api" value="${project.version}" />
+        <property name="build.version.release" value="${project.version}" />
+
+        <property name="build.stability.api" value="${project.stability}" />
+        <property name="build.stability.release" value="${project.stability}" />
+
         <property name="build.name" value="${project.name}" />
-        <property name="build.file" value="${build.name}-${build.version}" />
+        <property name="build.file" value="${build.name}-${build.version.release}" />
+    </target>
+
+    <!--
+        This target will set some build properties with snapshot related values
+        so that they are not set within the regular "-initialize:properties"
+        target.
+    -->
+    <target name="-initialize:properties-snapshot" unless="release">
+        <property name="build.version.release" value="${project.version}snapshot${DSTAMP}${TSTAMP}" />
+        <property name="build.stability.release" value="snapshot" />
     </target>
 
     <!--

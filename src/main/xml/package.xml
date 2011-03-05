@@ -17,12 +17,30 @@
     <import file="test.xml" />
 
     <!--
-        Creates different binary releases of the current project.
+        Shortcut for target "package:package"
     -->
-    <!--<target name="package" depends="pack-phar-archive,pack-pear-archive,pack-tar-archive" />-->
     <target name="package"
-            depends="test, package:phar, package:pear, package:archive"
+            depends="package:package"
             description="->  Generates distributable packages of the project." />
+
+    <!--
+        Creates different binaries of the current project.
+    -->
+    <target name="package:package"
+            depends="test, package:phar, package:pear, package:archive" />
+
+    <!--
+        Creates different release binaries of the current project.
+    -->
+    <target name="package:release"
+            depends="-package:release-activate, package:package" />
+
+    <!--
+        Sets the release property to true.
+    -->
+    <target name="-package:release-activate">
+        <property name="release" value="true" />
+    </target>
 
 <!-- {{{ PHAR SUPPORT -->
 
@@ -222,9 +240,13 @@
             <filterchain>
                 <replacestring from="${project.name}" to="${build.name}" />
                 <replacestring from='name="source"' to='name="${project.name}"' />
-                <replacestring from="1970-01-01" to="${build.date}" />
-                <replacestring from="0.0.0" to="${build.version}" />
-                <replacestring from="devel" to="${project.stability}" />
+                <replacestring from="@date_release@" to="${build.date}" />
+
+                <replacestring from="@version_api@" to="${build.version.api}" />
+                <replacestring from="@version_release@" to="${build.version.release}" />
+
+                <replacestring from="@stability_api@" to="${build.stability.api}" />
+                <replacestring from="@stability_release@" to="${build.stability.release}" />
             </filterchain>
         </copy>
 
