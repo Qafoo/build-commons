@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-pirum" basedir=".">
+
+    <description>
+        This build file contains all targets related to the pirum pear channel
+        server.
+    </description>
+
+    <!--
+        Declare basedir for pirum build file
+    -->
+    <dirname property="ant-build-commons-extensions-pirum.basedir" file="${ant.file.ant-build-commons-extensions-pirum}" />
+
+    <!--
+        Import default settings
+    -->
+    <property file="${ant-build-commons-extensions-pirum.basedir}/pirum.properties" />
+
+    <!--
+        Import required extensions
+    -->
+    <import file="pear.xml" />
+    <import file="remote.xml" />
+
+    <!--
+        Shortcut for "pirum:deploy"
+    -->
+    <target name="pirum"
+            depends="pirum:deploy" />
+
+    <target name="pirum:deploy" if="-pear:enabled" depends="-pear:is-enabled">
+        <antcall target="-pirum:deploy" />
+    </target>
+
+    <target name="-pirum:deploy"
+            depends="-pirum:deploy-before~hook,
+                     -pirum:copy-archive,
+                     -pirum:add-archive,
+                     -pirum:remove-archive,
+                     -pirum:deploy-after~hook" />
+
+    <target name="-pirum:deploy-before~hook" />
+
+    <target name="-pirum:deploy-after~hook" />
+
+    <target name="-pirum:copy-archive"
+            depends="-pirum:define-archive-path">
+        
+        <antcall target="remote:copy">
+            <param name="remote:copy.from" value="${pirum.archive.path}" />
+            <param name="remote:copy.to" value="${pirum.temp}" />
+        </antcall>
+    </target>
+
+    <target name="-pirum:add-archive"
+            depends="-pirum:define-archive-file">
+
+        <antcall target="remote:execute">
+            <param name="remote:execute-command"
+                   value="pirum add ${pirum.root} ${pirum.temp}/${pirum.archive.file}" />
+        </antcall>
+    </target>
+
+    <target name="-pirum:remove-archive"
+            depends="-pirum:define-archive-file">
+
+        <antcall target="remote:execute">
+            <param name="remote:execute-command"
+                   value="rm ${pirum.temp}/${pirum.archive.file}" />
+        </antcall>
+    </target>
+
+    <!--
+        Defines a property with the absolute path that points to the generated
+        PEAR archive.
+
+        Defines:
+            ${pirum.archive.path} - Absolute path to the PEAR archive.
+    -->
+    <target name="-pirum:define-archive-path">
+        <fail message="The directory '${distdir}' does not exist.">
+            <condition>
+                <not>
+                    <available file="${distdir}" />
+                </not>
+            </condition>
+        </fail>
+
+        <fileset dir="${distdir}" id="tgz.files">
+            <include name="*.tgz"/>
+        </fileset>
+
+        <pathconvert pathsep="," property="pirum.archive.path" refid="tgz.files"/>
+
+        <fail message="Cannot locate PEAR archive">
+            <condition>
+                <or>
+                    <not>
+                        <available file="${pirum.archive.path}" />
+                    </not>
+                    <equals arg1="${pirum.archive.path}" arg2="" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!--
+        This target defines a property with the basename of the generated
+        PEAR archive.
+
+        Defines:
+            ${pirum.archive.file} - The basename of the generated PEAR archive
+    -->
+    <target name="-pirum:define-archive-file" depends="-pirum:define-archive-path">
+        <basename property="pirum.archive.file" file="${pirum.archive.path}" />
+    </target>
+    
+</project>

@@ -157,27 +157,13 @@
 <!-- {{{ PEAR SUPPORT -->
 
     <!--
-        Enable pear package format by default
-    -->
-    <property name="package.pear.enabled" value="true" />
-
-    <!--
         Creates a pear package of the project source
     -->
     <target name="package:pear"
-            if="-package:pear:is.enabled"
-            depends="initialize, -package:pear:is-enabled">
+            if="-pear:enabled"
+            depends="initialize, -pear:is-enabled">
 
         <antcall target="-package:pear" />
-    </target>
-
-    <!--
-        Tests if the pear package format is enabled for this project.
-    -->
-    <target name="-package:pear:is-enabled">
-        <condition property="-package:pear:is.enabled">
-            <istrue value="${package.pear.enabled}" />
-        </condition>
     </target>
 
     <!--
@@ -296,9 +282,7 @@
     <!--
         Prepares the pear environment
     -->
-    <target name="-package:pear:verify-prepare">
-        <property name="pear-channel-uri" value="${package.pear.channel.uri}" />
-    </target>
+    <target name="-package:pear:verify-prepare" />
 
     <!--
         This target will install the currently generated pear archive into a

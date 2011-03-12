@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-remote">
+
+    <description>
+        This build file contains Ant targets that can be used to copy transfer
+        files to remote machines and to execute commands on remote machines.
+    </description>
+
+    <!--
+        Declare basedir for the remote build file
+    -->
+    <dirname property="ant-build-commons-extensions-remote.basedir" file="${ant.file.ant-build-commons-extensions-remote}" />
+
+    <!--
+        Import default settings
+    -->
+    <property file="${ant-build-commons-extensions-remote.basedir}/remote.properties" />
+
+    <!--
+        Executes a command on the remote machine
+
+        Parameters:
+            ${remote:execute-command} - The raw command line argument
+    -->
+    <target name="remote:execute"
+            depends="-remote:execute" />
+
+    <!--
+        Copies a build artifact to a configured remote machine.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.
+    -->
+    <target name="remote:copy"
+            depends="-remote:copy" />
+
+    <!--
+        Copies a build artifact to a configured remote machine.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.    
+    -->
+    <target name="-remote:execute"
+            depends="-remote:execute-before~hook,
+                     -remote:shell:execute,
+                     -remote:execute-after~hook" />
+
+    <!--
+        Hook target that will be called before a remote command will be executed.
+
+        Parameters:
+            ${remote:execute-command} - The raw command line argument
+    -->
+    <target name="-remote:execute-before~hook" />
+
+    <!--
+        Hook target that will be called after a remote command has been executed.
+
+        Parameters:
+            ${remote:execute-command} - The raw command line argument
+    -->
+    <target name="-remote:execute-after~hook" />
+
+    <!--
+        Executes a command on the remote machine and uses therefore the cli ssh
+        command.
+
+        Parameters:
+            ${remote:execute-command} - The raw command line argument
+    -->
+    <target name="-remote:shell:execute"
+            depends="-remote:shell:is-enabled"
+            if="-remote:shell:enabled">
+
+        <echo message="ssh ${remote.shell.credentials} '${remote:execute-command}'" />
+        <exec executable="ssh" failonerror="true">
+            <arg value="${remote.shell.credentials}" />
+            <arg line="'${remote:execute-command}'" />
+        </exec>
+    </target>
+
+    <!--
+        Copies a build artifact to a configured remote machine.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.
+    -->
+    <target name="-remote:copy"
+            depends="-remote:copy-before~hook,
+                     -remote:shell:copy,
+                     -remote:copy-after~hook" />
+
+    <!--
+        Hook target that will be called before the copy operation starts.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.
+    -->
+    <target name="-remote:copy-before~hook" />
+
+    <!--
+        Hook target that will be called after the copy operation has finished.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.
+    -->
+    <target name="-remote:copy-after~hook" />
+
+    <!--
+        Copies a build artifact to a configured remote machine. This target uses
+        therefore the scp cli command.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.
+    -->
+    <target name="-remote:shell:copy"
+            depends="-remote:shell:is-enabled"
+            if="-remote:shell:enabled">
+
+        <exec executable="scp" failonerror="true">
+            <arg value="${remote:copy.from}" />
+            <arg value="${remote.shell.credentials}:${remote:copy.to}" />
+        </exec>
+        <echo message="scp ${remote:copy.source} ${remote.shell.credentials}:${remote:copy.target}" />
+    </target>
+
+    <!--
+        Tests if the required remote shell credentials are configured.
+
+        Defines:
+            ${-remote:shell:enabled} - Will be set when ${remote.shell.credentials} isset.
+    -->
+    <target name="-remote:shell:is-enabled">
+        <condition property="-remote:shell:enabled">
+            <isset property="remote.shell.credentials" />
+        </condition>
+    </target>
+    
+</project>

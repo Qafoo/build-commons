@@ -17,6 +17,11 @@
     <import file="install.xml" />
 
     <!--
+        Import deployment related extensions
+    -->
+    <import file="exts/pirum.xml" />
+
+    <!--
         Shortcut for "deploy:deploy"
     -->
     <target name="deploy"
@@ -36,7 +41,8 @@
     <!--
         Private target that executes remote deployment.
     -->
-    <target name="-deploy:deploy" />
+    <target name="-deploy:deploy"
+            depends="-pirum:deploy" />
 
     <!--
         Hook target that will be called during the build process, just before

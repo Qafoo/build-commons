@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-base">
+
+    <!--
+        Declare basedir for commons
+    -->
+    <dirname property="-ant-build-commons-base.basedir" file="${ant.file.ant-build-commons-base}" />
+
+    <!--
+        Some common settings for all project.
+    -->
+    <property name="builddir" location="${basedir}/../build" />
+    <property name="distdir" location="${builddir}/dist" />
+    <property name="logsdir" location="${builddir}/logs" />
+    <property name="scriptdir" location="${-ant-build-commons-base.basedir}/../../../scripts" />
+    <property name="resourcedir" location="${-ant-build-commons-base.basedir}/../resources" />
+    <property name="tmpdir" location="${builddir}/tmp" />
+
+    <!--
+        Import default properties. You should customize this properties in your
+        own build environment.
+    -->
+    <property file="${resourcedir}/base.properties" />
+
+    <!--
+        Import commons build files
+    -->
+    <import file="exts/pear.xml" />
+    <import file="clean.xml" />
+    <import file="deploy.xml" />
+
+    <!--
+        Common build variables
+    -->
+    <tstamp>
+        <format property="build.date" pattern="yyyy-MM-dd" />
+    </tstamp>
+
+    <!--
+        Automatically creates a repopositoy tag when all tests have passed.
+    -->
+    <target name="tag" depends="test-is-svn-checkout,tag-if-project-is-svn-checkout" />
+
+    <target name="test-is-svn-checkout">
+        <available file="${basedir}/.svn" property="is-svn-checkout" />
+    </target>
+
+    <target name="tag-if-project-is-svn-checkout" depends="init-repository-properties" if="is-svn-checkout">
+        <property name="tag.repo" value="${repository}/tags" />
+        <property name="tag.name" value="${build.name}-${build.version}" />
+
+        <property name="tag.msg" value="# Auto created tag '${build.version}' after successful build." />
+
+        <echo message="svn copy . ${tag.repo}/${tag.name}" />
+        <exec dir="${basedir}" executable="svn">
+            <arg line="copy -m '${tag.msg}' . ${tag.repo}/${tag.name}" />
+        </exec>
+    </target>
+
+    <!--
+        Initializes some properties based on the source repository.
+    -->
+    <target name="init-repository-properties" depends="initialize" if="is-svn-checkout">
+
+        <exec executable="svn" dir="${basedir}" output="${builddir}/~svn-info.xml">
+            <arg line="info --xml" />
+        </exec>
+
+        <xmlproperty file="${builddir}/~svn-info.xml"
+                     keepRoot="true"
+                     collapseAttributes="true" />
+
+        <property name="repository" value="${info.entry.repository.root}" />
+    </target>
+
+    <!--
+        Initializes some properties required for automatic tagging
+    -->
+    <target name="init-tag-properties" if="is-svn-checkout">
+        <tstamp>
+            <format property="build.date" pattern="yyyy-MM-dd" />
+        </tstamp>
+    </target>
+    
+</project>

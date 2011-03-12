@@ -21,10 +21,6 @@
     -->
     <import file="exts/scm.xml" />
 
-    <tstamp>
-
-    </tstamp>
-
     <!--
         Main public target of this build file.
     -->

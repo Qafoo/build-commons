@@ -30,7 +30,7 @@
         Discovers a pear channel specified as parameter.
 
         Parameters
-          ${package.pear.channel.uri}
+          ${pear.channel.uri}
     -->
     <target name="common-pear-channel-discover" depends="-common-pear-prepare">
         <!-- First try to delete a previous discovered channel -->
@@ -38,14 +38,14 @@
             <arg line="-c" />
             <arg line="${common-pear-config}" />
             <arg line="channel-delete" />
-            <arg line="${package.pear.channel.uri}" />
+            <arg line="${pear.channel.uri}" />
         </exec>
 
         <exec executable="pear">
             <arg line="-c" />
             <arg line="${common-pear-config}" />
             <arg line="channel-discover" />
-            <arg line="${package.pear.channel.uri}" />
+            <arg line="${pear.channel.uri}" />
         </exec>
     </target>
 
@@ -154,6 +154,20 @@
             <arg line="auto_discover" />
             <arg line="1" />
         </exec>
+    </target>
+
+    <!--
+        Tests if the pear package format is enabled for this project.
+    -->
+    <target name="-pear:is-enabled">
+        <condition property="-pear:enabled">
+            <and>
+                <isset property="pear.channel.uri" />
+                <not>
+                    <equals arg1="pear.example.com" arg2="${pear.channel.uri}" />
+                </not>
+            </and>
+        </condition>
     </target>
 
 </project>
