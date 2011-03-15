@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ant-build-commons-extensions-phar">
+
+    <!--
+        Declare basedir for commons pear
+    -->
+    <dirname property="-phar:basedir" file="${ant.file.ant-build-commons-extensions-phar}" />
+
+    <!--
+        By default PHAR support is enabled.
+    -->
+    <property name="phar.enabled" value="true" />
+
+    <!--
+        Defines the absolute file name for the generated PHAR archive.
+
+        Defines:
+            ${phar.archive.path}
+    -->
+    <target name="-phar:define-archive-path"
+            depends="-phar:is-enabled">
+
+        <fail message="The directory '${distdir}' does not exist.">
+            <condition>
+                <not>
+                    <available file="${distdir}" />
+                </not>
+            </condition>
+        </fail>
+
+        <fileset dir="${distdir}" id="-phar.existing.archive.files">
+            <include name="*.phar*"/>
+        </fileset>
+
+        <pathconvert property="phar.archive.path" refid="-phar.existing.archive.files"/>
+
+        <fail message="Cannot locate archive">
+            <condition>
+                <or>
+                    <not>
+                        <available file="${phar.archive.path}" />
+                    </not>
+                    <equals arg1="${phar.archive.path}" arg2="" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!--
+        Tests if the phar archive format is enabled for this project.
+    -->
+    <target name="-phar:is-enabled">
+        <condition property="-phar:enabled">
+            <istrue value="${phar.enabled}" />
+        </condition>
+    </target>
+
+
+</project>

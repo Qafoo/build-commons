@@ -157,6 +157,19 @@
     </target>
 
     <!--
+        Defines a property with the absolute path that points to the temporary
+        pear source dir.
+
+        Defines:
+            ${pear.source.path} - Absolute path to the pear source dir.
+    -->
+    <target name="-pear:define-source-path"
+            depends="-common-pear-prepare-properties">
+
+        <property name="pear.source.path" value="${common-pear-root-dir}" />
+    </target>
+
+    <!--
         Tests if the pear package format is enabled for this project.
     -->
     <target name="-pear:is-enabled">

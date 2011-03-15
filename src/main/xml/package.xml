@@ -17,6 +17,12 @@
     <import file="test.xml" />
 
     <!--
+        Import utilized extensions
+    -->
+    <import file="exts/pear.xml" />
+    <import file="exts/phar.xml" />
+
+    <!--
         Shortcut for target "package:package"
     -->
     <target name="package"
@@ -45,11 +51,6 @@
 <!-- {{{ PHAR SUPPORT -->
 
     <!--
-        Enable phar package format by default
-    -->
-    <property name="package.phar.enabled" value="true" />
-
-    <!--
         Default phar bootstrap file is empty, which means we will generate a
         phar archive without bootstrapper.
     -->
@@ -59,19 +60,10 @@
         Creates a phar archive of the project source
     -->
     <target name="package:phar"
-            if="-package:phar:is.enabled"
-            depends="initialize, -package:phar:is-enabled">
+            if="-phar:enabled"
+            depends="initialize, -phar:is-enabled">
 
         <antcall target="-package:phar" />
-    </target>
-
-    <!--
-        Tests if the phar package format is enabled?
-    -->
-    <target name="-package:phar:is-enabled">
-        <condition property="-package:phar:is.enabled">
-            <istrue value="${package.phar.enabled}" />
-        </condition>
     </target>
 
     <!--

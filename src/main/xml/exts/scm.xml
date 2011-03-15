@@ -189,7 +189,7 @@
             <arg line="${scm.git.branch}" />
         </exec>
 
-        <exec dir="${basedir}" executable="git" failonerror="true">
+        <exec dir="${basedir}" executable="git" failonerror="false">
             <arg value="submodule" />
             <arg value="foreach" />
             <arg value="--recursive" />

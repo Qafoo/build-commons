@@ -7,7 +7,7 @@
     </description>
 
     <!--
-        Declare basedir for the verify build file.
+        Declare basedir for the integration test build file.
     -->
     <dirname property="-integration-test:basedir" file="${ant.file.ant-build-commons-integration-test}" />
 
@@ -17,15 +17,66 @@
     <import file="package.xml" />
 
     <!--
-        Runs the project's integration tests.
+        Import utilized extensions
+    -->
+    <import file="exts/pear.xml" />
+    <import file="exts/phar.xml" />
 
-        TODO: These tests should run against the source in each package format.
+    <!--
+        Runs the project's integration tests.
     -->
     <target name="integration-test"
-            depends="package"
-            description="->  Runs all tests for the project." >
+            depends="package,
+                     -integration-test:source,
+                     -integration-test:pear,
+                     -integration-test:phar"
+            description="->  Runs all tests for the project." />
+
+    <!--
+        Runs the project's integration tests against the current source checkout.
+    -->
+    <target name="-integration-test:source">
+        <exec dir="${basedir}" failonerror="true" executable="phpunit">
+            <arg value="--group" />
+            <arg value="integrationtest" />
+            <arg value="${phpunit.testsuite.class}" />
+            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
+        </exec>
+    </target>
+
+    <!--
+        Runs the project's integration tests against a generated and installed
+        pear archive.
+    -->
+    <target name="-integration-test:pear"
+            if="-pear:enabled"
+            depends="-pear:is-enabled,
+                     -pear:define-source-path">
+
+        <exec dir="${basedir}"
+              failonerror="true"
+              executable="phpunit">
+
+            <arg value="--include-path" />
+            <arg value="${pear.source.path}" />
+            <arg value="--group" />
+            <arg value="integrationtest" />
+            <arg value="${phpunit.testsuite.class}" />
+            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
+        </exec>
+    </target>
+
+    <!--
+        Runs the project's integration tests against a generated phar archive.
+    -->
+    <target name="-integration-test:phar"
+            if="-phar:enabled"
+            depends="-phar:is-enabled,
+                     -phar:define-archive-path">
 
         <exec dir="${basedir}" failonerror="true" executable="phpunit">
+            <arg value="--include-path" />
+            <arg value="${phar.archive.path}" />
             <arg value="--group" />
             <arg value="integrationtest" />
             <arg value="${phpunit.testsuite.class}" />
