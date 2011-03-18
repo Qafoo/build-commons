@@ -26,8 +26,10 @@
         Import commons build files
     -->
     <import file="exts/pear.xml" />
+
     <import file="clean.xml" />
     <import file="deploy.xml" />
+    <import file="site.xml" />
 
     <!--
         Common build variables

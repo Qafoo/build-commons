@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-site" basedir=".">
+
+    <description>
+        This build file contains ant targets that can be used to publish a
+        static website for the context project.
+    </description>
+
+    <!--
+        Import default properties for the site sub module
+    -->
+    <property file="${resourcedir}/site/site.properties" />
+
+    <!--
+        Shortcut for the "site:site" target.
+    -->
+    <target name="site"
+            depends="site:site"
+            description="->  Generate a site for a single project." />
+
+    <!--
+        Main target that generates a site for a single project.
+    -->
+    <target name="site:site"
+            depends="-site:site-before~hook,
+                     -site:content-generate,
+                     -site:favicon-copy-if-exists,
+                     -site:css-copy-if-exists,
+                     -site:images-copy-if-exists,
+                     -site:site-after~hook" />
+
+    <!--
+        This target takes the raw rst files and generates the website content.
+    -->
+    <target name="-site:content-generate">
+        <exec executable="${resourcedir}/site/wcvp.phar" failonerror="true">
+            <arg value="--output" />
+            <arg value="${site.builddir.root}" />
+            <arg value="--input" />
+            <arg value="${site.content}" />
+            <arg value="--config" />
+            <arg value="${site.config}" />
+            <arg value="--override" />
+            <arg value="${site.templates}" />
+        </exec>
+    </target>
+
+    <!--
+        Copies an optional favicon icon into the generated web directory.
+    -->
+    <target name="-site:favicon-copy-if-exists"
+            if="-site:favicon.exists"
+            depends="-site:favicon-test-exists">
+
+        <copy file="${site.favicon}" todir="${site.builddir.root}" />
+    </target>
+
+    <!--
+        Tests of a favicon icon exists for this project.
+    -->
+    <target name="-site:favicon-test-exists">
+        <available property="-site:favicon.exists" file="${site.favicon}" />
+    </target>
+
+    <!--
+        Copies an optional css directory into the generated web directory.
+    -->
+    <target name="-site:css-copy-if-exists"
+            if="-site:css.exists"
+            depends="-site:css-test-exists">
+
+        <copy todir="${site.builddir.css}">
+            <fileset dir="${site.css}" />
+        </copy>
+    </target>
+
+    <!--
+        Tests of a css directory exists for this project.
+    -->
+    <target name="-site:css-test-exists">
+        <available property="-site:css.exists" file="${site.css}" />
+    </target>
+
+    <!--
+        Copies an optional image directory into the generated web directory.
+    -->
+    <target name="-site:images-copy-if-exists"
+            if="-site:images.exists"
+            depends="-site:images-test-exists">
+
+        <copy todir="${site.builddir.images}">
+            <fileset dir="${site.images}" />
+        </copy>
+    </target>
+
+    <!--
+        Tests of an image directory exists for this project.
+    -->
+    <target name="-site:images-test-exists">
+        <available property="-site:images.exists" file="${site.images}" />
+    </target>
+
+    <!--
+        Hook target that will be called from the build environment before the
+        site build process starts.
+    -->
+    <target name="-site:site-before~hook" />
+
+    <!--
+        Hook target that will be called from the build environment after the
+        site build process has finished.
+    -->
+    <target name="-site:site-after~hook" />
+
+</project>
