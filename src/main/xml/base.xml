@@ -7,20 +7,24 @@
     <dirname property="-ant-build-commons-base.basedir" file="${ant.file.ant-build-commons-base}" />
 
     <!--
-        Some common settings for all project.
+        Define minimum set of required properties
     -->
-    <property name="builddir" location="${basedir}/../build" />
-    <property name="distdir" location="${builddir}/dist" />
-    <property name="logsdir" location="${builddir}/logs" />
-    <property name="scriptdir" location="${-ant-build-commons-base.basedir}/../../../scripts" />
+    <property name="scriptdir"   location="${-ant-build-commons-base.basedir}/../../../scripts" />
     <property name="resourcedir" location="${-ant-build-commons-base.basedir}/../resources" />
-    <property name="tmpdir" location="${builddir}/tmp" />
 
     <!--
         Import default properties. You should customize this properties in your
         own build environment.
     -->
     <property file="${resourcedir}/base.properties" />
+
+    <!--
+        Some common settings for all project.
+    -->
+    <property name="builddir"    location="${project.basedir}/${project.builddir.name}" />
+    <property name="distdir"     location="${builddir}/${project.distdir.name}" />
+    <property name="logsdir"     location="${builddir}/${project.logsdir.name}" />
+    <property name="tmpdir"      location="${builddir}/${project.tempdir.name}" />
 
     <!--
         Import commons build files
@@ -83,5 +87,5 @@
             <format property="build.date" pattern="yyyy-MM-dd" />
         </tstamp>
     </target>
-    
+
 </project>
