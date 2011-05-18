@@ -305,6 +305,36 @@
             <arg value="--nobuild" />
             <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
+
+        <dirname property="d0" file="${-pear:in-conf}" />
+        <exec executable="${php.executable}" failonerror="false">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="list" />
+        </exec>
+        <exec executable="${php.executable}" failonerror="false">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="config-show" />
+        </exec>
+        <exec executable="ls" failonerror="false">
+            <arg value="-la" />
+            <arg value="${d0}" />
+        </exec>
+        <exec executable="ls" failonerror="false">
+            <arg value="-la" />
+            <arg value="${d0}/pear" />
+        </exec>
+        <exec executable="ls" failonerror="false">
+            <arg value="-la" />
+            <arg value="${d0}/pear/php" />
+        </exec>
     </target>
 
     <!--
