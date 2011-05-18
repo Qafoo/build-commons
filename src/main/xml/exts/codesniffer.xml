@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-codesniffer" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/codesniffer/codesniffer.properties" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="pear.xml" />
+
+    <!--
+        Shortcut for the "codesniffer:codesniffer" target
+    -->
+    <target name="codesniffer" depends="codesniffer:codesniffer" />
+
+    <!--
+        Runs the CodeSniffer cli tool against the project source code.
+    -->
+    <target name="codesniffer:codesniffer"
+            depends="-codesniffer:before~hook,
+                     -codesniffer:run,
+                     -codesniffer:after~hook" />
+
+    <!--
+        This target runs CodeSniffer against the project's source code and
+        generates a log file "checkstyle.xml" in the configured ${logsdir}.
+    -->
+    <target name="-codesniffer:run" depends="-codesniffer:install-or-upgrade">
+
+        <exec executable="${php.executable}" failonerror="${codesniffer.fail.on.violation}">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.local.bin.dir}/phpcs" />
+            <arg line="--standard=${codesniffer.standard}" />
+            <arg line="--report=checkstyle" />
+            <arg line="--report-file=${logsdir}/checkstyle.xml" />
+            <arg line="${php.basedir.src}" />
+        </exec>
+
+    </target>
+
+    <!--
+        This target tries to a) install CodeSniffer if it isn't already installed
+        in the project's local pear installation or b) upgrade a previous
+        installed version of CodeSniffer.
+    -->
+    <target name="-codesniffer:install-or-upgrade"
+            depends="-codesniffer:is-installed,
+                     -codesniffer:install,
+                     -codesniffer:upgrade" />
+
+    <!--
+        This target tries to install the CodeSniffer package into the project's
+        pear installation, but it will not be executed if CodeSniffer is already
+        installed.
+    -->
+    <target name="-codesniffer:install"
+            unless="-codesniffer:out-installed"
+            depends="-codesniffer:is-installed">
+
+        <antcall target="pear:install">
+            <param name="in.pear.package.name"    value="${codesniffer.package.name}" />
+            <param name="in.pear.package.channel" value="${codesniffer.package.channel}" />
+        </antcall>
+    </target>
+
+    <!--
+        This target tries to upgrade a previously installed CodeSniffer package.
+        This target will no be executed if CodeSniffer wasn't installed before.
+    -->
+    <target name="-codesniffer:upgrade"
+            if="-codesniffer:out-installed"
+            depends="-codesniffer:is-installed">
+
+        <antcall target="pear:upgrade">
+            <param name="in.pear.package.name"    value="${codesniffer.package.name}" />
+            <param name="in.pear.package.channel" value="${codesniffer.package.channel}" />
+        </antcall>
+    </target>
+
+    <!--
+        This target tests if CodeSniffer package is already installed in the project's
+        local pear installation. It will set the ${-codesniffer:out-installed}
+        property to TRUE if the CodeSniffer cli script is installed.
+    -->
+    <target name="-codesniffer:is-installed">
+        <condition property="-codesniffer:out-installed">
+            <available file="${pear.local.bin.dir}/codesniffer" />
+        </condition>
+    </target>
+
+    <!--
+        Extension point that can be used by a build file to add additional build
+        steps right before the build environment starts the CodeSniffer cli script.
+    -->
+    <extension-point name="-codesniffer:before~hook" />
+
+    <!--
+        Extension point that can be used by a build file to add additional build
+        steps after the build environment has complete the CodeSniffer analysis.
+    -->
+    <extension-point name="-codesniffer:after~hook" />
+    
+</project>

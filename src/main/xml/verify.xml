@@ -17,6 +17,13 @@
     <import file="integration-test.xml" />
 
     <!--
+        Import utilized extensions
+    -->
+    <import file="exts/codesniffer.xml" />
+    <import file="exts/phpcpd.xml" />
+    <import file="exts/phploc.xml" />
+
+    <!--
         Shortcut for "verify:verify"
     -->
     <target name="verify"
@@ -27,8 +34,7 @@
         Main target of this build file. Verifies that the source is valid and
         meets quality criterias.
     -->
-    <target name="verify:verify"
-            depends="integration-test, -verify" />
+    <target name="verify:verify" depends="integration-test, -verify" />
 
     <!--
         Internal verify implementation that defines the main workflow of the
@@ -83,19 +89,12 @@
             <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
         </exec>
     </target>
-    
+
     <!--
         Validates that the project code is compatible with the project's coding
         conventions.
     -->
-    <target name="-verify:checkstyle">
-        <exec dir="${basedir}" failonerror="true" executable="phpcs">
-            <arg line="--standard=${coding.standard}" />
-            <arg line="--report=checkstyle" />
-            <arg line="--report-file=${logsdir}/checkstyle.xml" />
-            <arg line="${php.basedir.src}" />
-        </exec>
-    </target>
+    <target name="-verify:checkstyle" depends="codesniffer:codesniffer" />
 
     <target name="-verify:phpmd">
         <exec dir="${basedir}" executable="phpmd" failonerror="false">
@@ -114,22 +113,7 @@
         </exec>
     </target>
 
-    <target name="-verify:phpcpd">
-        <exec dir="${basedir}" executable="phpcpd" failonerror="false">
-            <arg line="--log-pmd ${logsdir}/cpd.xml" />
-            <arg line="${php.basedir.src}" />
-        </exec>
-    </target>
+    <target name="-verify:phpcpd" depends="phpcpd:phpcpd" />
+    <target name="-verify:phploc" depends="phploc:phploc" />
 
-    <target name="-verify:phploc">
-        <exec dir="${basedir}" executable="phpcpd" failonerror="false">
-            <arg value="--count-tests" />
-            <arg value="--log-xml" />
-            <arg value="${logsdir}/phploc.xml" />
-            <arg value="--log-csv" />
-            <arg value="${logsdir}/phploc.csv" />
-            <arg value="${php.basedir.src}" />
-        </exec>
-    </target>
-    
 </project>

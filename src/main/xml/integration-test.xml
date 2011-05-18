@@ -7,12 +7,7 @@
     </description>
 
     <!--
-        Declare basedir for the integration test build file.
-    -->
-    <dirname property="-integration-test:basedir" file="${ant.file.ant-build-commons-integration-test}" />
-
-    <!--
-        Import the parent target file.
+        Import the previous target file.
     -->
     <import file="package.xml" />
 
@@ -21,28 +16,29 @@
     -->
     <import file="exts/pear.xml" />
     <import file="exts/phar.xml" />
+    <import file="exts/phpunit.xml" />
 
     <!--
-        Runs the project's integration tests.
+        Shortcut for the "integration-test:integration-test" target.
     -->
     <target name="integration-test"
+            depends="integration-test:integration-test"
+            description="->  Runs all tests for the project." />
+
+    <!--
+        Runs the project's integration tests against different project build
+        artifacts.
+    -->
+    <target name="integration-test:integration-test"
             depends="package,
                      -integration-test:source,
                      -integration-test:pear,
-                     -integration-test:phar"
-            description="->  Runs all tests for the project." />
+                     -integration-test:phar" />
 
     <!--
         Runs the project's integration tests against the current source checkout.
     -->
-    <target name="-integration-test:source">
-        <exec dir="${basedir}" failonerror="true" executable="phpunit">
-            <arg value="--group" />
-            <arg value="integrationtest" />
-            <arg value="${phpunit.testsuite.class}" />
-            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
-    </target>
+    <target name="-integration-test:source" depends="phpunit:run-integration-tests" />
 
     <!--
         Runs the project's integration tests against a generated and installed
@@ -53,17 +49,9 @@
             depends="-pear:is-enabled,
                      -pear:define-source-path">
 
-        <exec dir="${basedir}"
-              failonerror="true"
-              executable="phpunit">
-
-            <arg value="--include-path" />
-            <arg value="${pear.source.path}" />
-            <arg value="--group" />
-            <arg value="integrationtest" />
-            <arg value="${phpunit.testsuite.class}" />
-            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
+        <antcall target="phpunit:run-integration-tests">
+            <param name="in.phpunit.include.path" location="${pear.source.path}" />
+        </antcall>
     </target>
 
     <!--
@@ -74,14 +62,9 @@
             depends="-phar:is-enabled,
                      -phar:define-archive-path">
 
-        <exec dir="${basedir}" failonerror="true" executable="phpunit">
-            <arg value="--include-path" />
-            <arg value="${phar.archive.path}" />
-            <arg value="--group" />
-            <arg value="integrationtest" />
-            <arg value="${phpunit.testsuite.class}" />
-            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
+        <antcall target="phpunit:run-integration-tests">
+            <param name="in.phpunit.include.path" location="${phar.archive.path}" />
+        </antcall>
     </target>
 
 </project>

@@ -17,16 +17,21 @@
     <import file="compile.xml" />
 
     <!--
-        Creates different binary releases of the current project.
+        Import utilized build commons extensions
+    -->
+    <import file="exts/phpunit.xml" />
+
+    <!--
+        Shortcut for the "test:test" target.
     -->
     <target name="test"
-            depends="compile, -test"
+            depends="test:test"
             description="->  Runs the unit tests for the project." />
 
     <!--
-        Alias for "test"
+        Runs the unit tests for the current project.
     -->
-    <target name="test:test" depends="test" />
+    <target name="test:test" depends="compile, -test" />
 
 
     <target name="-test"
@@ -49,14 +54,6 @@
     <!--
         Executes the project's unittests.
     -->
-    <target name="-test:test">
-        <exec dir="${basedir}" failonerror="true" executable="phpunit">
-            <arg value="--group" />
-            <arg value="unittest" />
-            <arg value="--log-junit" />
-            <arg value="${logsdir}/junit.xml" />
-            <arg value="${phpunit.testsuite.class}" />
-            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
-    </target>
+    <target name="-test:test" depends="-phpunit:run-unit-tests" />
+
 </project>

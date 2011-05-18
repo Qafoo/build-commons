@@ -2,6 +2,11 @@
 <project name="ant--build-commons-validate" basedir=".">
 
     <!--
+        Import the previous build file.
+    -->
+    <import file="clean.xml" />
+
+    <!--
         Shortcut for "validate:validate"
     -->
     <target name="validate"
@@ -12,7 +17,8 @@
         Main target of this build file.
     -->
     <target name="validate:validate"
-            depends="-validate:before~hook,
+            depends="clean:clean,
+                     -validate:before~hook,
                      -validate:validate,
                      -validate:after~hook" />
 
@@ -21,5 +27,5 @@
     <target name="-validate:after~hook" />
 
     <target name="-validate:validate" />
-    
+
 </project>

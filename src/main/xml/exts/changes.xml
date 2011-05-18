@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-changes">
+
+    <target name="changes:changelog">
+        
+    </target>
+
+    <target name="changes:files">
+        
+    </target>
+</project>

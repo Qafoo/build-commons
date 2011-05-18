@@ -2,29 +2,73 @@
 <!--
     This build file contains common targets for handling pear and pear package
     related tasks.
-
-    General markup guidelines:
-      - Targets starting with "-" are protected and should never be called
-        directly.
-      - Targets starting with "~" are hooks that can be overwritten to custom
-        functionality.
-
-      - Properties names containing "-" are parameters and they should be
-        supplied by using ant's <param /> tag.
-      - Properties names containing "." are global properties that are defined
-        in a *.properties file or in a build file.
 -->
 <project name="ant-build-commons-extensions-pear" basedir=".">
-    
-    <!--
-        Declare basedir for commons pear
-    -->
-    <dirname property="common-pear-ant-targets.basedir" file="${ant.file.ant-build-commons-extensions-pear}" />
 
     <!--
         Import default settings
     -->
-    <property file="${common-pear-ant-targets.basedir}/pear.properties" />
+    <property file="${resourcedir}/extensions/pear/pear.properties" />
+
+    <!--
+        Defines the default include path for the project's local pear
+        installation.
+    -->
+    <pathconvert property="pear.local.include.path">
+        <path path="." />
+        <path path="${pear.local.php.dir}" />
+    </pathconvert>
+
+    <!--
+        This method will initialize a fresh pear root directory
+    -->
+    <target name="pear:initialize">
+        <antcall target="-pear:initialize-or-ignore">
+            <param name="-pear:in-root" location="${pear.local.root}" />
+            <param name="-pear:in-conf" location="${pear.local.conf}" />
+            <param name="-pear:in-state"   value="${pear.local.preferred.state}" />
+        </antcall>
+    </target>
+
+    <!--
+        Parameters:
+            ${in.pear.package.name}
+            ${in.pear.package.channel}
+    -->
+    <target name="pear:install" depends="pear:channel-discover">
+        <antcall target="-pear:install">
+            <param name="-pear:in-conf"      location="${pear.local.conf}" />
+            <param name="-pear:in-channel-uri"  value="${in.pear.package.channel}" />
+            <param name="-pear:in-package-name" value="${in.pear.package.name}" />
+        </antcall>
+    </target>
+
+    <!--
+        Parameters:
+            ${in.pear.package.name}
+            ${in.pear.package.channel}
+    -->
+    <target name="pear:upgrade">
+        <antcall target="-pear:upgrade">
+            <param name="-pear:in-conf"      location="${pear.local.conf}" />
+            <param name="-pear:in-channel-uri"  value="${in.pear.package.channel}" />
+            <param name="-pear:in-package-name" value="${in.pear.package.name}" />
+        </antcall>
+    </target>
+
+    <!--
+        This target will discover the given ${in.pear.package.channel} in the
+        local pear installation.
+
+        Parameters:
+            ${in.pear.package.channel}  Uri of a pear channel.
+    -->
+    <target name="pear:channel-discover" depends="pear:initialize">
+        <antcall target="-pear:channel-discover">
+            <param name="-pear:in-channel-uri" value="${in.pear.package.channel}" />
+            <param name="-pear:in-conf"     location="${pear.local.conf}" />
+        </antcall>
+    </target>
 
     <!--
         Discovers a pear channel specified as parameter.
@@ -33,20 +77,10 @@
           ${pear.channel.uri}
     -->
     <target name="common-pear-channel-discover" depends="-common-pear-prepare">
-        <!-- First try to delete a previous discovered channel -->
-        <exec executable="pear">
-            <arg line="-c" />
-            <arg line="${common-pear-config}" />
-            <arg line="channel-delete" />
-            <arg line="${pear.channel.uri}" />
-        </exec>
-
-        <exec executable="pear">
-            <arg line="-c" />
-            <arg line="${common-pear-config}" />
-            <arg line="channel-discover" />
-            <arg line="${pear.channel.uri}" />
-        </exec>
+        <antcall target="-pear:channel-discover">
+            <param name="-pear:in-channel-uri" value="${pear.channel.uri}" />
+            <param name="-pear:in-conf"     location="${common-pear-config}" />
+        </antcall>
     </target>
 
     <!--
@@ -56,7 +90,10 @@
           ${pear-package}
     -->
     <target name="common-pear-install-remote" depends="-common-pear-prepare">
-        <exec executable="pear" failonerror="true">
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
             <arg value="-c" />
             <arg value="${common-pear-config}" />
             <arg value="install" />
@@ -73,7 +110,10 @@
           ${pear-package-pattern}
     -->
     <target name="common-pear-install-local" depends="-common-pear-prepare">
-        <apply executable="pear" failonerror="true">
+        <apply executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
             <arg value="-c" />
             <arg value="${common-pear-config}" />
             <arg value="install" />
@@ -130,29 +170,162 @@
         by most pear related targets:
     -->
     <target name="-common-pear-prepare-if-not-exists" unless="common-pear-prepare-exists">
+        <antcall target="-pear:initialize">
+            <param name="-pear:in-root" location="${common-pear-base-dir}" />
+            <param name="-pear:in-conf" location="${common-pear-config}" />
+            <param name="-pear:in-state"   value="alpha" />
+        </antcall>
+    </target>
 
-        <mkdir dir="${common-pear-base-dir}" />
+    <!--
+        Initializes an existing local pear installation for the current project
+        or it keeos an already existing installation.
 
-        <exec executable="pear" failonerror="true" output="/dev/null">
-            <arg line="config-create" />
-            <arg line="${common-pear-base-dir}" />
-            <arg line="${common-pear-config}" />
+        Parameters:
+            ${-pear:in-root}   The pear root directory.
+            ${-pear:in-conf}   The pear main config file
+            ${-pear:in-state}  The preferred package state
+    -->
+    <target name="-pear:initialize-or-ignore"
+            depends="-pear:is-initialized,
+                     -pear:initialize" />
+
+    <!--
+        Tests if the project related pear installation is already initialized
+        and sets the property ${-pear:out-initialized}.
+
+        Parameters:
+            ${-pear:in-root} The pear root directory.
+            ${-pear:in-conf} The pear main config file
+
+        Defines:
+            ${-pear:out-initialized} Will be set if the given pear root directory
+                                     and config file already exists.
+    -->
+    <target name="-pear:is-initialized">
+        <condition property="-pear:out-initialized">
+            <and>
+                <available file="${-pear:in-root}" />
+                <available file="${-pear:in-conf}" />
+            </and>
+        </condition>
+    </target>
+
+    <!--
+        Initializes an fresh pear root directory.
+
+        Parameters:
+            ${-pear:in-root}  The pear root directory.
+            ${-pear:in-conf}  The pear main config file
+            ${-pear:in-state} The preferred package state
+    -->
+    <target name="-pear:initialize" unless="-pear:out-initialized">
+        <mkdir dir="${-pear:in-root}" />
+
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg value="config-create" />
+            <arg value="${-pear:in-root}" />
+            <arg value="${-pear:in-conf}" />
         </exec>
 
-        <exec executable="pear" failonerror="true">
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
             <arg line="-c" />
-            <arg line="${common-pear-config}" />
+            <arg line="${-pear:in-conf}" />
             <arg line="config-set" />
             <arg line="preferred_state" />
-            <arg line="alpha" />
+            <arg line="${-pear:in-state}" />
         </exec>
 
-        <exec executable="pear" failonerror="true">
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
             <arg line="-c" />
-            <arg line="${common-pear-config}" />
+            <arg line="${-pear:in-conf}" />
             <arg line="config-set" />
             <arg line="auto_discover" />
             <arg line="1" />
+        </exec>
+    </target>
+
+    <!--
+        Will discover a pear channel.
+
+        Parameters:
+            ${-pear:in-conf}        The pear main configuration file.
+            ${-pear:in-channel-uri} The pear channel uri.
+    -->
+    <target name="-pear:channel-discover">
+        <!-- First try to delete a previous discovered channel -->
+        <exec executable="${php.executable}">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg line="-c" />
+            <arg line="${-pear:in-conf}" />
+            <arg line="channel-delete" />
+            <arg line="${-pear:in-channel-uri}" />
+        </exec>
+
+        <exec executable="${php.executable}">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg line="-c" />
+            <arg line="${-pear:in-conf}" />
+            <arg line="channel-discover" />
+            <arg line="${-pear:in-channel-uri}" />
+        </exec>
+    </target>
+
+    <!--
+        Installs a package with all it's dependencies in the project's local
+        pear installation.
+
+        Parameters:
+            ${-pear:in-conf}         The pear main configuration file.
+            ${-pear:in-channel-uri}  The pear channel uri.
+            ${-pear:in-package-name} Name of the pear package with optional version number.
+    -->
+    <target name="-pear:install">
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="install" />
+            <arg value="--alldeps" />
+            <arg value="--nobuild" />
+            <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
+        </exec>
+    </target>
+
+    <!--
+        Upgrades an existing pear package in the pear installation of the
+        current project.
+
+        Parameters:
+            ${-pear:in-conf}         The pear main configuration file.
+            ${-pear:in-channel-uri}  The pear channel uri.
+            ${-pear:in-package-name} Name of the pear package with optional version number.
+    -->
+    <target name="-pear:upgrade">
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg line="-c" />
+            <arg line="${-pear:in-conf}" />
+            <arg line="upgrade" />
+            <arg line="--alldeps" />
+            <arg line="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
     </target>
 
