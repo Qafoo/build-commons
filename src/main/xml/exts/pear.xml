@@ -294,29 +294,6 @@
             ${-pear:in-package-name} Name of the pear package with optional version number.
     -->
     <target name="-pear:install">
-
-        <exec executable="ls" failonerror="false">
-            <arg value="-la" />
-            <arg value="${d0}" />
-        </exec>
-        <exec executable="ls" failonerror="false">
-            <arg value="-la" />
-            <arg value="${d0}/pear" />
-        </exec>
-        <exec executable="ls" failonerror="false">
-            <arg value="-la" />
-            <arg value="${d0}/pear/php" />
-        </exec>
-        <exec executable="php" failonerror="false">
-            <arg value="-i" />
-        </exec>
-        <exec executable="php" failonerror="false">
-            <arg value="-m" />
-        </exec>
-        <exec executable="ls" failonerror="false">
-            <arg value="/usr/lib/php/modules" />
-        </exec>
-
         <exec executable="${php.executable}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
