@@ -294,17 +294,6 @@
             ${-pear:in-package-name} Name of the pear package with optional version number.
     -->
     <target name="-pear:install">
-        <exec executable="${php.executable}" failonerror="true">
-            <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.executable}" />
-            <arg value="-c" />
-            <arg value="${-pear:in-conf}" />
-            <arg value="install" />
-            <arg value="--alldeps" />
-            <arg value="--nobuild" />
-            <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
-        </exec>
 
         <dirname property="d0" file="${-pear:in-conf}" />
         <exec executable="${php.executable}" failonerror="false">
@@ -334,6 +323,24 @@
         <exec executable="ls" failonerror="false">
             <arg value="-la" />
             <arg value="${d0}/pear/php" />
+        </exec>
+        <exec executable="php" failonerror="false">
+            <arg value="-i" />
+        </exec>
+        <exec executable="php" failonerror="false">
+            <arg value="-m" />
+        </exec>
+
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="install" />
+            <arg value="--alldeps" />
+            <arg value="--nobuild" />
+            <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
     </target>
 
