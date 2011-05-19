@@ -131,14 +131,29 @@
         generate the project's archive.
     -->
     <target name="-package:phar:main">
-        <exec dir="${basedir}"
-              failonerror="true"
-              executable="${scriptdir}/create.phar.php">
 
-            <arg line="${project.name}" />
-            <arg line="${-package:phar:filename}" />
-            <arg line="${-package:phar:builddir}" />
-            <arg line="${project.root}/${package.phar.bootstrap.file}" />
+        <copy file="${project.root}/${package.phar.bootstrap.file}"
+              tofile="${-package:phar:builddir}/${project.name}.php">
+
+            <filterchain>
+                <replacestring from="$${archive.alias}" to="${project.name}.phar" />
+            </filterchain>
+        </copy>
+
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="-d" />
+            <arg value="phar.readonly=0" />
+            <arg value="${resourcedir}/extensions/phar/phar.phar" />
+            <arg value="pack" />
+            <arg value="-f" />
+            <arg value="${-package:phar:filename}" />
+            <arg value="-c" />
+            <arg value="bz2" />
+            <arg value="-h" />
+            <arg value="sha512" />
+            <arg value="-s" />
+            <arg value="${-package:phar:builddir}/${project.name}.php" />
+            <arg value="${-package:phar:builddir}" />
         </exec>
 
         <chmod file="${-package:phar:filename}" perm="755" />
@@ -168,7 +183,7 @@
                      -package:pear:main,
                      -package:pear:verify,
                      -package:pear:after~hook" />
-    
+
     <!--
         Hook target that will be called before the pear package will be build.
     -->
