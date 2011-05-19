@@ -16,6 +16,31 @@
     <import file="pear.xml" />
 
     <!--
+        Shortcut for the "phpunit:phpunit" target.
+    -->
+    <target name="phpunit" depends="phpunit:phpunit" />
+
+    <!--
+        This target will run all tests for the current project.
+
+        Parameters:
+            ${in.phpunit.include.path} Optional include path that should be
+                                       passed to PHPUnit's -include-path cli
+                                       option.
+            ${in.phpunit.coverage}     Optional boolean flag that enables the
+                                       collection of code coverage data.
+            $in.phpunit.group}         Optional test group that should be used
+                                       to filter the executed tests.
+    -->
+    <target name="phpunit:phpunit">
+        <antcall target="-phpunit:run">
+            <param name="in.phpunit.group"        value="${in.phpunit.group}" />
+            <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
+            <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
+        </antcall>
+    </target>
+
+    <!--
         This target runs all tests flagged with the @group annotation that
         matches the value of the ${phpunit.group.unit} property.
 
