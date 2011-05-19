@@ -113,7 +113,7 @@
         <copy todir="${-package:phar:builddir}">
             <fileset dir="${php.basedir.src}" />
             <filterchain>
-                <replacestring from="@package_version@" to="${project.version}" />
+                <replacestring from="@package_version@" to="${build.version.release}" />
             </filterchain>
         </copy>
 
