@@ -356,6 +356,50 @@
     </target>
 
     <!--
+        This target will install a local version of the given package in the
+        project's pear installation, so that we can use it in the project. If
+        the package is already installed, this target will perform an upgrade of
+        the package.
+
+        Parameters:
+            ${in.pear.package.file}    A file from the package that will be used to
+                                       check if the package is already installed.
+            ${in.pear.package.name}    The name of the pear package that should
+                                       be installed.
+            ${in.pear.package.channel} The pear channel uri, where the requested
+                                       package could be found.
+    -->
+    <target name="-pear:package-install-or-upgrade"
+            depends="-pear:package-is-installed,
+                     -pear:package-install,
+                     -pear:package-upgrade" />
+
+    <target name="-pear:package-install" unless="-pear:package-out-installed">
+        <antcall target="pear:install" />
+    </target>
+
+    <target name="-pear:package-upgrade" if="-pear:package-out-installed">
+        <antcall target="pear:upgrade" />
+    </target>
+
+    <!--
+        Tests if phpunit is already installed and sets the a property named
+        ${-pear:package-out-installed} to true if it exists.
+
+        Parameters:
+            ${in.pear.package.file}    A file from the package that will be used to
+                                       check if the package is already installed.
+
+        Defines:
+            ${-pear:package-out-installed} If phpunit is already installed locally.
+    -->
+    <target name="-pear:package-is-installed">
+        <condition property="-pear:package-out-installed">
+            <available file="${pear.local.bin.dir}/${in.pear.package.file}" />
+        </condition>
+    </target>
+
+    <!--
         Defines a property with the absolute path that points to the temporary
         pear source dir.
 
