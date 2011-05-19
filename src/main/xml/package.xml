@@ -269,7 +269,10 @@
         Creates a pear archive of the project source
     -->
     <target name="-package:pear:main">
-        <exec dir="${distdir}" executable="pear" failonerror="true">
+        <exec executable="${php.executable}" dir="${distdir}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.executable}" />
             <arg line="-c" />
             <arg line="${common-pear-config}" />
             <arg line="package" />
