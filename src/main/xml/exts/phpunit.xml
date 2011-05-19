@@ -54,6 +54,25 @@
     </target>
 
     <!--
+        This target runs all tests flagged with the @group annotation that
+        matches the value of the ${phpunit.group.regression} property.
+
+        Parameters:
+            ${in.phpunit.include.path} Optional include path that should be
+                                       passed to PHPUnit's -include-path cli
+                                       option.
+            ${in.phpunit.coverage}     Optional boolean flag that enables the
+                                       collection of code coverage data.
+    -->
+    <target name="phpunit:regression">
+        <antcall target="-phpunit:run">
+            <param name="in.phpunit.group"        value="${phpunit.group.regression}" />
+            <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
+            <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
+        </antcall>
+    </target>
+
+    <!--
         This target executes the project's test suite and enables the collection
         of code coverage information.
 
