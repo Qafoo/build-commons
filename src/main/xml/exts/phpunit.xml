@@ -31,6 +31,14 @@
     <target name="phpunit:run-integration-tests"
             depends="-phpunit:run-integration-tests" />
 
+    <target name="phpunit:coverage">
+        <antcall target="-phpunit:run">
+            <param name="in.phpunit.clover"       value="true" />
+            <param name="in.phpunit.group"        value="${in.phpunit.group}" />
+            <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
+        </antcall>
+    </target>
+
     <target name="-phpunit:run-unit-tests"
             if="-phpunit:out-testsuite-present"
             depends="-phpunit:install-or-upgrade,
@@ -75,12 +83,17 @@
             <equals arg1="${in.phpunit.group}" arg2="$${in.phpunit.group}" trim="true" />
         </condition>
 
+        <condition property="phpunit.clover" value="" else="--coverage-clover '${logsdir}/clover.xml'">
+            <equals arg1="${in.phpunit.clover}" arg2="$${in.phpunit.clover}" trim="true" />
+        </condition>
+
         <exec executable="${php.executable}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpunit" />
             <arg line="${phpunit.include.path}" />
             <arg line="${phpunit.group}" />
+            <arg line="${phpunit.clover}" />
             <arg value="${phpunit.testsuite.class}" />
             <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
         </exec>

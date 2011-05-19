@@ -21,6 +21,7 @@
     -->
     <import file="exts/codesniffer.xml" />
     <import file="exts/pdepend.xml" />
+    <import file="exts/phpunit.xml" />
     <import file="exts/phpcpd.xml" />
     <import file="exts/phploc.xml" />
     <import file="exts/phpmd.xml" />
@@ -48,65 +49,32 @@
                      -verify-after~hook" />
 
     <!--
-        Hook target that will be called before the main verification phase
-        of the project's source starts.
-    -->
-    <target name="-verify-before~hook" />
-
-    <!--
-        Hook target that will be called after the main verification phase
-        of the project's source has finished.
-    -->
-    <target name="-verify-after~hook" />
-
-    <!--
         This target calls several quality tools parallel and generates the
         different reports.
     -->
     <target name="-verify:verify">
         <parallel>
-            <antcall target="-verify:coverage" />
-            <antcall target="-verify:checkstyle" />
-            <antcall target="-verify:phpcpd" />
-            <antcall target="-verify:phploc" />
+            <antcall target="phpunit:coverage" />
+            <antcall target="codesniffer:codesniffer" />
+            <antcall target="phpcpd:phpcpd" />
+            <antcall target="phploc:phploc" />
             <sequential>
-                <antcall target="-verify:pdepend" />
-                <antcall target="-verify:phpmd" />
+                <antcall target="pdepend:pdepend" />
+                <antcall target="phpmd:phpmd" />
             </sequential>
         </parallel>
     </target>
 
     <!--
-        Executes all project tests and collects
+        Hook target that will be called before the main verification phase
+        of the project's source starts.
     -->
-    <target name="-verify:coverage">
-        <exec dir="${basedir}" failonerror="true" executable="phpunit">
-            <arg value="--coverage-html" />
-            <arg value="${builddir}/coverage" />
-            <arg value="--coverage-clover" />
-            <arg value="${logsdir}/clover.xml" />
-            <arg value="--log-junit" />
-            <arg value="${logsdir}/junit.xml" />
-            <arg value="${phpunit.testsuite.class}" />
-            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
-    </target>
+    <extension-point name="-verify-before~hook" />
 
     <!--
-        Validates that the project code is compatible with the project's coding
-        conventions.
+        Hook target that will be called after the main verification phase
+        of the project's source has finished.
     -->
-    <target name="-verify:checkstyle" depends="codesniffer:codesniffer" />
-
-    <!--
-        Executes PHPMD and analyzes the project source for violations and
-        bad practices.
-    -->
-    <target name="-verify:phpmd" depends="phpmd:phpmd" />
-
-    <target name="-verify:pdepend" depends="pdepend:pdepend" />
-
-    <target name="-verify:phpcpd" depends="phpcpd:phpcpd" />
-    <target name="-verify:phploc" depends="phploc:phploc" />
+    <extension-point name="-verify-after~hook" />
 
 </project>
