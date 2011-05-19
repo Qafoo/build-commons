@@ -139,6 +139,8 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpunit" />
+            <arg value="--log-junit" />
+            <arg value="${logsdir}/junit.xml" />
             <arg line="${phpunit.include.path}" />
             <arg line="${phpunit.group}" />
             <arg line="${phpunit.html}" />
