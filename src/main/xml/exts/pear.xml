@@ -352,7 +352,7 @@
         Releases a lock on the local pear installation.
     -->
     <target name="-pear:lock-release">
-        <delete file="${pear.local.lock.file}" />
+        <delete file="${pear.local.lock.file}" failonerror="false" />
     </target>
 
     <!--
