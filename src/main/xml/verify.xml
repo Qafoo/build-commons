@@ -20,8 +20,10 @@
         Import utilized extensions
     -->
     <import file="exts/codesniffer.xml" />
+    <import file="exts/pdepend.xml" />
     <import file="exts/phpcpd.xml" />
     <import file="exts/phploc.xml" />
+    <import file="exts/phpmd.xml" />
 
     <!--
         Shortcut for "verify:verify"
@@ -96,22 +98,13 @@
     -->
     <target name="-verify:checkstyle" depends="codesniffer:codesniffer" />
 
-    <target name="-verify:phpmd">
-        <exec dir="${basedir}" executable="phpmd" failonerror="false">
-            <arg line="${php.basedir.src}" />
-            <arg line="xml" />
-            <arg line="codesize,unusedcode,naming,design" />
-            <arg line="--reportfile ${logsdir}/pmd.xml" />
-        </exec>
-    </target>
+    <!--
+        Executes PHPMD and analyzes the project source for violations and
+        bad practices.
+    -->
+    <target name="-verify:phpmd" depends="phpmd:phpmd" />
 
-    <target name="-verify:pdepend">
-        <exec dir="${basedir}" executable="pdepend" failonerror="false">
-            <arg line="--summary-xml=${logsdir}/pdepend.xml" />
-            <arg line="--jdepend-xml=${logsdir}/jdepend.xml" />
-            <arg line="${php.basedir.src}" />
-        </exec>
-    </target>
+    <target name="-verify:pdepend" depends="pdepend:pdepend" />
 
     <target name="-verify:phpcpd" depends="phpcpd:phpcpd" />
     <target name="-verify:phploc" depends="phploc:phploc" />

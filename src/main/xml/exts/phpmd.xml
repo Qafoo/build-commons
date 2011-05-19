@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-phpmd" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/phpmd/phpmd.properties" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="pear.xml" />
+
+    <!--
+        Shortcut for the "phpmd:phpmd" target
+    -->
+    <target name="phpmd" depends="phpmd:phpmd" />
+
+    <!--
+        Runs the phpmd cli tool against the project source code.
+    -->
+    <target name="phpmd:phpmd"
+            depends="-phpmd:before~hook,
+                     -phpmd:run,
+                     -phpmd:after~hook" />
+
+    <target name="-phpmd:run" depends="-phpmd:install-or-upgrade">
+
+        <exec executable="${php.executable}" failonerror="${phpmd.fail.on.violation}">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.local.bin.dir}/phpmd" />
+            <arg line="${php.basedir.src}" />
+            <arg line="xml" />
+            <arg line="${phpmd.rulesets}" />
+            <arg line="--reportfile ${logsdir}/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="-phpmd:install-or-upgrade"
+            depends="-phpmd:is-installed,
+                     -phpmd:install,
+                     -phpmd:upgrade" />
+
+    <target name="-phpmd:install" unless="-phpmd:out-installed">
+        <antcall target="pear:install">
+            <param name="in.pear.package.name"    value="${phpmd.package.name}" />
+            <param name="in.pear.package.channel" value="${phpmd.package.channel}" />
+        </antcall>
+    </target>
+
+    <target name="-phpmd:upgrade" if="-phpmd:out-installed">
+        <antcall target="pear:upgrade">
+            <param name="in.pear.package.name"    value="${phpmd.package.name}" />
+            <param name="in.pear.package.channel" value="${phpmd.package.channel}" />
+        </antcall>
+    </target>
+
+    <target name="-phpmd:is-installed">
+        <condition property="-phpmd:out-installed">
+            <available file="${pear.local.bin.dir}/phpmd" />
+        </condition>
+    </target>
+
+    <extension-point name="-phpmd:before~hook" />
+    <extension-point name="-phpmd:after~hook" />
+
+</project>

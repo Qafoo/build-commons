@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-pdepend" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/pdepend/pdepend.properties" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="pear.xml" />
+
+    <!--
+        Shortcut for the "pdepend:pdepend" target
+    -->
+    <target name="pdepend" depends="pdepend:pdepend" />
+
+    <!--
+        Runs the pdepend cli tool against the project source code.
+    -->
+    <target name="pdepend:pdepend"
+            depends="-pdepend:before~hook,
+                     -pdepend:run,
+                     -pdepend:after~hook" />
+
+    <target name="-pdepend:run" depends="-pdepend:install-or-upgrade">
+
+        <exec executable="${php.executable}" failonerror="${pdepend.fail.on.violation}">
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.local.bin.dir}/pdepend" />
+            <arg line="--summary-xml=${logsdir}/pdepend.xml" />
+            <arg line="--jdepend-xml=${logsdir}/jdepend.xml" />
+            <arg line="${php.basedir.src}" />
+        </exec>
+    </target>
+
+    <target name="-pdepend:install-or-upgrade"
+            depends="-pdepend:is-installed,
+                     -pdepend:install,
+                     -pdepend:upgrade" />
+
+    <target name="-pdepend:install" unless="-pdepend:out-installed">
+        <antcall target="pear:install">
+            <param name="in.pear.package.name"    value="${pdepend.package.name}" />
+            <param name="in.pear.package.channel" value="${pdepend.package.channel}" />
+        </antcall>
+    </target>
+
+    <target name="-pdepend:upgrade" if="-pdepend:out-installed">
+        <antcall target="pear:upgrade">
+            <param name="in.pear.package.name"    value="${pdepend.package.name}" />
+            <param name="in.pear.package.channel" value="${pdepend.package.channel}" />
+        </antcall>
+    </target>
+
+    <target name="-pdepend:is-installed">
+        <condition property="-pdepend:out-installed">
+            <available file="${pear.local.bin.dir}/pdepend" />
+        </condition>
+    </target>
+
+    <extension-point name="-pdepend:before~hook" />
+    <extension-point name="-pdepend:after~hook" />
+
+</project>
