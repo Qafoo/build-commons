@@ -38,7 +38,7 @@
     <!--
         Runs the project's integration tests against the current source checkout.
     -->
-    <target name="-integration-test:source" depends="phpunit:run-integration-tests" />
+    <target name="-integration-test:source" depends="phpunit:integration" />
 
     <!--
         Runs the project's integration tests against a generated and installed
@@ -49,7 +49,7 @@
             depends="-pear:is-enabled,
                      -pear:define-source-path">
 
-        <antcall target="phpunit:run-integration-tests">
+        <antcall target="phpunit:integration">
             <param name="in.phpunit.include.path" location="${pear.source.path}" />
         </antcall>
     </target>
@@ -62,7 +62,7 @@
             depends="-phar:is-enabled,
                      -phar:define-archive-path">
 
-        <antcall target="phpunit:run-integration-tests">
+        <antcall target="phpunit:integration">
             <param name="in.phpunit.include.path" location="${phar.archive.path}" />
         </antcall>
     </target>

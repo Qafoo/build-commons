@@ -18,63 +18,63 @@
     <!--
         This target runs all tests flagged with the @group annotation that
         matches the value of the ${phpunit.group.unit} property.
-    -->
-    <target name="phpunit:run-unit-tests"
-            depends="-phpunit:run-unit-tests" />
 
-    <!--
         Parameters:
             ${in.phpunit.include.path} Optional include path that should be
                                        passed to PHPUnit's -include-path cli
                                        option.
+            ${in.phpunit.coverage}     Optional boolean flag that enables the
+                                       collection of code coverage data.
     -->
-    <target name="phpunit:run-integration-tests"
-            depends="-phpunit:run-integration-tests" />
+    <target name="phpunit:unit">
+        <antcall target="-phpunit:run">
+            <param name="in.phpunit.group"        value="${phpunit.group.unit}" />
+            <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
+            <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
+        </antcall>
+    </target>
 
+    <!--
+        This target runs all tests flagged with the @group annotation that
+        matches the value of the ${phpunit.group.integration} property.
+
+        Parameters:
+            ${in.phpunit.include.path} Optional include path that should be
+                                       passed to PHPUnit's -include-path cli
+                                       option.
+            ${in.phpunit.coverage}     Optional boolean flag that enables the
+                                       collection of code coverage data.
+    -->
+    <target name="phpunit:integration">
+        <antcall target="-phpunit:run">
+            <param name="in.phpunit.group"        value="${phpunit.group.integration}" />
+            <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
+            <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
+        </antcall>
+    </target>
+
+    <!--
+        This target executes the project's test suite and enables the collection
+        of code coverage information.
+
+        Parameters:
+            ${in.phpunit.include.path} Optional include path that should be
+                                       passed to PHPUnit's -include-path cli
+                                       option.
+            $in.phpunit.group}         Optional test group that should be used
+                                       to filter the executed tests.
+    -->
     <target name="phpunit:coverage">
         <antcall target="-phpunit:run">
-            <param name="in.phpunit.clover"       value="true" />
+            <param name="in.phpunit.coverage"     value="true" />
             <param name="in.phpunit.group"        value="${in.phpunit.group}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
         </antcall>
     </target>
 
-    <target name="-phpunit:run-unit-tests"
+    <target name="-phpunit:run"
             if="-phpunit:out-testsuite-present"
-            depends="-phpunit:install-or-upgrade,
-                     -phpunit:is-testsuite-present">
-
-        <exec executable="${php.executable}" failonerror="true">
-            <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bin.dir}/phpunit" />
-            <arg value="--group" />
-            <arg value="${phpunit.group.unit}" />
-            <arg value="--log-junit" />
-            <arg value="${logsdir}/junit.xml" />
-            <arg value="${phpunit.testsuite.class}" />
-            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
-        </exec>
-    </target>
-
-    <!--
-        Parameters:
-            ${in.phpunit.include.path} Optional include path that should be
-                                       passed to PHPUnit's -include-path cli
-                                       option.
-    -->
-    <target name="-phpunit:run-integration-tests"
-            if="-phpunit:out-testsuite-present"
-            depends="-phpunit:install-or-upgrade,
-                     -phpunit:is-testsuite-present">
-
-        <antcall target="-phpunit:run">
-            <param name="in.phpunit.group"        value="${phpunit.group.integration}" />
-            <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
-        </antcall>
-    </target>
-
-    <target name="-phpunit:run">
+            depends="-phpunit:is-testsuite-present">
         <condition property="phpunit.include.path" value="" else="--include-path '${in.phpunit.include.path}'">
             <equals arg1="${in.phpunit.include.path}" arg2="$${in.phpunit.include.path}" trim="true" />
         </condition>
@@ -84,7 +84,11 @@
         </condition>
 
         <condition property="phpunit.clover" value="" else="--coverage-clover '${logsdir}/clover.xml'">
-            <equals arg1="${in.phpunit.clover}" arg2="$${in.phpunit.clover}" trim="true" />
+            <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.html" value="" else="--coverage-html '${builddir}/coverage'">
+            <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
         <exec executable="${php.executable}" failonerror="true">
@@ -93,6 +97,7 @@
             <arg value="${pear.local.bin.dir}/phpunit" />
             <arg line="${phpunit.include.path}" />
             <arg line="${phpunit.group}" />
+            <arg line="${phpunit.html}" />
             <arg line="${phpunit.clover}" />
             <arg value="${phpunit.testsuite.class}" />
             <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
