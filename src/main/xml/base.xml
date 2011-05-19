@@ -9,7 +9,6 @@
     <!--
         Define minimum set of required properties
     -->
-    <property name="scriptdir"   location="${-ant-build-commons-base.basedir}/../../../scripts" />
     <property name="resourcedir" location="${-ant-build-commons-base.basedir}/../resources" />
 
     <!--
