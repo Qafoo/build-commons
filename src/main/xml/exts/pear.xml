@@ -23,11 +23,13 @@
         This method will initialize a fresh pear root directory
     -->
     <target name="pear:initialize">
+        <antcall target="-pear:lock-release" />
         <antcall target="-pear:initialize-or-ignore">
             <param name="-pear:in-root" location="${pear.local.root}" />
             <param name="-pear:in-conf" location="${pear.local.conf}" />
             <param name="-pear:in-state"   value="${pear.local.preferred.state}" />
         </antcall>
+        <antcall target="-pear:lock-release" />
     </target>
 
     <!--
@@ -36,11 +38,13 @@
             ${in.pear.package.channel}
     -->
     <target name="pear:install" depends="pear:channel-discover">
+        <antcall target="-pear:lock-acquire" />
         <antcall target="-pear:install">
             <param name="-pear:in-conf"      location="${pear.local.conf}" />
             <param name="-pear:in-channel-uri"  value="${in.pear.package.channel}" />
             <param name="-pear:in-package-name" value="${in.pear.package.name}" />
         </antcall>
+        <antcall target="-pear:lock-release" />
     </target>
 
     <!--
@@ -49,11 +53,13 @@
             ${in.pear.package.channel}
     -->
     <target name="pear:upgrade">
+        <antcall target="-pear:lock-acquire" />
         <antcall target="-pear:upgrade">
             <param name="-pear:in-conf"      location="${pear.local.conf}" />
             <param name="-pear:in-channel-uri"  value="${in.pear.package.channel}" />
             <param name="-pear:in-package-name" value="${in.pear.package.name}" />
         </antcall>
+        <antcall target="-pear:lock-release" />
     </target>
 
     <!--
@@ -64,10 +70,12 @@
             ${in.pear.package.channel}  Uri of a pear channel.
     -->
     <target name="pear:channel-discover" depends="pear:initialize">
+        <antcall target="-pear:lock-acquire" />
         <antcall target="-pear:channel-discover">
             <param name="-pear:in-channel-uri" value="${in.pear.package.channel}" />
             <param name="-pear:in-conf"     location="${pear.local.conf}" />
         </antcall>
+        <antcall target="-pear:lock-release" />
     </target>
 
     <!--
@@ -327,6 +335,24 @@
             <arg line="--alldeps" />
             <arg line="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
+    </target>
+
+    <!--
+        Acquires a lock for the local pear installation.
+    -->
+    <target name="-pear:lock-acquire">
+        <waitfor>
+            <not>
+                <available file="${pear.local.lock.file}" />
+            </not>
+        </waitfor>
+    </target>
+
+    <!--
+        Releases a lock on the local pear installation.
+    -->
+    <target name="-pear:lock-release">
+        <delete file="${pear.local.lock.file}" />
     </target>
 
     <!--
