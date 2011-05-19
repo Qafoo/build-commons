@@ -54,6 +54,6 @@
     <!--
         Executes the project's unittests.
     -->
-    <target name="-test:test" depends="-phpunit:unit" />
+    <target name="-test:test" depends="phpunit:unit" />
 
 </project>
