@@ -88,7 +88,7 @@
     -->
     <target name="-codesniffer:is-installed">
         <condition property="-codesniffer:out-installed">
-            <available file="${pear.local.bin.dir}/codesniffer" />
+            <available file="${pear.local.bin.dir}/phpcs" />
         </condition>
     </target>
 
@@ -103,5 +103,5 @@
         steps after the build environment has complete the CodeSniffer analysis.
     -->
     <extension-point name="-codesniffer:after~hook" />
-    
+
 </project>
