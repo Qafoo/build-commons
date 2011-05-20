@@ -23,6 +23,11 @@
     <import file="exts/phar.xml" />
 
     <!--
+        Import default settings for this build step.
+    -->
+    <property file="${resourcedir}/package/package.properties" />
+
+    <!--
         Shortcut for target "package:package"
     -->
     <target name="package"
@@ -49,12 +54,6 @@
     </target>
 
 <!-- {{{ PHAR SUPPORT -->
-
-    <!--
-        Default phar bootstrap file is empty, which means we will generate a
-        phar archive without bootstrapper.
-    -->
-    <property name="package.phar.bootstrap.file" value="" />
 
     <!--
         Creates a phar archive of the project source
