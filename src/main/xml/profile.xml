@@ -14,7 +14,7 @@
     <!--
         Load the default settings for the profile build step.
     -->
-    <property file="${resourcedir}/profile.properties" />
+    <property file="${resourcedir}/profile/profile.properties" />
 
     <!--
         Shortcut for the "profile:profile" target.
@@ -38,7 +38,13 @@
     <target name="-profile:run"
             depends="-profile:fail-if-command-is-not-set">
 
-        <exec executable="${php.executable}" failonerror="true" output="${logsdir}/profile.csv">
+        <mkdir dir="${profile.working.directory}" />
+
+        <exec executable="${php.executable}"
+              failonerror="true"
+              output="${profile.logfile}"
+              dir="${profile.working.directory}">
+
             <arg value="-d" />
             <arg value="auto_prepend_file=${resourcedir}/profile/cli.php" />
             <arg line="${profile.command}" />
