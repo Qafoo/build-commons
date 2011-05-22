@@ -14,6 +14,6 @@
     <!--
         Import the archtype specific build file.
     -->
-    <!--<import file="${basedir}/setup/src/main/xml/archtypes/symfony2-bundle.xml" />-->
+    <import file="${basedir}/setup/src/main/xml/archtypes/symfony2-bundle.xml" />
 
 </project>
