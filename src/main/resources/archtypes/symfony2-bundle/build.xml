@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="@project.name@" basedir=".">
+
+    <!--
+
+    -->
+    <property file="build.properties" />
+
+    <!--
+        Import common build targets
+    -->
+    <import file="${basedir}/setup/src/main/xml/base.xml" />
+
+    <!--
+        Import the archtype specific build file.
+    -->
+    <!--<import file="${basedir}/setup/src/main/xml/archtypes/symfony2-bundle.xml" />-->
+
+</project>

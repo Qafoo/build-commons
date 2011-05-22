@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-archtypes-symfony2-bundle">
+
+    <import file="../base.xml" />
+
+    <target name="project:create"
+            depends="-project:check-namespace,
+                     -project:check-bundle-name">
+
+        <echo taskname="project:create" message="===========================================" />
+        <echo taskname="project:create" message=" Will create the following Symfony2 bundle " />
+        <echo taskname="project:create" message="===========================================" />
+        <echo taskname="project:create" message=" Directory:   ${-project:name}" />
+        <echo taskname="project:create" message=" Namespace:   ${-project:bundle.namespace}" />
+        <echo taskname="project:create" message=" Bundle:      ${-project:bundle.name}" />
+        <echo taskname="project:create" message="===========================================" />
+        <echo taskname="project:create" />
+
+        <pathconvert property="-project:bundle.dir">
+            <path path="${-project:name}\${-project:bundle.namespace}" />
+        </pathconvert>
+
+        <copy taskname="project:create" todir="${-project:bundle.dir}">
+            <fileset dir="${resourcedir}/archtypes/symfony2-bundle/layout">
+                <include name="**/*.*" />
+            </fileset>
+            <filterset>
+                <filter token="archtype.bundle.name" value="${-project:bundle.name}"/>
+                <filter token="archtype.bundle.namespace" value="${-project:bundle.namespace}"/>
+            </filterset>
+        </copy>
+
+        <exec taskname="project:create" executable="git" failonerror="true" dir="${-project:name}">
+            <arg value="init" />
+            <arg value="." />
+        </exec>
+
+        <exec taskname="project:create" executable="git" failonerror="true" dir="${-project:name}">
+            <arg value="submodule" />
+            <arg value="add" />
+            <arg value="http://github.com/manuelpichler/build-commons.git" />
+            <arg value="setup" />
+        </exec>
+
+        <copy taskname="project:create" todir="${-project:name}">
+            <fileset dir="${resourcedir}/archtypes/symfony2-bundle">
+                <include name="build.xml" />
+                <include name="build.properties" />
+            </fileset>
+            <filterset>
+                <filter token="project.name" value="${-project:name}"/>
+            </filterset>
+        </copy>
+
+    </target>
+
+    <target name="-project:check-namespace"
+            unless="-project:out-valid-namespace"
+            depends="-project:is-valid-namespace,
+                     -project:input-namespace,
+                     -project:define-bundle-namespace">
+
+        <antcall target="-project:fail-on-invalid-namespace" />
+    </target>
+
+    <target name="-project:input-namespace">
+        <input taskname="project:create"
+               message="Please enter a namespace for your project:"
+               addproperty="namespace" />
+    </target>
+
+    <target name="-project:fail-on-invalid-namespace"
+            unless="-project:out-valid-namespace"
+            depends="-project:is-valid-namespace">
+
+        <fail unless="-project:out-valid-namespace"
+              message="The given project namespace '${namespace}' is invalid." />
+    </target>
+
+    <target name="-project:define-bundle-namespace">
+        <property name="-project:bundle.namespace" value="${namespace}" />
+    </target>
+
+    <target name="-project:is-valid-namespace">
+        <condition property="-project:out-valid-namespace">
+            <and>
+                <contains string="${namespace}" substring="\" />
+                <not>
+                    <equals arg1="${namespace}" arg2="$${namespace}" />
+                </not>
+                <not>
+                    <equals arg1="${namespace}" arg2="" trim="true" />
+                </not>
+            </and>
+        </condition>
+    </target>
+
+    <target name="-project:check-bundle-name"
+            unless="-project:out-valid-bundle-name"
+            depends="-project:is-valid-bundle-name,
+                     -project:input-bundle-name,
+                     -project:define-custom-bundle-name,
+                     -project:define-default-bundle-name">
+
+    </target>
+
+    <target name="-project:input-bundle-name">
+        <input taskname="project:create"
+               message="Optionally enter a name for the symfony bundle:"
+               addproperty="bundle" />
+    </target>
+
+    <target name="-project:define-default-bundle-name"
+            unless="-project:out-valid-bundle-name"
+            depends="-project:is-valid-bundle-name">
+
+        <pathconvert property="-project:bundle.name" dirsep="" pathsep="">
+            <path path="${-project:bundle.namespace}" />
+
+            <!--Pathconvert tries to add the root to "path", so replace with it -->
+            <map from="${basedir}" to="" />
+
+            <filtermapper>
+                <replacestring from="\" to=""/>
+            </filtermapper>
+        </pathconvert>
+    </target>
+
+    <target name="-project:define-custom-bundle-name"
+            if="-project:out-valid-bundle-name"
+            depends="-project:is-valid-bundle-name">
+
+        <property name="-project:bundle.name" value="${bundle}" />
+    </target>
+
+    <target name="-project:is-valid-bundle-name">
+        <condition property="-project:out-valid-bundle-name">
+            <and>
+                <not>
+                    <equals arg1="${bundle}" arg2="$${bundle}" />
+                </not>
+                <not>
+                    <equals arg1="${bundle}" arg2="" trim="true" />
+                </not>
+            </and>
+        </condition>
+    </target>
+</project>

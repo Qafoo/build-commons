@@ -33,6 +33,7 @@
     <import file="clean.xml" />
     <import file="deploy.xml" />
     <import file="profile.xml" />
+    <import file="project.xml" />
     <import file="site.xml" />
 
     <!--

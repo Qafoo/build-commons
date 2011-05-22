@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-project" basedir=".">
+
+    <property name="project.archtypes.basedir" location="setup/src/main/xml/archtypes" />
+
+    <fileset id="-project:archtypes.fileset" dir="${project.archtypes.basedir}" includes="*.xml" />
+
+    <property name="-project:archtypes.available" refid="-project:archtypes.fileset" />
+
+
+    <target name="project:create"
+            depends="-project:check-archtype,
+                     -project:check-project-name">
+
+        <ant antfile="${project.archtypes.basedir}/${archtype}.xml"
+             target="project:create" />
+    </target>
+
+    <target name="-project:check-archtype"
+            unless="-project:out-valid-archtype"
+            depends="-project:is-valid-archtype,
+                     -project:enter-archtype">
+
+        <antcall target="-project:fail-on-invalid-archtype" />
+        <echo message="Selected archtype is: ${archtype}" />
+    </target>
+
+    <target name="-project:fail-on-invalid-archtype"
+            unless="-project:out-valid-archtype"
+            depends="-project:is-valid-archtype">
+
+        <fail unless="-project:out-valid-archtype"
+              message="The given archtype is not valid." />
+    </target>
+
+    <target name="-project:enter-archtype" depends="-project:get-available-archtypes">
+
+        <echo taskname="project:create" message="Available archtypes are:" />
+        <echo taskname="project:create" message="${-project:archtypes.available.output}" />
+        <echo taskname="project:create" />
+
+        <input taskname="project:create"
+               message="Please enter an archtype for your project: "
+               addproperty="archtype" />
+    </target>
+
+    <target name="-project:get-available-archtypes">
+        <pathconvert property="-project:archtypes.available.output" dirsep="" pathsep="">
+            <path path="${-project:archtypes.available}" />
+
+            <!--Pathconvert tries to add the root to "path", so replace with it -->
+            <map from="${basedir}" to="- " />
+
+            <filtermapper>
+                <replacestring from=".xml" to="${line.separator}"/>
+            </filtermapper>
+
+        </pathconvert>
+    </target>
+
+    <target name="-project:is-valid-archtype">
+        <condition property="-project:out-valid-archtype">
+            <available file="${project.archtypes.basedir}/${archtype}.xml" />
+        </condition>
+    </target>
+
+    <target name="-project:check-project-name"
+            unless="-project:out-valid-project-name"
+            depends="-project:is-valid-project-name,
+                     -project:enter-project-name,
+                     -project:define-project-name,
+                     -project:fail-on-project-exists">
+
+        <antcall target="-project:fail-on-invalid-project-name" />
+    </target>
+
+    <target name="-project:enter-project-name">
+        <input taskname="project:create" message="Please enter a name for your project: " addproperty="name" />
+    </target>
+
+    <target name="-project:define-project-name">
+        <property name="-project:name" value="${name}" />
+    </target>
+
+    <target name="-project:fail-on-invalid-project-name"
+            unless="-project:out-valid-project-name"
+            depends="-project:is-valid-project-name">
+
+        <fail unless="-project:out-valid-project-name"
+              message="The given project name is not valid." />
+    </target>
+
+    <target name="-project:fail-on-project-exists">
+        <fail message="A project named '${name}' already exists">
+            <condition>
+                <available file="${name}" />
+            </condition>
+        </fail>
+    </target>
+
+    <target name="-project:is-valid-project-name">
+        <condition property="-project:out-valid-project-name">
+            <and>
+                <not>
+                    <equals arg1="${name}" arg2="$${name}" />
+                </not>
+                <not>
+                    <equals arg1="${name}" arg2="" trim="true" />
+                </not>
+            </and>
+        </condition>
+    </target>
+    
+</project>
