@@ -41,7 +41,8 @@
         <mkdir dir="${profile.working.directory}" />
 
         <exec executable="${php.executable}"
-              failonerror="true"
+              failonerror="false"
+              failifexecutionfails="true"
               output="${profile.logfile}"
               dir="${profile.working.directory}">
 
