@@ -32,6 +32,8 @@
 
         <exec executable="${php.executable}" failonerror="${codesniffer.fail.on.violation}">
             <arg value="-d" />
+            <arg value="memory_limit=1024M" />
+            <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpcs" />
             <arg line="--standard=${codesniffer.standard}" />
