@@ -118,7 +118,8 @@
 
     <target name="-phpunit:run"
             if="-phpunit:out-testsuite-present"
-            depends="-phpunit:is-testsuite-present">
+            depends="-phpunit:is-testsuite-present,
+                     -phpunit:install-or-upgrade">
         <condition property="phpunit.include.path" value="" else="--include-path '${in.phpunit.include.path}'">
             <equals arg1="${in.phpunit.include.path}" arg2="$${in.phpunit.include.path}" trim="true" />
         </condition>
