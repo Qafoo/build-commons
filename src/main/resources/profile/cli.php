@@ -14,4 +14,3 @@ function __ant_build_commons_profile($startTime)
 register_shutdown_function('__ant_build_commons_profile', time());
 
 ob_start();
-include $argv[0];
