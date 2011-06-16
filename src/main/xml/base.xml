@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant-build-commons-base">
+<project name="ant-build-commons-base" basedir=".">
 
     <!--
         Declare basedir for commons
@@ -25,16 +25,17 @@
     <property name="logsdir"     location="${builddir}/${project.logsdir.name}" />
     <property name="tmpdir"      location="${builddir}/${project.tempdir.name}" />
 
-    <!--
-        Import commons build files
-    -->
-    <import file="exts/pear.xml" />
-
     <import file="clean.xml" />
     <import file="deploy.xml" />
     <import file="profile.xml" />
     <import file="project.xml" />
     <import file="site.xml" />
+
+    <!--
+        Import commons build extensions
+    -->
+    <import file="exts/changes.xml" />
+    <import file="exts/pear.xml" />
 
     <!--
         Common build variables

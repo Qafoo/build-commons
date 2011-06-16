@@ -7,9 +7,39 @@
     </description>
 
     <!--
+        Import the previous build file.
+    -->
+    <import file="initialize.xml" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="exts/remote.xml" />
+
+    <!--
         Import default properties for the site sub module
     -->
     <property file="${resourcedir}/site/site.properties" />
+
+    <!--
+        Display an excessive help for this build module.
+    -->
+    <target name="site:help">
+        <echo taskname="help">
+site:site
+  Generate a site for a single project.
+
+site:help
+  Displays the help text for the site build module.
+
+site:deploy
+  Deploys the generated site using scp or file protocol to the site URL
+  specified in your build
+
+site:zip
+  Bundles the site output into a ZIP so that it can be deployed to a repository.
+        </echo>
+    </target>
 
     <!--
         Shortcut for the "site:site" target.
@@ -22,94 +52,226 @@
         Main target that generates a site for a single project.
     -->
     <target name="site:site"
-            depends="-site:site-before~hook,
+            depends="initialize:initialize,
+                     -site:before~hook,
+                     -site:content-copy,
                      -site:content-generate,
-                     -site:favicon-copy-if-exists,
-                     -site:css-copy-if-exists,
-                     -site:images-copy-if-exists,
-                     -site:site-after~hook" />
+                     -site:resources-copy,
+                     -site:after~hook" />
+
+    <!--
+        Copies the content source files into a temporary build directory.
+    -->
+    <target name="-site:content-copy"
+            depends="-site:content-copy-before~hook,
+                     -site:content-copy-execute,
+                     -site:content-copy-after~hook" />
+
+    <!--
+        Copies the content source files into a temporary build directory.
+    -->
+    <target name="-site:content-copy-execute">
+        <copy todir="${site.builddir}" includeemptydirs="true" preservelastmodified="true">
+            <fileset dir="${site.content}">
+                <include name="**/*.*" />
+            </fileset>
+        </copy>
+    </target>
 
     <!--
         This target takes the raw rst files and generates the website content.
     -->
-    <target name="-site:content-generate">
-        <exec executable="${resourcedir}/site/wcvp.phar" failonerror="true">
+    <target name="-site:content-generate"
+            depends="-site:content-generate-before~hook,
+                     -site:content-generate-execute,
+                     -site:content-generate-after~hook" />
+
+    <!--
+        This target takes the raw rst files and generates the website content.
+    -->
+    <target name="-site:content-generate-execute">
+        <exec executable="${php.executable}" failonerror="true">
+            <arg value="${site.wcv.executable}" />
             <arg value="--output" />
-            <arg value="${site.builddir.root}" />
+            <arg value="${site.outputdir}" />
             <arg value="--input" />
-            <arg value="${site.content}" />
+            <arg value="${site.builddir}" />
             <arg value="--config" />
             <arg value="${site.config}" />
             <arg value="--override" />
             <arg value="${site.templates}" />
+            <arg value="--temp" />
+            <arg value="${tmpdir}" />
         </exec>
     </target>
 
     <!--
-        Copies an optional favicon icon into the generated web directory.
+        Copies all web resources into the web page build directory.
     -->
-    <target name="-site:favicon-copy-if-exists"
-            if="-site:favicon.exists"
-            depends="-site:favicon-test-exists">
-
-        <copy file="${site.favicon}" todir="${site.builddir.root}" />
-    </target>
+    <target name="-site:resources-copy"
+            depends="-site:resources-copy-before~hook,
+                     -site:resources-copy-execute,
+                     -site:resources-copy-after~hook" />
 
     <!--
-        Tests of a favicon icon exists for this project.
+        Copies all web resources into the web page build directory.
     -->
-    <target name="-site:favicon-test-exists">
-        <available property="-site:favicon.exists" file="${site.favicon}" />
-    </target>
-
-    <!--
-        Copies an optional css directory into the generated web directory.
-    -->
-    <target name="-site:css-copy-if-exists"
-            if="-site:css.exists"
-            depends="-site:css-test-exists">
-
-        <copy todir="${site.builddir.css}">
-            <fileset dir="${site.css}" />
+    <target name="-site:resources-copy-execute">
+        <copy todir="${site.outputdir}" preservelastmodified="true">
+            <fileset dir="${site.web.resources}">
+                <include name="**/*.*" />
+            </fileset>
         </copy>
     </target>
 
     <!--
-        Tests of a css directory exists for this project.
+        Bundles the site output into a ZIP so that it can be deployed to a
+        repository.
     -->
-    <target name="-site:css-test-exists">
-        <available property="-site:css.exists" file="${site.css}" />
+    <target name="site:zip"
+            depends="site:site,
+                     -site:zip-before~hook,
+                     -site:zip,
+                     -site:zip-after~hook" />
+
+    <!--
+        Bundles the site output into a ZIP so that it can be deployed to a
+        repository.
+    -->
+    <target name="-site:zip">
+        <zip destfile="${site.zipfile}" compress="true">
+            <zipfileset dir="${site.outputdir}">
+                <include name="**/*.*" />
+            </zipfileset>
+        </zip>
     </target>
 
     <!--
-        Copies an optional image directory into the generated web directory.
+        Deploys the generated site.
     -->
-    <target name="-site:images-copy-if-exists"
-            if="-site:images.exists"
-            depends="-site:images-test-exists">
+    <target name="site:deploy"
+            depends="site:zip,
+                     -site:deploy-before~hook,
+                     -site:deploy,
+                     -site:deploy-after~hook" />
 
-        <copy todir="${site.builddir.images}">
-            <fileset dir="${site.images}" />
-        </copy>
+    <!--
+        Deploys the generated site.
+    -->
+    <target name="-site:deploy">
+        <tempfile property="site.tempdir"
+                  destdir="${remote.tempdir}"
+                  createfile="false"
+                  deleteonexit="false" />
+
+        <antcall target="remote:copy">
+            <param name="remote:copy.from" value="${site.zipfile}" />
+            <param name="remote:copy.to" value="${remote.tempdir}/site.zip" />
+        </antcall>
+
+        <antcall target="remote:execute">
+            <param name="remote:execute-command" value="unzip -d '${site.tempdir}' '${remote.tempdir}/site.zip'" />
+        </antcall>
+
+        <antcall target="remote:execute">
+            <param name="remote:execute-command" value="rm '${remote.tempdir}/site.zip'" />
+        </antcall>
+
+        <antcall target="remote:execute">
+            <param name="remote:execute-command" value="rm -rf '${site.deploydir}'" />
+        </antcall>
+
+        <antcall target="remote:execute">
+            <param name="remote:execute-command" value="mv '${site.tempdir}' '${site.deploydir}'" />
+        </antcall>
     </target>
 
     <!--
-        Tests of an image directory exists for this project.
+        Extensions provided by this module
     -->
-    <target name="-site:images-test-exists">
-        <available property="-site:images.exists" file="${site.images}" />
+
+    <!--
+        Initialzes the temporary site build directory.
+    -->
+    <target name="site:initialize-directories" extensionOf="-initialize:after~hook">
+        <mkdir dir="${site.builddir}" />
+        <mkdir dir="${site.outputdir}" />
     </target>
 
     <!--
-        Hook target that will be called from the build environment before the
-        site build process starts.
+        Module extension points.
     -->
-    <target name="-site:site-before~hook" />
 
     <!--
-        Hook target that will be called from the build environment after the
+        Extension point target that will be called from the build environment
+        before the site build process starts.
+    -->
+    <extension-point name="-site:before~hook" />
+
+    <!--
+        Extension point that will be called from the build environment after the
         site build process has finished.
     -->
-    <target name="-site:site-after~hook" />
+    <extension-point name="-site:after~hook" />
+
+    <!--
+        Extension point target that will be called from the build environment
+        before the site:content-copy build process starts.
+    -->
+    <extension-point name="-site:content-copy-before~hook" />
+
+    <!--
+        Extension point that will be called from the build environment after the
+        site:content-copy build process has finished.
+    -->
+    <extension-point name="-site:content-copy-after~hook" />
+
+    <!--
+        Extension point target that will be called from the build environment
+        before the site:content-generate build process starts.
+    -->
+    <extension-point name="-site:content-generate-before~hook" />
+
+    <!--
+        Extension point that will be called from the build environment after the
+        site:content-generate build process has finished.
+    -->
+    <extension-point name="-site:content-generate-after~hook" />
+
+    <!--
+        Extension point target that will be called from the build environment
+        before the site:resources-copy build process starts.
+    -->
+    <extension-point name="-site:resources-copy-before~hook" />
+
+    <!--
+        Extension point that will be called from the build environment after the
+        site:resources-copy build process has finished.
+    -->
+    <extension-point name="-site:resources-copy-after~hook" />
+
+    <!--
+        Extension point target that will be called from the build environment
+        before the site:zip build process starts.
+    -->
+    <extension-point name="-site:zip-before~hook" />
+
+    <!--
+        Extension point that will be called from the build environment after the
+        site:zip build process has finished.
+    -->
+    <extension-point name="-site:zip-after~hook" />
+
+    <!--
+        Extension point target that will be called from the build environment
+        before the site:deploy build process starts.
+    -->
+    <extension-point name="-site:deploy-before~hook" />
+
+    <!--
+        Extension point that will be called from the build environment after the
+        site:deploy build process has finished.
+    -->
+    <extension-point name="-site:deploy-after~hook" />
 
 </project>

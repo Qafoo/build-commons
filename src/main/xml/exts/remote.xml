@@ -36,32 +36,15 @@
             depends="-remote:copy" />
 
     <!--
-        Copies a build artifact to a configured remote machine.
+        Executes a command on the remote machine
 
         Parameters:
-            ${remote:copy.from} - Local file to copy.
-            ${remote:copy.to}   - Remote target location.    
+            ${remote:execute-command} - The raw command line argument
     -->
     <target name="-remote:execute"
             depends="-remote:execute-before~hook,
                      -remote:shell:execute,
                      -remote:execute-after~hook" />
-
-    <!--
-        Hook target that will be called before a remote command will be executed.
-
-        Parameters:
-            ${remote:execute-command} - The raw command line argument
-    -->
-    <target name="-remote:execute-before~hook" />
-
-    <!--
-        Hook target that will be called after a remote command has been executed.
-
-        Parameters:
-            ${remote:execute-command} - The raw command line argument
-    -->
-    <target name="-remote:execute-after~hook" />
 
     <!--
         Executes a command on the remote machine and uses therefore the cli ssh
@@ -94,24 +77,6 @@
                      -remote:copy-after~hook" />
 
     <!--
-        Hook target that will be called before the copy operation starts.
-
-        Parameters:
-            ${remote:copy.from} - Local file to copy.
-            ${remote:copy.to}   - Remote target location.
-    -->
-    <target name="-remote:copy-before~hook" />
-
-    <!--
-        Hook target that will be called after the copy operation has finished.
-
-        Parameters:
-            ${remote:copy.from} - Local file to copy.
-            ${remote:copy.to}   - Remote target location.
-    -->
-    <target name="-remote:copy-after~hook" />
-
-    <!--
         Copies a build artifact to a configured remote machine. This target uses
         therefore the scp cli command.
 
@@ -141,5 +106,44 @@
             <isset property="remote.shell.credentials" />
         </condition>
     </target>
-    
+
+    <!--
+        Module extension points.
+    -->
+
+    <!--
+        Extension point that will be called before the copy operation starts.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.
+    -->
+    <extension-point name="-remote:copy-before~hook" />
+
+    <!--
+        Extension point that will be called after the copy operation has finished.
+
+        Parameters:
+            ${remote:copy.from} - Local file to copy.
+            ${remote:copy.to}   - Remote target location.
+    -->
+    <extension-point name="-remote:copy-after~hook" />
+
+    <!--
+        Extension point that will be called before a remote command will be executed.
+
+        Parameters:
+            ${remote:execute-command} - The raw command line argument
+    -->
+
+    <extension-point name="-remote:execute-before~hook" />
+
+    <!--
+        Extension point that will be called after a remote command has been executed.
+
+        Parameters:
+            ${remote:execute-command} - The raw command line argument
+    -->
+    <extension-point name="-remote:execute-after~hook" />
+
 </project>

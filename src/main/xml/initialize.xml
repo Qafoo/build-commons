@@ -89,12 +89,12 @@
         Hook target that will be called before the initialization phase in the
         build process starts.
     -->
-    <target name="-initialize:before~hook" />
+    <extension-point name="-initialize:before~hook" />
 
     <!--
         Hook target that will be called after the initialization phase in the
         build process has finished.
     -->
-    <target name="-initialize:after~hook" />
+    <extension-point name="-initialize:after~hook" />
 
 </project>

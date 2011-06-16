@@ -1,11 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant-build-commons-extensions-changes">
+<project name="ant-build-commons-extensions-changes" basedir="." default="changes:help">
 
-    <target name="changes:changelog">
-        
+    <description>
+        This file contains the changes build extension. This extension can be
+        used to generate several changelog related artifacts from a standard
+        xml file in maven's changes.xml format.
+    </description>
+
+    <!--
+        Import module specific default properties
+    -->
+    <property file="${resourcedir}/extensions/changes/changes.properties" />
+
+    <!--
+        Displays the help text for this build extension.
+    -->
+    <target name="changes:help">
+        <echo taskname="help">
+changes:help
+  Displays the help text for the changes build extension.
+
+changes:log
+  Generates a changelog file from an existing xdocs/changes.xml file.
+
+changes:site
+  Generates several files for the project's site from the entries in the
+  xdocs/changes.xml file.
+        </echo>
     </target>
 
-    <target name="changes:files">
-        
+    <target name="changes:log">
+
     </target>
+
+    <target name="changes:site" extensionOf="-site:content-copy-after~hook">
+
+        <xslt basedir="${site.builddir}"
+              destdir="${site.builddir}"
+              style="${resourcedir}/extensions/changes/xsl/changes-to-rst.xsl"
+              in="${basedir.site}/docx/changes.xml"
+              out="${site.builddir}${changes.webdir}/parts/latest.rst"
+              includes="changes.xml">
+
+            <param name="changes.builddir"     expression="${site.builddir}" />
+            <param name="changes.webdir"       expression="${changes.webdir}" />
+            <param name="changes.scm.uri"      expression="http://${project.scm.uri}" />
+            <param name="changes.pear.uri"     expression="http://${project.pear.uri}" />
+            <param name="changes.static.uri"   expression="http://${project.static.uri}" />
+            <param name="changes.project.name" expression="${project.name}" />
+        </xslt>
+    </target>
+
 </project>

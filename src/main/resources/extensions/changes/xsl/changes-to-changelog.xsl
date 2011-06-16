@@ -1,5 +1,6 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:exsl="http://exslt.org/common"
                 xmlns:changes="http://maven.apache.org/changes/1.0.0">
 
     <xsl:output standalone="yes" method="text" />
@@ -35,7 +36,7 @@
         <xsl:variable name="release.title">
             <xsl:apply-templates select="." mode="release-title" />
         </xsl:variable>
-        
+
         <xsl:value-of select="$release.title" />
         <xsl:value-of select="$nl" />
 
@@ -97,7 +98,5 @@
         <xsl:value-of select="@date" />
         <xsl:text>)</xsl:text>
     </xsl:template>
-
-
 
 </xsl:stylesheet>
