@@ -32,10 +32,10 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpmd" />
-            <arg line="${php.basedir.src}" />
-            <arg line="xml" />
-            <arg line="${phpmd.rulesets}" />
-            <arg line="--reportfile ${logsdir}/pmd.xml" />
+            <arg value="${php.basedir.src}" />
+            <arg value="xml" />
+            <arg value="${phpmd.rulesets}" />
+            <arg value="--reportfile ${logsdir}/pmd.xml" />
         </exec>
     </target>
 

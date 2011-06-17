@@ -32,9 +32,9 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/pdepend" />
-            <arg line="--summary-xml=${logsdir}/pdepend.xml" />
-            <arg line="--jdepend-xml=${logsdir}/jdepend.xml" />
-            <arg line="${php.basedir.src}" />
+            <arg value="--summary-xml=${logsdir}/pdepend.xml" />
+            <arg value="--jdepend-xml=${logsdir}/jdepend.xml" />
+            <arg value="${php.basedir.src}" />
         </exec>
     </target>
 

@@ -36,10 +36,10 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpcs" />
-            <arg line="--standard=${codesniffer.standard}" />
-            <arg line="--report=checkstyle" />
-            <arg line="--report-file=${logsdir}/checkstyle.xml" />
-            <arg line="${php.basedir.src}" />
+            <arg value="--standard=${codesniffer.standard}" />
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${logsdir}/checkstyle.xml" />
+            <arg value="${php.basedir.src}" />
         </exec>
 
     </target>
