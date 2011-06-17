@@ -35,7 +35,8 @@
             <arg value="${php.basedir.src}" />
             <arg value="xml" />
             <arg value="${phpmd.rulesets}" />
-            <arg value="--reportfile ${logsdir}/pmd.xml" />
+            <arg value="--reportfile" />
+            <arg value="${logsdir}/pmd.xml" />
         </exec>
     </target>
 
