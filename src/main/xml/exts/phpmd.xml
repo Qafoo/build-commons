@@ -31,7 +31,7 @@
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bin.dir}/phpmd" />
+            <arg value="${pear.local.bindir}/phpmd" />
             <arg value="${commons.srcdir.php}" />
             <arg value="xml" />
             <arg value="${phpmd.rulesets}" />
@@ -61,7 +61,7 @@
 
     <target name="-phpmd:is-installed">
         <condition property="-phpmd:out-installed">
-            <available file="${pear.local.bin.dir}/phpmd" />
+            <available file="${pear.local.bindir}/phpmd" />
         </condition>
     </target>
 

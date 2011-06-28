@@ -16,7 +16,7 @@
     -->
     <pathconvert property="pear.local.include.path">
         <path path="." />
-        <path path="${pear.local.php.dir}" />
+        <path path="${pear.local.phpdir}" />
     </pathconvert>
 
     <!--
@@ -25,8 +25,8 @@
     <target name="pear:initialize">
         <antcall target="-pear:lock-release" />
         <antcall target="-pear:initialize-or-ignore">
-            <param name="-pear:in-root" location="${pear.local.root}" />
-            <param name="-pear:in-conf" location="${pear.local.conf}" />
+            <param name="-pear:in-root" location="${pear.local.basedir}" />
+            <param name="-pear:in-conf" location="${pear.local.conffile}" />
             <param name="-pear:in-state"   value="${pear.local.preferred.state}" />
         </antcall>
         <antcall target="-pear:lock-release" />
@@ -40,7 +40,7 @@
     <target name="pear:install" depends="pear:channel-discover">
         <antcall target="-pear:lock-acquire" />
         <antcall target="-pear:install">
-            <param name="-pear:in-conf"      location="${pear.local.conf}" />
+            <param name="-pear:in-conf"      location="${pear.local.conffile}" />
             <param name="-pear:in-channel-uri"  value="${in.pear.package.channel}" />
             <param name="-pear:in-package-name" value="${in.pear.package.name}" />
         </antcall>
@@ -55,7 +55,7 @@
     <target name="pear:upgrade">
         <antcall target="-pear:lock-acquire" />
         <antcall target="-pear:upgrade">
-            <param name="-pear:in-conf"      location="${pear.local.conf}" />
+            <param name="-pear:in-conf"      location="${pear.local.conffile}" />
             <param name="-pear:in-channel-uri"  value="${in.pear.package.channel}" />
             <param name="-pear:in-package-name" value="${in.pear.package.name}" />
         </antcall>
@@ -73,7 +73,7 @@
         <antcall target="-pear:lock-acquire" />
         <antcall target="-pear:channel-discover">
             <param name="-pear:in-channel-uri" value="${in.pear.package.channel}" />
-            <param name="-pear:in-conf"     location="${pear.local.conf}" />
+            <param name="-pear:in-conf"     location="${pear.local.conffile}" />
         </antcall>
         <antcall target="-pear:lock-release" />
     </target>
@@ -343,7 +343,7 @@
     <target name="-pear:lock-acquire">
         <waitfor>
             <not>
-                <available file="${pear.local.lock.file}" />
+                <available file="${pear.local.lockfile}" />
             </not>
         </waitfor>
     </target>
@@ -352,7 +352,7 @@
         Releases a lock on the local pear installation.
     -->
     <target name="-pear:lock-release">
-        <delete file="${pear.local.lock.file}" failonerror="false" />
+        <delete file="${pear.local.lockfile}" failonerror="false" />
     </target>
 
     <!--
@@ -395,7 +395,7 @@
     -->
     <target name="-pear:package-is-installed">
         <condition property="-pear:package-out-installed">
-            <available file="${pear.local.bin.dir}/${in.pear.package.file}" />
+            <available file="${pear.local.bindir}/${in.pear.package.file}" />
         </condition>
     </target>
 

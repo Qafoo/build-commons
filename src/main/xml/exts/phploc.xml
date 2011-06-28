@@ -33,7 +33,7 @@
         <exec executable="${commons.executable.php}" failonerror="${phploc.fail.on.violation}">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bin.dir}/phploc" />
+            <arg value="${pear.local.bindir}/phploc" />
             <arg value="--log-xml" />
             <arg value="${commons:logsdir}/phploc.xml" />
             <arg value="--log-csv" />
@@ -63,7 +63,7 @@
 
     <target name="-phploc:is-installed">
         <condition property="-phploc:out-installed">
-            <available file="${pear.local.bin.dir}/phploc" />
+            <available file="${pear.local.bindir}/phploc" />
         </condition>
     </target>
 

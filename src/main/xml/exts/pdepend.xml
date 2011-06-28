@@ -31,7 +31,7 @@
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bin.dir}/pdepend" />
+            <arg value="${pear.local.bindir}/pdepend" />
             <arg value="--summary-xml=${commons:logsdir}/pdepend.xml" />
             <arg value="--jdepend-xml=${commons:logsdir}/jdepend.xml" />
             <arg value="${commons.srcdir.php}" />
@@ -59,7 +59,7 @@
 
     <target name="-pdepend:is-installed">
         <condition property="-pdepend:out-installed">
-            <available file="${pear.local.bin.dir}/pdepend" />
+            <available file="${pear.local.bindir}/pdepend" />
         </condition>
     </target>
 

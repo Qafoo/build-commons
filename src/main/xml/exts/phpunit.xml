@@ -155,7 +155,7 @@
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bin.dir}/phpunit" />
+            <arg value="${pear.local.bindir}/phpunit" />
             <arg value="--log-junit" />
             <arg value="${commons:logsdir}/junit.xml" />
             <arg line="${phpunit.include.path}" />
@@ -198,7 +198,7 @@
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bin.dir}/phpunit" />
+            <arg value="${pear.local.bindir}/phpunit" />
             <arg value="--log-junit" />
             <arg value="${commons:logsdir}/junit.xml" />
             <arg line="${phpunit.include.path}" />
@@ -272,7 +272,7 @@
     -->
     <target name="-phpunit:is-installed">
         <condition property="-phpunit:out-installed">
-            <available file="${pear.local.bin.dir}/phpunit" />
+            <available file="${pear.local.bindir}/phpunit" />
         </condition>
     </target>
 </project>

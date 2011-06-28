@@ -35,7 +35,7 @@
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bin.dir}/phpcpd" />
+            <arg value="${pear.local.bindir}/phpcpd" />
             <arg value="--log-pmd" />
             <arg value="${commons:logsdir}/cpd.xml" />
             <arg value="${commons.srcdir.php}" />
@@ -87,7 +87,7 @@
     -->
     <target name="-phpcpd:is-installed">
         <condition property="-phpcpd:out-installed">
-            <available file="${pear.local.bin.dir}/phpcpd" />
+            <available file="${pear.local.bindir}/phpcpd" />
         </condition>
     </target>
 

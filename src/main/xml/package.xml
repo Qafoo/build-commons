@@ -390,8 +390,12 @@
             <param name="output.dir" value="${output.dir}" />
         </antcall>
 
-        <copy file="${basedir}/LICENSE" todir="${output.dir}" />
-        <copy file="${basedir}/CHANGELOG" todir="${output.dir}" />
+        <copy todir="${output.dir}">
+            <fileset dir="${basedir}">
+                <include name="LICENSE" />
+                <include name="CHANGELOG" />
+            </fileset>
+        </copy>
 
         <antcall target="do-copy-files-for-xyz-archive">
             <param name="output.dir" value="${output.dir}" />
