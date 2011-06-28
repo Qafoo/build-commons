@@ -243,22 +243,22 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
-            <arg line="-c" />
-            <arg line="${-pear:in-conf}" />
-            <arg line="config-set" />
-            <arg line="preferred_state" />
-            <arg line="${-pear:in-state}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="config-set" />
+            <arg value="preferred_state" />
+            <arg value="${-pear:in-state}" />
         </exec>
 
         <exec executable="${php.executable}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
-            <arg line="-c" />
-            <arg line="${-pear:in-conf}" />
-            <arg line="config-set" />
-            <arg line="auto_discover" />
-            <arg line="1" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="config-set" />
+            <arg value="auto_discover" />
+            <arg value="1" />
         </exec>
     </target>
 
@@ -275,20 +275,20 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
-            <arg line="-c" />
-            <arg line="${-pear:in-conf}" />
-            <arg line="channel-delete" />
-            <arg line="${-pear:in-channel-uri}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="channel-delete" />
+            <arg value="${-pear:in-channel-uri}" />
         </exec>
 
         <exec executable="${php.executable}">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
-            <arg line="-c" />
-            <arg line="${-pear:in-conf}" />
-            <arg line="channel-discover" />
-            <arg line="${-pear:in-channel-uri}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="channel-discover" />
+            <arg value="${-pear:in-channel-uri}" />
         </exec>
     </target>
 
@@ -329,11 +329,11 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
-            <arg line="-c" />
-            <arg line="${-pear:in-conf}" />
-            <arg line="upgrade" />
-            <arg line="--alldeps" />
-            <arg line="${-pear:in-channel-uri}/${-pear:in-package-name}" />
+            <arg value="-c" />
+            <arg value="${-pear:in-conf}" />
+            <arg value="upgrade" />
+            <arg value="--alldeps" />
+            <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
     </target>
 
