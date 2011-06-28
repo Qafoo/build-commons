@@ -170,9 +170,14 @@
     -->
     <target name="-codesniffer:is-standard-configured">
         <condition property="-codesniffer:out-standard-configured">
-            <not>
-                <equals arg1="${codesniffer.standard.package.name}" arg2="$${codesniffer.standard.package.name}" trim="true" />
-            </not>
+            <and>
+                <not>
+                    <equals arg1="${codesniffer.standard.package.name}" arg2="$${codesniffer.standard.package.name}" trim="true" />
+                </not>
+                <not>
+                    <equals arg1="${codesniffer.standard.package.name}" arg2="" trim="true" />
+                </not>
+            </and>
         </condition>
     </target>
 
