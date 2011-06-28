@@ -101,7 +101,7 @@ site:zip
             <arg value="--override" />
             <arg value="${site.templates}" />
             <arg value="--temp" />
-            <arg value="${tmpdir}" />
+            <arg value="${commons:tmpdir}" />
         </exec>
     </target>
 

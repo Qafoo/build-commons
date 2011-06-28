@@ -26,7 +26,7 @@
 
     <!--
         This target runs CodeSniffer against the project's source code and
-        generates a log file "checkstyle.xml" in the configured ${logsdir}.
+        generates a log file "checkstyle.xml" in the configured ${commons:logsdir}.
     -->
     <target name="-codesniffer:run" depends="-codesniffer:install-or-upgrade">
 
@@ -38,7 +38,7 @@
             <arg value="${pear.local.bin.dir}/phpcs" />
             <arg value="--standard=${codesniffer.standard}" />
             <arg value="--report=checkstyle" />
-            <arg value="--report-file=${logsdir}/checkstyle.xml" />
+            <arg value="--report-file=${commons:logsdir}/checkstyle.xml" />
             <arg value="${commons.srcdir.php}" />
         </exec>
 

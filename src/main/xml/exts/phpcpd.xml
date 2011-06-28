@@ -26,7 +26,7 @@
 
     <!--
         This target runs PHPCPD against the project's source code and generates
-        a log file "cpd.xml" in the configured ${logsdir}.
+        a log file "cpd.xml" in the configured ${commons:logsdir}.
     -->
     <target name="-phpcpd:run" depends="-phpcpd:install-or-upgrade">
 
@@ -37,7 +37,7 @@
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpcpd" />
             <arg value="--log-pmd" />
-            <arg value="${logsdir}/cpd.xml" />
+            <arg value="${commons:logsdir}/cpd.xml" />
             <arg value="${commons.srcdir.php}" />
         </exec>
     </target>

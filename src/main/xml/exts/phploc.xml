@@ -35,9 +35,9 @@
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phploc" />
             <arg value="--log-xml" />
-            <arg value="${logsdir}/phploc.xml" />
+            <arg value="${commons:logsdir}/phploc.xml" />
             <arg value="--log-csv" />
-            <arg value="${logsdir}/phploc.csv" />
+            <arg value="${commons:logsdir}/phploc.csv" />
             <arg value="${commons.srcdir.php}" />
         </exec>
     </target>

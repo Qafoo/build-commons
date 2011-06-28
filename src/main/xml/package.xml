@@ -101,8 +101,8 @@
         Initializes the required phar archive properties
     -->
     <target name="-package:phar:prepare-properties">
-        <property name="-package:phar:filename" value="${distdir}/${build.file}.phar" />
-        <property name="-package:phar:builddir" value="${builddir}/phar-archive" />
+        <property name="-package:phar:filename" value="${commons:distdir}/${build.file}.phar" />
+        <property name="-package:phar:builddir" value="${commons:builddir}/phar-archive" />
     </target>
 
     <!--
@@ -206,7 +206,7 @@
         Defines all properties required for pear package generation.
     -->
     <target name="-package:pear:prepare-properties">
-        <property name="package.pear.builddir" location="${builddir}/pear-archive" />
+        <property name="package.pear.builddir" location="${commons:builddir}/pear-archive" />
     </target>
 
     <!--
@@ -268,7 +268,7 @@
         Creates a pear archive of the project source
     -->
     <target name="-package:pear:main">
-        <exec executable="${commons.executable.php}" dir="${distdir}" failonerror="true">
+        <exec executable="${commons.executable.php}" dir="${commons:distdir}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -372,8 +372,8 @@
         Defines the properties required to generate a project archive.
     -->
     <target name="-package:archive:prepare-properties">
-        <property name="-package:archive:builddir" location="${builddir}/tar-archive" />
-        <property name="-package:archive:filename" location="${distdir}/${build.file}.tar.bz2" />
+        <property name="-package:archive:builddir" location="${commons:builddir}/tar-archive" />
+        <property name="-package:archive:filename" location="${commons:distdir}/${build.file}.tar.bz2" />
     </target>
 
     <target name="-package:archive:prepare-files">
@@ -403,7 +403,7 @@
     -->
     <target name="-package:archive:main">
         <tar basedir="${-package:archive:builddir}"
-             destfile="${distdir}/${build.file}.tar.bz2"
+             destfile="${commons:distdir}/${build.file}.tar.bz2"
              compression="bzip2"
              longfile="gnu">
 

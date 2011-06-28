@@ -128,7 +128,7 @@
             <arg value="--force" />
             <arg value="--alldeps" />
             <arg value="--nobuild" />
-            <fileset dir="${distdir}">
+            <fileset dir="${commons:distdir}">
                 <include name="*-${build.version.release}.tgz" />
             </fileset>
         </apply>
@@ -159,7 +159,7 @@
           ${common-pear-config}    The pear configuration file.
     -->
     <target name="-common-pear-prepare-properties">
-        <property name="common-pear-base-dir" value="${builddir}/pear" />
+        <property name="common-pear-base-dir" value="${commons:builddir}/pear" />
         <property name="common-pear-bin-dir" value="${common-pear-base-dir}/pear" />
         <property name="common-pear-root-dir" value="${common-pear-bin-dir}/php" />
         <property name="common-pear-config" value="${common-pear-base-dir}/.pearrc" />

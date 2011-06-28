@@ -36,7 +36,7 @@
     <target name="-compile:after~hook" />
 
     <target name="-compile:compile">
-        <apply executable="php" failonerror="true" output="${logsdir}/compile.log">
+        <apply executable="php" failonerror="true" output="${commons:logsdir}/compile.log">
             <arg value="-l" />
             <fileset dir="${commons.srcdir.php}">
                 <include name="**/*.php" />

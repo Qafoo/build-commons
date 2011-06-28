@@ -36,7 +36,7 @@
             <arg value="xml" />
             <arg value="${phpmd.rulesets}" />
             <arg value="--reportfile" />
-            <arg value="${logsdir}/pmd.xml" />
+            <arg value="${commons:logsdir}/pmd.xml" />
         </exec>
     </target>
 

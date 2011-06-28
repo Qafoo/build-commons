@@ -142,11 +142,11 @@
             <equals arg1="${in.phpunit.group}" arg2="$${in.phpunit.group}" trim="true" />
         </condition>
 
-        <condition property="phpunit.clover" value="" else="--coverage-clover '${logsdir}/clover.xml'">
+        <condition property="phpunit.clover" value="" else="--coverage-clover '${commons:logsdir}/clover.xml'">
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
-        <condition property="phpunit.html" value="" else="--coverage-html '${builddir}/coverage'">
+        <condition property="phpunit.html" value="" else="--coverage-html '${commons:builddir}/coverage'">
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
@@ -157,7 +157,7 @@
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpunit" />
             <arg value="--log-junit" />
-            <arg value="${logsdir}/junit.xml" />
+            <arg value="${commons:logsdir}/junit.xml" />
             <arg line="${phpunit.include.path}" />
             <arg line="${phpunit.group}" />
             <arg line="${phpunit.html}" />
@@ -185,11 +185,11 @@
             <equals arg1="${in.phpunit.group}" arg2="$${in.phpunit.group}" trim="true" />
         </condition>
 
-        <condition property="phpunit.clover" value="" else="--coverage-clover '${logsdir}/clover.xml'">
+        <condition property="phpunit.clover" value="" else="--coverage-clover '${commons:logsdir}/clover.xml'">
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
-        <condition property="phpunit.html" value="" else="--coverage-html '${builddir}/coverage'">
+        <condition property="phpunit.html" value="" else="--coverage-html '${commons:builddir}/coverage'">
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
@@ -200,7 +200,7 @@
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpunit" />
             <arg value="--log-junit" />
-            <arg value="${logsdir}/junit.xml" />
+            <arg value="${commons:logsdir}/junit.xml" />
             <arg line="${phpunit.include.path}" />
             <arg line="${phpunit.group}" />
             <arg line="${phpunit.html}" />
@@ -211,7 +211,10 @@
 
     <target name="-phpunit:is-testdir-present">
         <condition property="-phpunit:out-testdir-present">
-            <available file="${commons.testdir.php}" />
+            <and>
+                <equals arg1="${phpunit.testsuite.file}" arg2="$${phpunit.testsuite.file}" trim="true" />
+                <available file="${commons.testdir.php}" />
+            </and>
         </condition>
     </target>
 

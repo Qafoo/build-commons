@@ -30,7 +30,7 @@
         Private main target that will remove all old build artifacts.
     -->
     <target name="-clean:clean">
-        <delete dir="${builddir}" includeemptydirs="true" />
+        <delete dir="${commons:builddir}" includeemptydirs="true" />
     </target>
 
     <!--

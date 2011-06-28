@@ -35,10 +35,10 @@
     <!--
         Some common settings for all project.
     -->
-    <property name="builddir"    location="${project.basedir}/${project.builddir.name}" />
-    <property name="distdir"     location="${builddir}/${project.distdir.name}" />
-    <property name="logsdir"     location="${builddir}/${project.logsdir.name}" />
-    <property name="tmpdir"      location="${builddir}/${project.tempdir.name}" />
+    <property name="commons:builddir" location="${project.basedir}/${commons.builddir.name}" />
+    <property name="commons:distdir"  location="${commons:builddir}/${commons.distdir.name}" />
+    <property name="commons:logsdir"  location="${commons:builddir}/${commons.logsdir.name}" />
+    <property name="commons:tmpdir"   location="${commons:builddir}/${commons.tempdir.name}" />
 
     <import file="clean.xml" />
     <import file="deploy.xml" />
@@ -85,11 +85,11 @@
     -->
     <target name="init-repository-properties" depends="initialize" if="is-svn-checkout">
 
-        <exec executable="svn" dir="${basedir}" output="${builddir}/~svn-info.xml">
+        <exec executable="svn" dir="${basedir}" output="${commons:builddir}/~svn-info.xml">
             <arg line="info --xml" />
         </exec>
 
-        <xmlproperty file="${builddir}/~svn-info.xml"
+        <xmlproperty file="${commons:builddir}/~svn-info.xml"
                      keepRoot="true"
                      collapseAttributes="true" />
 

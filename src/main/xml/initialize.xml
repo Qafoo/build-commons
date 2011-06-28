@@ -77,12 +77,12 @@
         Creates all directories required for a project build.
     -->
     <target name="-initialize:directories">
-        <mkdir dir="${builddir}" />
-        <mkdir dir="${tmpdir}" />
-        <mkdir dir="${distdir}" />
-        <mkdir dir="${logsdir}" />
-        <mkdir dir="${builddir}/phpcb" />
-        <mkdir dir="${builddir}/coverage" />
+        <mkdir dir="${commons:builddir}" />
+        <mkdir dir="${commons:tmpdir}" />
+        <mkdir dir="${commons:distdir}" />
+        <mkdir dir="${commons:logsdir}" />
+        <mkdir dir="${commons:builddir}/phpcb" />
+        <mkdir dir="${commons:builddir}/coverage" />
     </target>
 
     <!--

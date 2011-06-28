@@ -20,15 +20,15 @@
     <target name="-phar:define-archive-path"
             depends="-phar:is-enabled">
 
-        <fail message="The directory '${distdir}' does not exist.">
+        <fail message="The directory '${commons:distdir}' does not exist.">
             <condition>
                 <not>
-                    <available file="${distdir}" />
+                    <available file="${commons:distdir}" />
                 </not>
             </condition>
         </fail>
 
-        <fileset dir="${distdir}" id="-phar.existing.archive.files">
+        <fileset dir="${commons:distdir}" id="-phar.existing.archive.files">
             <include name="*.phar*"/>
         </fileset>
 

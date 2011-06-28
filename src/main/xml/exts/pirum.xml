@@ -78,15 +78,15 @@
             ${pirum.archive.path} - Absolute path to the PEAR archive.
     -->
     <target name="-pirum:define-archive-path">
-        <fail message="The directory '${distdir}' does not exist.">
+        <fail message="The directory '${commons:distdir}' does not exist.">
             <condition>
                 <not>
-                    <available file="${distdir}" />
+                    <available file="${commons:distdir}" />
                 </not>
             </condition>
         </fail>
 
-        <fileset dir="${distdir}" id="tgz.files">
+        <fileset dir="${commons:distdir}" id="tgz.files">
             <include name="*.tgz"/>
         </fileset>
 
