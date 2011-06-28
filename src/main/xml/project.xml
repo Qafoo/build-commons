@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-project" basedir=".">
 
-    <property name="project.archtypes.basedir" location="setup/src/main/xml/archtypes" />
+    <property name="project.archtypes.basedir" location="${commons:basedir}/main/xml/archtypes" />
 
     <fileset id="-project:archtypes.fileset" dir="${project.archtypes.basedir}" includes="*.xml" />
 

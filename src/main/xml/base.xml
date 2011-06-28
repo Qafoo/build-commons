@@ -4,18 +4,33 @@
     <!--
         Declare basedir for commons
     -->
-    <dirname property="-ant-build-commons-base.basedir" file="${ant.file.ant-build-commons-base}" />
+    <dirname property="-commons:basedir" file="${ant.file.ant-build-commons-base}" />
 
     <!--
+        Define the build commons base directory.
+    -->
+    <property name="commons:basedir" location="${-commons:basedir}/../../" />
+
+    <!--
+        Define the build commons main source directory.
+    -->
+    <property name="commons:sourcedir" location="${commons:basedir}/main/xml" />
+
+    <!--
+        Define the build commons resource directory
+    -->
+    <property name="commons:resourcedir" location="${commons:basedir}/main/resources" />
+
+    <!-- (DEPRECATED)
         Define minimum set of required properties
     -->
-    <property name="resourcedir" location="${-ant-build-commons-base.basedir}/../resources" />
+    <property name="resourcedir" location="${commons:resourcedir}" />
 
     <!--
         Import default properties. You should customize this properties in your
         own build environment.
     -->
-    <property file="${resourcedir}/base.properties" />
+    <property file="${commons:resourcedir}/base.properties" />
 
     <!--
         Some common settings for all project.
