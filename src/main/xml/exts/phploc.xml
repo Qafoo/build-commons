@@ -30,7 +30,7 @@
 
     <target name="-phploc:run" depends="-phploc:install-or-upgrade">
 
-        <exec executable="${php.executable}" failonerror="${phploc.fail.on.violation}">
+        <exec executable="${commons.executable.php}" failonerror="${phploc.fail.on.violation}">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phploc" />
@@ -38,7 +38,7 @@
             <arg value="${logsdir}/phploc.xml" />
             <arg value="--log-csv" />
             <arg value="${logsdir}/phploc.csv" />
-            <arg value="${php.basedir.src}" />
+            <arg value="${commons.srcdir.php}" />
         </exec>
     </target>
 

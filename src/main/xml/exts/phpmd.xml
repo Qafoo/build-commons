@@ -26,13 +26,13 @@
 
     <target name="-phpmd:run" depends="-phpmd:install-or-upgrade">
 
-        <exec executable="${php.executable}" failonerror="${phpmd.fail.on.violation}">
+        <exec executable="${commons.executable.php}" failonerror="${phpmd.fail.on.violation}">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bin.dir}/phpmd" />
-            <arg value="${php.basedir.src}" />
+            <arg value="${commons.srcdir.php}" />
             <arg value="xml" />
             <arg value="${phpmd.rulesets}" />
             <arg value="--reportfile" />

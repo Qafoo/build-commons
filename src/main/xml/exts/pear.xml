@@ -98,7 +98,7 @@
           ${pear-package}
     -->
     <target name="common-pear-install-remote" depends="-common-pear-prepare">
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -118,7 +118,7 @@
           ${pear-package-pattern}
     -->
     <target name="common-pear-install-local" depends="-common-pear-prepare">
-        <apply executable="${php.executable}" failonerror="true">
+        <apply executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -230,7 +230,7 @@
     <target name="-pear:initialize" unless="-pear:out-initialized">
         <mkdir dir="${-pear:in-root}" />
 
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -239,7 +239,7 @@
             <arg value="${-pear:in-conf}" />
         </exec>
 
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -250,7 +250,7 @@
             <arg value="${-pear:in-state}" />
         </exec>
 
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -271,7 +271,7 @@
     -->
     <target name="-pear:channel-discover">
         <!-- First try to delete a previous discovered channel -->
-        <exec executable="${php.executable}">
+        <exec executable="${commons.executable.php}">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -281,7 +281,7 @@
             <arg value="${-pear:in-channel-uri}" />
         </exec>
 
-        <exec executable="${php.executable}">
+        <exec executable="${commons.executable.php}">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -302,7 +302,7 @@
             ${-pear:in-package-name} Name of the pear package with optional version number.
     -->
     <target name="-pear:install">
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -325,7 +325,7 @@
             ${-pear:in-package-name} Name of the pear package with optional version number.
     -->
     <target name="-pear:upgrade">
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />

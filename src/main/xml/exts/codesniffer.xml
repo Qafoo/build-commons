@@ -30,7 +30,7 @@
     -->
     <target name="-codesniffer:run" depends="-codesniffer:install-or-upgrade">
 
-        <exec executable="${php.executable}" failonerror="${codesniffer.fail.on.violation}">
+        <exec executable="${commons.executable.php}" failonerror="${codesniffer.fail.on.violation}">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
@@ -39,7 +39,7 @@
             <arg value="--standard=${codesniffer.standard}" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${logsdir}/checkstyle.xml" />
-            <arg value="${php.basedir.src}" />
+            <arg value="${commons.srcdir.php}" />
         </exec>
 
     </target>

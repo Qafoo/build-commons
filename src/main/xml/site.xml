@@ -90,7 +90,7 @@ site:zip
         This target takes the raw rst files and generates the website content.
     -->
     <target name="-site:content-generate-execute">
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="${site.wcv.executable}" />
             <arg value="--output" />
             <arg value="${site.outputdir}" />

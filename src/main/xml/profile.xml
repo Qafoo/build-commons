@@ -40,7 +40,7 @@
 
         <mkdir dir="${profile.working.directory}" />
 
-        <exec executable="${php.executable}"
+        <exec executable="${commons.executable.php}"
               failonerror="false"
               failifexecutionfails="true"
               output="${profile.logfile}"

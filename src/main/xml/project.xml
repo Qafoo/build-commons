@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-project" basedir=".">
 
+    <!--
+        Base directory with project archtypes supported by the build commons
+        framework.
+    -->
     <property name="project.archtypes.basedir" location="${commons:basedir}/main/xml/archtypes" />
 
+    <!--
+        Fileset with all archtype specific build files.
+    -->
     <fileset id="-project:archtypes.fileset" dir="${project.archtypes.basedir}" includes="*.xml" />
 
+    <!--
+        Property holding the list of available archtype specific build files.
+    -->
     <property name="-project:archtypes.available" refid="-project:archtypes.fileset" />
 
 

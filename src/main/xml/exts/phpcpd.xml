@@ -30,7 +30,7 @@
     -->
     <target name="-phpcpd:run" depends="-phpcpd:install-or-upgrade">
 
-        <exec executable="${php.executable}" failonerror="${phpcpd.fail.on.violation}">
+        <exec executable="${commons.executable.php}" failonerror="${phpcpd.fail.on.violation}">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
@@ -38,7 +38,7 @@
             <arg value="${pear.local.bin.dir}/phpcpd" />
             <arg value="--log-pmd" />
             <arg value="${logsdir}/cpd.xml" />
-            <arg value="${php.basedir.src}" />
+            <arg value="${commons.srcdir.php}" />
         </exec>
     </target>
 

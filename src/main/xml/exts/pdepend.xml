@@ -26,7 +26,7 @@
 
     <target name="-pdepend:run" depends="-pdepend:install-or-upgrade">
 
-        <exec executable="${php.executable}" failonerror="${pdepend.fail.on.violation}">
+        <exec executable="${commons.executable.php}" failonerror="${pdepend.fail.on.violation}">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
@@ -34,7 +34,7 @@
             <arg value="${pear.local.bin.dir}/pdepend" />
             <arg value="--summary-xml=${logsdir}/pdepend.xml" />
             <arg value="--jdepend-xml=${logsdir}/jdepend.xml" />
-            <arg value="${php.basedir.src}" />
+            <arg value="${commons.srcdir.php}" />
         </exec>
     </target>
 

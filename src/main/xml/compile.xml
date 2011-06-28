@@ -38,10 +38,10 @@
     <target name="-compile:compile">
         <apply executable="php" failonerror="true" output="${logsdir}/compile.log">
             <arg value="-l" />
-            <fileset dir="${php.basedir.src}">
+            <fileset dir="${commons.srcdir.php}">
                 <include name="**/*.php" />
             </fileset>
-            <fileset dir="${php.basedir.test}">
+            <fileset dir="${commons.testdir.php}">
                 <include name="**/*.php" />
                 <exclude name="**/_source/**" />
                 <exclude name="**/_files/**" />

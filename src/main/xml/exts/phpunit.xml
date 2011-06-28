@@ -116,10 +116,24 @@
         </antcall>
     </target>
 
+    <!--
+        This target first tries to upgrade an existing local pear installation
+        or install a clean phpunit if no such installation exists. Then it
+        delegates to one of the concrete run targets. Which target gets executed
+        depends on the ${phpunit.testsuite.file}, if it is set and then if the
+        the test file exists. Otherwise the tests will be executed against the
+        configured test directory.
+    -->
     <target name="-phpunit:run"
+            depends="-phpunit:install-or-upgrade,
+                     -phpunit:run-testsuite,
+                     -phpunit:run-testdir,
+                     -phpunit:run-fail" />
+
+    <target name="-phpunit:run-testsuite"
             if="-phpunit:out-testsuite-present"
-            depends="-phpunit:is-testsuite-present,
-                     -phpunit:install-or-upgrade">
+            depends="-phpunit:is-testsuite-present">
+
         <condition property="phpunit.include.path" value="" else="--include-path '${in.phpunit.include.path}'">
             <equals arg1="${in.phpunit.include.path}" arg2="$${in.phpunit.include.path}" trim="true" />
         </condition>
@@ -136,7 +150,7 @@
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
@@ -149,14 +163,76 @@
             <arg line="${phpunit.html}" />
             <arg line="${phpunit.clover}" />
             <arg value="${phpunit.testsuite.class}" />
-            <arg value="${php.basedir.test}/${phpunit.testsuite.file}" />
+            <arg value="${commons.testdir.php}/${phpunit.testsuite.file}" />
         </exec>
     </target>
 
     <target name="-phpunit:is-testsuite-present">
         <condition property="-phpunit:out-testsuite-present">
-            <available file="${php.basedir.test}/${phpunit.testsuite.file}" />
+            <available file="${commons.testdir.php}/${phpunit.testsuite.file}" />
         </condition>
+    </target>
+
+    <target name="-phpunit:run-testdir"
+            if="-phpunit:out-testdir-present"
+            depends="-phpunit:is-testdir-present">
+
+        <condition property="phpunit.include.path" value="" else="--include-path '${in.phpunit.include.path}'">
+            <equals arg1="${in.phpunit.include.path}" arg2="$${in.phpunit.include.path}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.group" value="" else="--group '${in.phpunit.group}'">
+            <equals arg1="${in.phpunit.group}" arg2="$${in.phpunit.group}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.clover" value="" else="--coverage-clover '${logsdir}/clover.xml'">
+            <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
+        </condition>
+
+        <condition property="phpunit.html" value="" else="--coverage-html '${builddir}/coverage'">
+            <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
+        </condition>
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="-d" />
+            <arg value="memory_limit=1024M" />
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.local.bin.dir}/phpunit" />
+            <arg value="--log-junit" />
+            <arg value="${logsdir}/junit.xml" />
+            <arg line="${phpunit.include.path}" />
+            <arg line="${phpunit.group}" />
+            <arg line="${phpunit.html}" />
+            <arg line="${phpunit.clover}" />
+            <arg value="${commons.testdir.php}" />
+        </exec>
+    </target>
+
+    <target name="-phpunit:is-testdir-present">
+        <condition property="-phpunit:out-testdir-present">
+            <available file="${commons.testdir.php}" />
+        </condition>
+    </target>
+
+    <!--
+        This target will fail the build of the  ${phpunit.testsuite.file} is
+        defined, but the referenced directory does not exist.
+    -->
+    <target name="-phpunit:run-fail">
+        <fail message="Cannot locate tests for the given project">
+            <condition>
+                <and>
+                    <not>
+                        <equals arg1="${phpunit.testsuite.file}" arg2="$${phpunit.testsuite.file}" trim="true" />
+                    </not>
+                    <not>
+                        <available file="${commons.testdir.php}/${phpunit.testsuite.file}" />
+                    </not>
+                </and>
+
+            </condition>
+        </fail>
     </target>
 
     <!--

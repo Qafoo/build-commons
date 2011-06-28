@@ -110,7 +110,7 @@
     -->
     <target name="-package:phar:prepare-files">
         <copy todir="${-package:phar:builddir}">
-            <fileset dir="${php.basedir.src}" />
+            <fileset dir="${commons.srcdir.php}" />
             <filterchain>
                 <replacestring from="@package_version@" to="${build.version.release}" />
             </filterchain>
@@ -139,7 +139,7 @@
             </filterchain>
         </copy>
 
-        <exec executable="${php.executable}" failonerror="true">
+        <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="-d" />
             <arg value="phar.readonly=0" />
             <arg value="${resourcedir}/extensions/phar/phar.phar" />
@@ -214,7 +214,7 @@
     -->
     <target name="-package:pear:prepare-files">
         <copy todir="${package.pear.builddir}">
-            <fileset dir="${php.basedir.src}"/>
+            <fileset dir="${commons.srcdir.php}"/>
         </copy>
 
         <antcall target="-package:bin-dir-copy-if-exists">
@@ -268,7 +268,7 @@
         Creates a pear archive of the project source
     -->
     <target name="-package:pear:main">
-        <exec executable="${php.executable}" dir="${distdir}" failonerror="true">
+        <exec executable="${commons.executable.php}" dir="${distdir}" failonerror="true">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -380,7 +380,7 @@
         <property name="output.dir" value="${-package:archive:builddir}/${build.file}" />
 
         <copy todir="${output.dir}/source">
-            <fileset dir="${php.basedir.src}"/>
+            <fileset dir="${commons.srcdir.php}"/>
             <filterchain>
                 <replacestring from="@package_version@" to="${build.version.release}" />
             </filterchain>

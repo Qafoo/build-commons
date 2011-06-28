@@ -38,7 +38,7 @@ changes:site
         <xslt basedir="${site.builddir}"
               destdir="${site.builddir}"
               style="${resourcedir}/extensions/changes/xsl/changes-to-rst.xsl"
-              in="${basedir.site}/docx/changes.xml"
+              in="${commons.sitedir}/docx/changes.xml"
               out="${site.builddir}${changes.webdir}/parts/latest.rst"
               includes="changes.xml">
 
