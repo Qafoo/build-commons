@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant--build-commons-validate" basedir=".">
+<project name="ant-build-commons-validate" basedir=".">
 
     <!--
         Import the previous build file.
@@ -22,10 +22,20 @@
                      -validate:validate,
                      -validate:after~hook" />
 
-    <target name="-validate:before~hook" />
-
-    <target name="-validate:after~hook" />
-
     <target name="-validate:validate" />
+
+    <!--
+        Available extension points for this build step.
+    -->
+
+    <!--
+
+    -->
+    <extension-point name="-validate:before~hook" />
+
+    <!--
+
+    -->
+    <extension-point name="-validate:after~hook" />
 
 </project>
