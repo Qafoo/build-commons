@@ -45,6 +45,8 @@
             <param name="-pear:in-package-name" value="${in.pear.package.name}" />
         </antcall>
         <antcall target="-pear:lock-release" />
+
+        <antcall target="-pear:set-up2date" />
     </target>
 
     <!--
@@ -52,7 +54,10 @@
             ${in.pear.package.name}
             ${in.pear.package.channel}
     -->
-    <target name="pear:upgrade">
+    <target name="pear:upgrade"
+            unless="-pear:out-up2date"
+            depends="-pear:is-up2date">
+
         <antcall target="-pear:lock-acquire" />
         <antcall target="-pear:upgrade">
             <param name="-pear:in-conf"      location="${pear.local.conffile}" />
@@ -60,6 +65,8 @@
             <param name="-pear:in-package-name" value="${in.pear.package.name}" />
         </antcall>
         <antcall target="-pear:lock-release" />
+        
+        <antcall target="-pear:set-up2date" />
     </target>
 
     <!--
@@ -335,6 +342,36 @@
             <arg value="--alldeps" />
             <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
+    </target>
+
+    <!--
+        Tests if the local PEAR installation is up2date. This up2date check uses
+        the ${pear.local.update.file} property to determine the next update time.
+    -->
+    <target name="-pear:is-up2date">
+        <tstamp>
+            <format property="-pear:last-touch-time"
+                    pattern="MM/dd/yyyy kk:mm:ss"
+                    offset="${pear.local.update.interval}"
+                    unit="hour" />
+        </tstamp>
+        <condition property="-pear:out-up2date">
+            <and>
+                <available file="${pear.local.update.file}" />
+                <islastmodified pattern="MM/dd/yyyy kk:mm:ss"
+                                datetime="${-pear:last-touch-time}"
+                                mode="after">
+                    <file file="${pear.local.update.file}" />
+                </islastmodified>
+            </and>
+        </condition>
+    </target>
+
+    <!--
+        Flags the local PEAR installation as up2date.
+    -->
+    <target name="-pear:set-up2date">
+        <touch file="${pear.local.update.file}" />
     </target>
 
     <!--
