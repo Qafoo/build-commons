@@ -31,22 +31,27 @@
                      -compile:compile,
                      -compile:after~hook" />
 
-    <target name="-compile:before~hook" />
-
-    <target name="-compile:after~hook" />
-
     <target name="-compile:compile">
-        <apply executable="php" failonerror="true" output="${commons:logsdir}/compile.log">
+
+        <apply executable="${commons.executable.php}"
+               failonerror="true"
+               output="${commons:logsdir}/compile.log">
             <arg value="-l" />
             <fileset dir="${commons.srcdir.php}">
                 <include name="**/*.php" />
+                <modified/>
             </fileset>
             <fileset dir="${commons.testdir.php}">
                 <include name="**/*.php" />
                 <exclude name="**/_source/**" />
                 <exclude name="**/_files/**" />
                 <exclude name="**/_code/**" />
+                <modified/>
             </fileset>
         </apply>
     </target>
+
+    <extension-point name="-compile:before~hook" />
+
+    <extension-point name="-compile:after~hook" />
 </project>
