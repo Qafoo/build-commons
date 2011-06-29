@@ -150,7 +150,10 @@
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
-        <exec executable="${commons.executable.php}" failonerror="true">
+        <exec executable="${commons.executable.php}"
+              failonerror="true"
+              dir="${commons.testdir.php}">
+
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
@@ -163,10 +166,15 @@
             <arg line="${phpunit.html}" />
             <arg line="${phpunit.clover}" />
             <arg value="${phpunit.testsuite.class}" />
-            <arg value="${commons.testdir.php}/${phpunit.testsuite.file}" />
+            <arg value="${phpunit.testsuite.file}" />
         </exec>
     </target>
 
+    <!--
+        This target tests if a concrete testsuite file is configured and present.
+        It will set the ${-phpunit:out-testsuite-present} property to TRUE if it
+        exists, otherwise this property will be set to FALSE.
+    -->
     <target name="-phpunit:is-testsuite-present">
         <condition property="-phpunit:out-testsuite-present">
             <available file="${commons.testdir.php}/${phpunit.testsuite.file}" />
@@ -193,7 +201,10 @@
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
-        <exec executable="${commons.executable.php}" failonerror="true">
+        <exec executable="${commons.executable.php}"
+              failonerror="true"
+              dir="${commons.testdir.php}">
+
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
