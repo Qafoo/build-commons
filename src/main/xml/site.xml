@@ -187,13 +187,27 @@ site:zip
     </target>
 
     <!--
+        Tests if the current project contains a site directory. This target will
+        initialize the ${-site:out-site-configured} property with TRUE if a site
+        directory exists, otherwise the property value is FALSE.
+    -->
+    <target name="-site:is-site-configured">
+        <condition property="-site:out-site-configured">
+            <available file="${commons.sitedir}" />
+        </condition>
+    </target>
+
+    <!--
         Extensions provided by this module
     -->
 
     <!--
         Initialzes the temporary site build directory.
     -->
-    <target name="site:initialize-directories" extensionOf="-initialize:after~hook">
+    <target name="site:initialize-directories"
+            if="-site:out-site-configured"
+            depends="-site:is-site-configured"
+            extensionOf="-initialize:after~hook">
         <mkdir dir="${site.builddir}" />
         <mkdir dir="${site.outputdir}" />
     </target>
