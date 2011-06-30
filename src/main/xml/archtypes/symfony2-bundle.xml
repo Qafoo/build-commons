@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant-build-commons-extensions-archtypes-symfony2-bundle">
+<project name="ant-build-commons-archtype-symfony2-bundle">
 
     <import file="../base.xml" />
 
@@ -10,9 +10,9 @@
         <echo taskname="project:create" message="===========================================" />
         <echo taskname="project:create" message=" Will create the following Symfony2 bundle " />
         <echo taskname="project:create" message="===========================================" />
-        <echo taskname="project:create" message=" Directory:   ${-project:name}" />
-        <echo taskname="project:create" message=" Namespace:   ${-project:bundle.namespace}" />
-        <echo taskname="project:create" message=" Bundle:      ${-project:bundle.name}" />
+        <echo taskname="project:create" message=" Directory:   ${-project:name}             " />
+        <echo taskname="project:create" message=" Namespace:   ${-project:bundle.namespace} " />
+        <echo taskname="project:create" message=" Bundle:      ${-project:bundle.name}      " />
         <echo taskname="project:create" message="===========================================" />
         <echo taskname="project:create" />
 
