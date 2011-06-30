@@ -166,7 +166,7 @@
             <arg line="${phpunit.html}" />
             <arg line="${phpunit.clover}" />
             <arg value="${phpunit.testsuite.class}" />
-            <arg value="${phpunit.testsuite.file}" />
+            <arg value="${commons.testdir.php}/${phpunit.testsuite.file}" />
         </exec>
     </target>
 
