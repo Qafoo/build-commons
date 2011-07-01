@@ -44,9 +44,9 @@
         verify target.
     -->
     <target name="-verify"
-            depends="-verify-before~hook,
+            depends="-verify:before~hook,
                      -verify:verify,
-                     -verify-after~hook" />
+                     -verify:after~hook" />
 
     <!--
         This target calls several quality tools parallel and generates the
@@ -69,12 +69,12 @@
         Hook target that will be called before the main verification phase
         of the project's source starts.
     -->
-    <extension-point name="-verify-before~hook" />
+    <extension-point name="-verify:before~hook" />
 
     <!--
         Hook target that will be called after the main verification phase
         of the project's source has finished.
     -->
-    <extension-point name="-verify-after~hook" />
+    <extension-point name="-verify:after~hook" />
 
 </project>

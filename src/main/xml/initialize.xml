@@ -43,8 +43,7 @@
         required directories, properties etc.
     -->
     <target name="-initialize:initialize"
-            depends="scm:update,
-                     -initialize:properties,
+            depends="-initialize:properties,
                      -initialize:directories"/>
 
     <!--

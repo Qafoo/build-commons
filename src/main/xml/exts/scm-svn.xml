@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-scm-svn" basedir=".">
+
+    <description>
+        This build file contains all targets related to the Subversion source
+        control management systems.
+    </description>
+
+    <target name="scm:svn:update" depends="-scm:svn:is-checkout" if="-scm:svn:out-checkout">
+        <antcall target="-scm:svn:update" />
+    </target>
+
+    <target name="scm:svn:update-light" depends="-scm:svn:is-checkout" if="-scm:svn:out-checkout">
+        <antcall target="-scm:svn:update-light" />
+    </target>
+
+    <target name="-scm:svn:update"
+            depends="-scm:svn:update-before~hook,
+                     -scm:svn:update-with-externals,
+                     -scm:svn:update-after~hook" />
+
+    <target name="-scm:svn:update-light"
+            depends="-scm:svn:update-light-before~hook,
+                     -scm:svn:update-light-without-externals,
+                     -scm:svn:update-light-after~hook" />
+
+    <target name="-scm:svn:update-with-externals">
+        <exec dir="${basedir}" executable="svn">
+            <arg value="up" />
+        </exec>
+    </target>
+
+    <target name="-scm:svn:update-light-without-externals">
+        <exec dir="${basedir}" executable="svn">
+            <arg value="up" />
+            <arg value="--ignore-externals" />
+        </exec>
+    </target>
+
+    <!--
+        Sets a tag for the current software configuration in the remote repository.
+
+        Parameters:
+            ${-scm:tag-label}
+            ${-scm:tag-commit-message}
+    -->
+    <target name="scm:svn:tag" depends="-scm:svn:is-checkout" if="-scm:svn:out-checkout">
+        <antcall target="-scm:svn:tag" />
+    </target>
+
+    <target name="-scm:svn:tag"
+            depends="-scm:svn:tag-before~hook,
+                     -scm:svn:tag-copy,
+                     -scm:svn:tag-after~hook" />
+
+    <target name="-scm:svn:tag-copy" depends="-scm:svn:repository-info">
+        <property name="remote.branch" value="${.common.rcs.svn.branch}" />
+        <property name="remote.tag" value="${.common.rcs.svn.root}/tags/${-scm:tag-label}" />
+
+        <echo message="svn copy -m '${-scm:tag-commit-message}' ${remote.branch} ${remote.tag}" />
+    </target>
+
+    <extension-point name="-scm:svn:update-before~hook" />
+
+    <extension-point name="-scm:svn:update-after~hook" />
+
+    <extension-point name="-scm:svn:update-light-before~hook" />
+
+    <extension-point name="-scm:svn:update-light-after~hook" />
+
+    <!--
+        Hook target that will be called before the project source will be tagged.
+
+        Parameters:
+            ${-scm:tag-label}
+    -->
+    <extension-point name="-scm:svn:tag-before~hook" />
+
+    <!--
+        Hook target that will be called after the project source was tagged.
+
+        Parameters:
+            ${-scm:tag-label}
+    -->
+    <extension-point name="-scm:svn:tag-after~hook" />
+
+    <!--
+        Checks if the current project is a subversion checkout.
+    -->
+    <target name="-scm:svn:is-checkout">
+        <available file="${basedir}/.svn" property="-scm:svn:out-checkout" />
+    </target>
+
+    <!--
+        This target extracts the metadata of the context subversion repository
+        and writes that data into the following properties.
+
+        Defined properties:
+            ${.common.rcs.svn.branch}  The currently checked out branch location,
+                                       for example: http://svn.example.com/trunk
+            ${.common.rcs.svn.root}    The repository root location, for example:
+                                       http://svn.example.com
+    -->
+    <target name="-scm:svn:repository-info" unless=".common.rcs.svn.info.branch">
+        <tempfile prefix="~" suffix=".xml" property=".common.svn.info.tmp" />
+
+        <echo message="Writing svn info to: ${.common.svn.info.tmp}" level="verbose" />
+        <exec dir="${basedir}" executable="svn" failonerror="true" output="${.common.svn.info.tmp}">
+            <arg line="info" />
+            <arg line="--xml" />
+        </exec>
+
+        <xmlproperty file="${.common.svn.info.tmp}" />
+
+        <property name=".common.rcs.svn.branch" value="${info.entry.url}" />
+        <property name=".common.rcs.svn.root" value="${info.entry.repository.root}" />
+
+        <delete file="${.common.svn.info.tmp}" />
+    </target>
+    
+</project>

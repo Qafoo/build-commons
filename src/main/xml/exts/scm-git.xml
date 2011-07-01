@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-scm-git" basedir=".">
+
+    <description>
+        This build file contains all targets related to the Subversion source
+        control management systems.
+    </description>
+
+    <target name="scm:git:update" depends="-scm:git:is-checkout" if="-scm:git:out-checkout">
+        <antcall target="-scm:git:update" />
+    </target>
+
+    <target name="scm:git:update-light" depends="-scm:git:is-checkout" if="-scm:git:out-checkout">
+        <antcall target="-scm:git:update-light" />
+    </target>
+
+    <target name="-scm:git:update"
+            depends="-scm:git:update-before~hook,
+                     -scm:git:update-module,
+                     -scm:git:update-submodules,
+                     -scm:git:update-after~hook" />
+
+    <target name="-scm:git:update-light"
+            depends="-scm:git:update-light-before~hook,
+                     -scm:git:update-module,
+                     -scm:git:update-light-after~hook" />
+
+    <target name="-scm:git:update-module">
+        <exec dir="${basedir}" executable="git">
+            <arg line="pull" />
+            <arg line="${scm.git.remote}" />
+            <arg line="${scm.git.branch}" />
+        </exec>
+    </target>
+
+    <target name="-scm:git:update-submodules">
+        <exec dir="${basedir}" executable="git" failonerror="false">
+            <arg value="submodule" />
+            <arg value="foreach" />
+            <arg value="--recursive" />
+            <arg value="git pull origin master" />
+        </exec>
+    </target>
+
+    <!--
+        Sets a tag for the current software configuration and pushes it to the
+        remote repository.
+
+        Parameters:
+            ${-scm:tag-label}
+            ${scm-tag-commit-message}
+    -->
+    <target name="scm:git:tag" depends="-scm:git:is-checkout" if="-scm:git:out-checkout">
+        <antcall target="-scm:git:tag-before~hook" />
+
+        <exec dir="${basedir}" executable="git">
+            <arg line="tag" />
+            <arg line="-m" />
+            <arg line="${-scm:tag-commit-message}" />
+            <arg line="${-scm:tag-label}" />
+        </exec>
+
+        <exec dir="${basedir}" executable="git">
+            <arg line="push" />
+            <arg line="${scm.git.remote}" />
+            <arg line="--tags" />
+        </exec>
+
+        <antcall target="-scm:git:tag-after~hook" />
+    </target>
+
+    <!--
+        Checks if the current project is a git checkout.
+    -->
+    <target name="-scm:git:is-checkout">
+        <available file="${basedir}/.git" property="-scm:git:out-checkout" />
+    </target>
+
+    <extension-point name="-scm:git:update-before~hook" />
+
+    <extension-point name="-scm:git:update-after~hook" />
+
+    <extension-point name="-scm:git:update-light-before~hook" />
+
+    <extension-point name="-scm:git:update-light-after~hook" />
+
+    <extension-point name="-scm:git:tag-before~hook" />
+
+    <extension-point name="-scm:git:tag-after~hook" />
+    
+</project>

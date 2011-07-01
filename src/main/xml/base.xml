@@ -51,6 +51,7 @@
     -->
     <import file="exts/changes.xml" />
     <import file="exts/pear.xml" />
+    <import file="exts/scm.xml" />
 
     <!--
         Common build variables
@@ -60,49 +61,29 @@
     </tstamp>
 
     <!--
-        Automatically creates a repopositoy tag when all tests have passed.
+        Tests if the project build should run offline. To force an offline build
+        you can supply the ${offline} property with "true", "on" or "1" to the
+        ant command line:
+
+        ~ $ ant verify -Doffline=1
+        ~ $ ant verify -Doffline=on
+        ~ $ ant verify -Doffline=true
     -->
-    <target name="tag" depends="test-is-svn-checkout,tag-if-project-is-svn-checkout" />
-
-    <target name="test-is-svn-checkout">
-        <available file="${basedir}/.svn" property="is-svn-checkout" />
-    </target>
-
-    <target name="tag-if-project-is-svn-checkout" depends="init-repository-properties" if="is-svn-checkout">
-        <property name="tag.repo" value="${repository}/tags" />
-        <property name="tag.name" value="${build.name}-${build.version}" />
-
-        <property name="tag.msg" value="# Auto created tag '${build.version}' after successful build." />
-
-        <echo message="svn copy . ${tag.repo}/${tag.name}" />
-        <exec dir="${basedir}" executable="svn">
-            <arg line="copy -m '${tag.msg}' . ${tag.repo}/${tag.name}" />
-        </exec>
+    <target name="-commons:is-offline-mode">
+        <condition property="commons:run-offline">
+            <or>
+                <equals arg1="${offline}" arg2="1" trim="true" />
+                <equals arg1="${offline}" arg2="on" trim="true" />
+                <equals arg1="${offline}" arg2="true" trim="true" />
+            </or>
+        </condition>
     </target>
 
     <!--
-        Initializes some properties based on the source repository.
+        Hooks right before the validate step.
     -->
-    <target name="init-repository-properties" depends="initialize" if="is-svn-checkout">
-
-        <exec executable="svn" dir="${basedir}" output="${commons:builddir}/~svn-info.xml">
-            <arg line="info --xml" />
-        </exec>
-
-        <xmlproperty file="${commons:builddir}/~svn-info.xml"
-                     keepRoot="true"
-                     collapseAttributes="true" />
-
-        <property name="repository" value="${info.entry.repository.root}" />
-    </target>
-
-    <!--
-        Initializes some properties required for automatic tagging
-    -->
-    <target name="init-tag-properties" if="is-svn-checkout">
-        <tstamp>
-            <format property="build.date" pattern="yyyy-MM-dd" />
-        </tstamp>
-    </target>
+    <target name="-commons:validate:before~hooked"
+            depends="-commons:is-offline-mode"
+            extensionOf="-validate:before~hook" />
 
 </project>

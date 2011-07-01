@@ -6,52 +6,69 @@
         management systems.
     </description>
 
-
-    <!--
-        Declare basedir for commons pear
-    -->
-    <dirname property="scm-ant-targets.basedir" file="${ant.file.ant-build-commons-extensions-scm}" />
-
     <!--
         Import default settings
     -->
-    <property file="${scm-ant-targets.basedir}/scm.properties" />
+    <property file="${common:resourcedir}/scm.properties" />
 
     <!--
-    ****************************************************************************
-    *
-    * Common revision control related targets
-    *
-    ****************************************************************************
+        Import supported scm implementations.
     -->
+    <import file="scm-git.xml" />
+    <import file="scm-svn.xml" />
 
     <!--
-        Performs a source update on the current base directory
+        Performs a full source update on the current base directory and all
+        dependencies.
     -->
-    <target name="scm:update"
-            depends="-scm-svn-update,
-                     -scm-git-update" />
+    <target name="scm:update" unless="commons:run-offline">
+        <antcall target="-scm:update" />
+    </target>
+
+    <!--
+        Performs a full source update on the current base directory and all
+        dependencies.
+    -->
+    <target name="-scm:update"
+            depends="scm:svn:update,
+                     scm:git:update" />
+
+    <!--
+        Performs a light update on the current base directory, but without any
+        dependencies.
+    -->
+    <target name="scm:update-light" unless="commons:run-offline">
+        <antcall target="-scm:update-light" />
+    </target>
+
+    <!--
+        Performs a light update on the current base directory, but without any
+        dependencies.
+    -->
+    <target name="-scm:update-light"
+            depends="scm:svn:update-light,
+                     scm:git:update-light" />
 
     <!--
         Sets a tag for the current project configuration.
 
         Parameters:
-            ${common.rcs.tag.label}
-            ${scm-tag-commit-message}
+            ${-scm:tag-label}
+            ${-scm:tag-commit-message}
     -->
-    <target name="scm-tag"
-            depends="-scm-tag-commit-message,
-                     -scm-tag-label,
-                     -scm-svn-tag,
-                     -scm-git-tag" />
+    <target name="scm:tag"
+            depends="-scm:tag-commit-message,
+                     -scm:tag-label,
+                     scm:svn:tag,
+                     scm:git:tag" />
 
     <!--
         Generates a default tag label, when it wasn't specified/defined earlier.
     -->
-    <target name="-scm-tag-label" unless="common.rcs.tag.label">
+    <target name="-scm:tag-label" unless="-scm:tag-label">
         <buildnumber file="build.number" />
 
-        <property name="common.rcs.tag.label"
+        <property name="-scm:tag-label"
                   value="${project.name}-${project.version}build${build.number}" />
     </target>
 
@@ -59,204 +76,30 @@
         Generates a default commit message for a new tag, when this property
         wasn't specified/defined earlier.
     -->
-    <target name="-scm-tag-commit-message"
-            depends="-scm-tag-label"
-            unless="common.rcs.tag.commit.message">
+    <target name="-scm:tag-commit-message"
+            depends="-scm:tag-label"
+            unless="-scm:tag-commit-message">
 
-        <property name="common.rcs.tag.commit.message"
-                  value="# Auto created tag '${common.rcs.tag.label}' after successful build." />
+        <property name="-scm:tag-commit-message"
+                  value="# Auto created tag '${-scm:tag-label}' after successful build." />
     </target>
 
     <!--
-    ****************************************************************************
-    *
-    * Subversion related targets
-    *
-    ****************************************************************************
+        Utilized extension points
     -->
 
     <!--
-        Performs an update on a subversion checkout
+        Hooks the light weight update into the initialization step.
     -->
-    <target name="-scm-svn-update" depends="-scm-is-svn" if=".common.rcs.is.svn">
-        <antcall target="~scm-svn-update-before" />
-
-        <exec dir="${basedir}" executable="svn">
-            <arg line="up" />
-        </exec>
-
-        <antcall target="~scm-svn-update-after" />
-    </target>
+    <target name="-scm:initialize:after~hooked"
+            depends="scm:update-light"
+            extensionOf="-initialize:after~hook" />
 
     <!--
-        Hook target that will be called before an svn update occurs.
+        Hooks the full update procedure before the verify step.
     -->
-    <target name="~scm-svn-update-before" />
-
-    <!--
-        Hook target that will be called after an svn update has been done.
-    -->
-    <target name="~scm-svn-update-after" />
-
-    <!--
-        Sets a tag for the current software configuration in the remote repository.
-
-        Parameters:
-            ${common.rcs.tag.label}
-            ${common.rcs.tag.commit.message}
-    -->
-    <target name="-scm-svn-tag"
-            depends="-scm-is-svn,-scm-svn-repository-info"
-            if=".common.rcs.is.svn">
-
-        <antcall target="~scm-svn-tag-before" />
-
-        <property name="remote.branch" value="${.common.rcs.svn.branch}" />
-        <property name="remote.tag" value="${.common.rcs.svn.root}/tags/${common.rcs.tag.label}" />
-
-        <echo message="svn copy -m '${common.rcs.tag.commit.message}' ${remote.branch} ${remote.tag}" />
-
-        <antcall target="~scm-svn-tag-after" />
-    </target>
-
-    <!--
-        Hook target that will be called before the project source will be tagged.
-
-        Parameters:
-            ${common.rcs.tag.label}
-    -->
-    <target name="~scm-svn-tag-before" />
-
-    <!--
-        Hook target that will be called after the project source was tagged.
-
-        Parameters:
-            ${common.rcs.tag.label}
-    -->
-    <target name="~scm-svn-tag-after" />
-
-    <!--
-        Checks if the current project is a subversion checkout.
-    -->
-    <target name="-scm-is-svn">
-        <available file="${basedir}/.svn" property=".common.rcs.is.svn" />
-    </target>
-
-    <!--
-        This target extracts the metadata of the context subversion repository
-        and writes that data into the following properties.
-
-        Defined properties:
-            ${.common.rcs.svn.branch}  The currently checked out branch location,
-                                       for example: http://svn.example.com/trunk
-            ${.common.rcs.svn.root}    The repository root location, for example:
-                                       http://svn.example.com
-    -->
-    <target name="-scm-svn-repository-info" unless=".common.rcs.svn.info.branch">
-        <tempfile prefix="~" suffix=".xml" property=".common.svn.info.tmp" />
-
-        <echo message="Writing svn info to: ${.common.svn.info.tmp}" level="verbose" />
-        <exec dir="${basedir}" executable="svn" failonerror="true" output="${.common.svn.info.tmp}">
-            <arg line="info" />
-            <arg line="--xml" />
-        </exec>
-
-        <xmlproperty file="${.common.svn.info.tmp}" />
-
-        <property name=".common.rcs.svn.branch" value="${info.entry.url}" />
-        <property name=".common.rcs.svn.root" value="${info.entry.repository.root}" />
-
-        <delete file="${.common.svn.info.tmp}" />
-    </target>
-
-    <!--
-    ****************************************************************************
-    *
-    * GIT related targets
-    *
-    ****************************************************************************
-    -->
-
-    <!--
-        Performs an update on a git checkout
-    -->
-    <target name="-scm-git-update" depends="-scm-is-git" if=".common.rcs.is.git">
-        <antcall target="~scm-git-update-before" />
-
-        <exec dir="${basedir}" executable="git">
-            <arg line="pull" />
-            <arg line="${scm.git.remote}" />
-            <arg line="${scm.git.branch}" />
-        </exec>
-
-        <exec dir="${basedir}" executable="git" failonerror="false">
-            <arg value="submodule" />
-            <arg value="foreach" />
-            <arg value="--recursive" />
-            <arg value="git pull origin master" />
-        </exec>
-
-        <antcall target="~scm-git-update-after" />
-    </target>
-
-    <!--
-        Hook target that will be called before an git pull occurs.
-    -->
-    <target name="~scm-git-update-before" />
-
-    <!--
-        Hook target that will be called after an git pull has been done.
-    -->
-    <target name="~scm-git-update-after" />
-
-    <!--
-        Sets a tag for the current software configuration and pushes it to the
-        remote repository.
-
-        Parameters:
-            ${common.rcs.tag.label}
-            ${scm-tag-commit-message}
-    -->
-    <target name="-scm-git-tag" depends="-scm-is-git" if=".common.rcs.is.git">
-        <antcall target="~scm-git-tag-before" />
-
-        <exec dir="${basedir}" executable="git">
-            <arg line="tag" />
-            <arg line="-m" />
-            <arg line="${common.rcs.tag.commit.message}" />
-            <arg line="${common.rcs.tag.label}" />
-        </exec>
-
-        <exec dir="${basedir}" executable="git">
-            <arg line="push" />
-            <arg line="${scm.git.remote}" />
-            <arg line="--tags" />
-        </exec>
-
-        <antcall target="~scm-git-tag-after" />
-    </target>
-
-    <!--
-        Hook target that will be called before the project source will be tagged.
-
-        Parameters:
-            ${common.rcs.tag.label}
-    -->
-    <target name="~scm-git-tag-before" />
-
-    <!--
-        Hook target that will be called after the project source was tagged.
-
-        Parameters:
-            ${common.rcs.tag.label}
-    -->
-    <target name="~scm-git-tag-after" />
-
-    <!--
-        Checks if the current project is a git checkout.
-    -->
-    <target name="-scm-is-git">
-        <available file="${basedir}/.git" property=".common.rcs.is.git" />
-    </target>
+    <target name="-scm:verify:before~hooked"
+            depends="scm:update"
+            extensionOf="-verify:before~hook" />
     
 </project>
