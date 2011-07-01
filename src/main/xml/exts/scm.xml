@@ -9,7 +9,7 @@
     <!--
         Import default settings
     -->
-    <property file="${common:resourcedir}/scm.properties" />
+    <property file="${common:resourcedir}/scm/scm.properties" />
 
     <!--
         Import supported scm implementations.
