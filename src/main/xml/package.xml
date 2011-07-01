@@ -38,7 +38,12 @@
         Creates different binaries of the current project.
     -->
     <target name="package:package"
-            depends="test, package:phar, package:pear, package:archive" />
+            depends="test:test,
+                     -package:before~hook,
+                     package:phar,
+                     package:pear,
+                     package:archive,
+                     -package:after~hook" />
 
     <!--
         Creates different release binaries of the current project.
@@ -526,5 +531,9 @@
             </filterchain>
         </copy>
     </target>
+
+    <extension-point name="-package:before~hook" />
+
+    <extension-point name="-package:after~hook" />
 
 </project>

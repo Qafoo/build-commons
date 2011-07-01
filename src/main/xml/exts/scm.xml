@@ -96,10 +96,10 @@
             extensionOf="-initialize:after~hook" />
 
     <!--
-        Hooks the full update procedure before the verify step.
+        Hooks the full update procedure before the package step.
     -->
-    <target name="-scm:verify:before~hooked"
+    <target name="-scm:package:before~hooked"
             depends="scm:update"
-            extensionOf="-verify:before~hook" />
+            extensionOf="-package:before~hook" />
     
 </project>
