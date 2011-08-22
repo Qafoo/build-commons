@@ -113,6 +113,7 @@
             <arg value="${common-pear-config}" />
             <arg value="install" />
             <arg value="--alldeps" />
+            <arg value="--loose" />
             <arg value="--nobuild" />
             <arg value="${pear-package}" />
         </exec>
@@ -134,6 +135,7 @@
             <arg value="install" />
             <arg value="--force" />
             <arg value="--alldeps" />
+            <arg value="--loose" />
             <arg value="--nobuild" />
             <fileset dir="${commons:distdir}">
                 <include name="*-${build.version.release}.tgz" />
