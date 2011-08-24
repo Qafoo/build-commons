@@ -81,23 +81,16 @@ foreach ( array_filter( array_map( 'trim', file( $argv[1] ) ) ) as $spec )
             }
             else if ( $ignoreExternals )
             {
-                if ( $return = executeCommand( 'svn', array(
-                        $command,
-                        '--ignore-externals',
-                        $data['url'],
-                        $dirname
-                     ) ) )
+                chdir( $dirname );
+                if ( $return = executeCommand( 'svn', array( $command, '--ignore-externals'  ) ) )
                 {
                     exit( $return );
                 }
             }
             else
             {
-                if ( $return = executeCommand( 'svn', array(
-                        $command,
-                        $data['url'],
-                        $dirname
-                     ) ) )
+                chdir( $dirname );
+                if ( $return = executeCommand( 'svn', array( $command ) ) )
                 {
                     exit( $return );
                 }
@@ -105,17 +98,18 @@ foreach ( array_filter( array_map( 'trim', file( $argv[1] ) ) ) as $spec )
             break;
 
         case 'git':
-            if ( $return = executeCommand( 'git', array(
-                    $command,
-                    $data['url'],
-                    $dirname
-                 ) ) )
-            {
-                exit( $return );
-            }
 
             if ( 'checkout' === $command )
             {
+                if ( $return = executeCommand( 'git', array(
+                        'clone',
+                        $data['url'],
+                        $dirname
+                     ) ) )
+                {
+                    exit( $return );
+                }
+
                 chdir( $dirname );
                 if ( $return = executeCommand( 'git', array(
                         'submodule',
@@ -127,16 +121,28 @@ foreach ( array_filter( array_map( 'trim', file( $argv[1] ) ) ) as $spec )
                     exit( $return );
                 }
             }
-            else if ( false === $ignoreExternals )
+            else
             {
+                chdir( $dirname );
                 if ( $return = executeCommand( 'git', array(
-                        'submodule',
-                        'foreach',
-                        '--recursive',
-                        'git pull origin'
+                        'pull',
+                        'origin'
                      ) ) )
                 {
                     exit( $return );
+                }
+
+                if ( false === $ignoreExternals )
+                {
+                    if ( $return = executeCommand( 'git', array(
+                            'submodule',
+                            'foreach',
+                            '--recursive',
+                            'git pull origin'
+                         ) ) )
+                    {
+                        exit( $return );
+                    }
                 }
             }
             break;
