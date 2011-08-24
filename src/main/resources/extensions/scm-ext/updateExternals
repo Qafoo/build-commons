@@ -121,28 +121,17 @@ foreach ( array_filter( array_map( 'trim', file( $argv[1] ) ) ) as $spec )
                     exit( $return );
                 }
             }
-            else
+            else if ( false === $ignoreExternals )
             {
                 chdir( $dirname );
                 if ( $return = executeCommand( 'git', array(
-                        'pull',
-                        'origin'
+                        'submodule',
+                        'foreach',
+                        '--recursive',
+                        'git pull origin'
                      ) ) )
                 {
                     exit( $return );
-                }
-
-                if ( false === $ignoreExternals )
-                {
-                    if ( $return = executeCommand( 'git', array(
-                            'submodule',
-                            'foreach',
-                            '--recursive',
-                            'git pull origin'
-                         ) ) )
-                    {
-                        exit( $return );
-                    }
                 }
             }
             break;
