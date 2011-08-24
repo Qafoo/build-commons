@@ -1,0 +1,148 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * TODO
+ *
+ * - Handle revision properly
+ * - Perform an update in case the target already exists
+ * - Perform checkouts recursively, if externals definition exists
+ * - Support additional VCS
+ */
+
+if ( !isset( $argv[1] ) )
+{
+    fwrite( STDERR, 'Specify the path to the externals definition file' . PHP_EOL );
+    exit( 1 );
+}
+
+if ( !is_file( $argv[1] ) )
+{
+    // If there are no externals available, just exit silently
+    exit( 0 );
+}
+
+$ignoreExternals = in_array( '--ignore-externals', $argv );
+
+/**
+ * Execute shell command
+ *
+ * Executes a shell command with the given arguments. Ensures that the passed 
+ * arguments are escaped properly. Returns the return code of the shell 
+ * command.
+ * 
+ * @param string $command 
+ * @param array $args 
+ * @return int
+ */
+function executeCommand( $command, array $args = array() )
+{
+    passthru(
+        $command . ' ' .
+        implode( ' ', array_map(
+            'escapeshellarg',
+            $args )
+        ),
+        $return
+    );
+
+    return $return;
+}
+
+foreach ( array_filter( array_map( 'trim', file( $argv[1] ) ) ) as $spec )
+{
+    if ( !preg_match( '(
+            (?P<vcs>[a-z]+) \\s+
+            (?P<subdir>[A-Za-z0-9_/]+) \\s+
+            (?P<url>\\S+)
+            (?: \s+ (?P<revision>\\S+) )?
+        )x', $spec, $data ) )
+    {
+        fwrite( STDERR, "Invalid externals spec line: $spec" . PHP_EOL );
+        exit( 2 );
+    }
+
+    $dirname = dirname( $argv[1] ) . '/' . $data['subdir'];
+    $command = ( file_exists( $dirname ) ? 'update' : 'checkout' );
+
+    switch ( $data['vcs'] )
+    {
+        case 'svn':
+            if ( 'checkout' === $command )
+            {
+                if ( $return = executeCommand( 'svn', array(
+                        $command,
+                        $data['url'],
+                        $dirname
+                     ) ) )
+                {
+                    exit( $return );
+                }
+            }
+            else if ( $ignoreExternals )
+            {
+                if ( $return = executeCommand( 'svn', array(
+                        $command,
+                        '--ignore-externals',
+                        $data['url'],
+                        $dirname
+                     ) ) )
+                {
+                    exit( $return );
+                }
+            }
+            else
+            {
+                if ( $return = executeCommand( 'svn', array(
+                        $command,
+                        $data['url'],
+                        $dirname
+                     ) ) )
+                {
+                    exit( $return );
+                }
+            }
+            break;
+
+        case 'git':
+            if ( $return = executeCommand( 'git', array(
+                    $command,
+                    $data['url'],
+                    $dirname
+                 ) ) )
+            {
+                exit( $return );
+            }
+
+            if ( 'checkout' === $command )
+            {
+                chdir( $dirname );
+                if ( $return = executeCommand( 'git', array(
+                        'submodule',
+                        'update',
+                        '--init',
+                        '--recursive'
+                     ) ) )
+                {
+                    exit( $return );
+                }
+            }
+            else if ( false === $ignoreExternals )
+            {
+                if ( $return = executeCommand( 'git', array(
+                        'submodule',
+                        'foreach',
+                        '--recursive',
+                        'git pull origin'
+                     ) ) )
+                {
+                    exit( $return );
+                }
+            }
+            break;
+
+        default:
+            fwrite( STDERR, 'Unknown version control system: ' . $data['vcs'] . PHP_EOL );
+            exit( 3 );
+    }
+}

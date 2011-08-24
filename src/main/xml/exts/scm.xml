@@ -14,6 +14,7 @@
     <!--
         Import supported scm implementations.
     -->
+    <import file="scm-ext.xml" />
     <import file="scm-git.xml" />
     <import file="scm-svn.xml" />
 
@@ -30,7 +31,8 @@
         dependencies.
     -->
     <target name="-scm:update"
-            depends="scm:svn:update,
+            depends="scm:ext:update,
+                     scm:svn:update,
                      scm:git:update" />
 
     <!--
@@ -46,7 +48,8 @@
         dependencies.
     -->
     <target name="-scm:update-light"
-            depends="scm:svn:update-light,
+            depends="scm:ext:update-light,
+                     scm:svn:update-light,
                      scm:git:update-light" />
 
     <!--

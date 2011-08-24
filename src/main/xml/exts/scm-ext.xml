@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-scm-ext" basedir=".">
+
+    <description>
+        This build file contains all targets related to our custom source control
+        system format.
+    </description>
+
+    <!--
+        Import default settings
+    -->
+    <property file="${commons:resourcedir}/extensions/scm-ext/scm-ext.properties" />
+
+    <!--
+        Performs an update or full checkout of the project's sub modules
+    -->
+    <target name="scm:ext:update">
+        <exec executable="${commons.executable.php}" dir="${basedir}" failonerror="true">
+            <arg value="${scm-ext.executable}" />
+            <arg value="${scm-ext.path}" />
+        </exec>
+    </target>
+
+    <!--
+        Performs a light update of the project's sub modules
+    -->
+    <target name="scm:ext:update-light">
+        <exec executable="${commons.executable.php}" dir="${basedir}" failonerror="true">
+            <arg value="${scm-ext.executable}" />
+            <arg value="${scm-ext.path}" />
+            <arg value="--ignore-externals" />
+        </exec>
+    </target>
+
+</project>
