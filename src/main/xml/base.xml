@@ -61,6 +61,38 @@
     </tstamp>
 
     <!--
+        Alias target for commons:help
+    -->
+    <target name="help" depends="commons:help" />
+
+    <!--
+        Display some general help about the build commons project.
+    -->
+    <target name="commons:help">
+        <echo taskname="help">
+Command line switches:
+
+The build commons environment provides some global command line switches that
+can be passed as additional ant parameters.
+
+  ~ $$ ant -Dparam1=foo -Dparam2=bar
+
+Currently the following command line switches are available:
+
+-Drelease=[true|false]
+  If this parameter is set to TRUE the build commons project will create a
+  release version of the project, instead of a timestamped development build.
+  By default this parameter is set to FALSE, so that the build commons framework
+  will create development builds.
+
+-Doffline=[true|false]
+  If this parameter is set to TRUE all modules that normally require network
+  access should work without their network related tasks or they should simply
+  skip processing. 
+        </echo>
+    </target>
+
+    <!--
         Tests if the project build should run offline. To force an offline build
         you can supply the ${offline} property with "true", "on" or "1" to the
         ant command line:
