@@ -14,7 +14,15 @@
     <!--
         Performs an update or full checkout of the project's sub modules
     -->
-    <target name="scm:ext:update">
+    <target name="scm:ext:update"
+            depends="-scm:ext:update-before~hook,
+                     -scm:ext:update,
+                     -scm:ext:update-after~hook" />
+
+    <!--
+        Performs an update or full checkout of the project's sub modules
+    -->
+    <target name="-scm:ext:update">
         <exec executable="${commons.executable.php}" dir="${basedir}" failonerror="true">
             <arg value="${scm-ext.executable}" />
             <arg value="${scm-ext.path}" />
@@ -24,12 +32,38 @@
     <!--
         Performs a light update of the project's sub modules
     -->
-    <target name="scm:ext:update-light">
+    <target name="scm:ext:update-light"
+            depends="-scm:ext:update-light-before~hook,
+                     -scm:ext:update-light,
+                     -scm:ext:update-light-after~hook" />
+    
+    <!--
+        Performs a light update of the project's sub modules
+    -->
+    <target name="-scm:ext:update-light">
         <exec executable="${commons.executable.php}" dir="${basedir}" failonerror="true">
             <arg value="${scm-ext.executable}" />
             <arg value="${scm-ext.path}" />
             <arg value="--ignore-externals" />
         </exec>
     </target>
+
+    <!--
+        EXTENSION POINTS PROVIDED BY THIS EXTENSION
+    -->
+
+    <!--
+        Extension point that will be called before a module update will be executed
+    -->
+    <extension-point name="-scm:ext:update-before~hook" />
+
+    <!--
+        Extension point that will be called after a module update was executed.
+    -->
+    <extension-point name="-scm:ext:update-after~hook" />
+
+    <extension-point name="-scm:ext:update-light-before~hook" />
+
+    <extension-point name="-scm:ext:update-light-after~hook" />
 
 </project>
