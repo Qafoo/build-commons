@@ -79,15 +79,7 @@ foreach ( array_filter( array_map( 'trim', file( $argv[1] ) ) ) as $spec )
                     exit( $return );
                 }
             }
-            else if ( $ignoreExternals )
-            {
-                chdir( $dirname );
-                if ( $return = executeCommand( 'svn', array( $command, '--ignore-externals'  ) ) )
-                {
-                    exit( $return );
-                }
-            }
-            else
+            else if ( false === $ignoreExternals )
             {
                 chdir( $dirname );
                 if ( $return = executeCommand( 'svn', array( $command ) ) )
@@ -98,7 +90,6 @@ foreach ( array_filter( array_map( 'trim', file( $argv[1] ) ) ) as $spec )
             break;
 
         case 'git':
-
             if ( 'checkout' === $command )
             {
                 if ( $return = executeCommand( 'git', array(
