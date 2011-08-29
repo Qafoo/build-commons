@@ -7,51 +7,97 @@
     </description>
 
     <!--
-        Declare basedir for commons pear
-    -->
-    <dirname property="-compile:basedir" file="${ant.file.ant-build-commons-compile}" />
-
-    <!--
         Import the parent target file.
     -->
     <import file="initialize.xml" />
 
     <!--
-        Main public target of this build file.
+        Import default settings for this build step.
+    -->
+    <property file="${resourcedir}/compile/compile.properties" />
+
+    <!--
+        Shortcut for compile:compile
     -->
     <target name="compile"
-            depends="initialize, -compile"
+            depends="compile:compile"
             description="->  Performs a static syntax check of the project." />
+
+    <!--
+        Main public target of this build file.
+    -->
+    <target name="compile:compile"
+            depends="initialize,
+                     -compile:before~hook,
+                     -compile:compile,
+                     -compile:after~hook" />
 
     <!--
         Internal target that defines the primary workflow of this build component.
     -->
-    <target name="-compile"
-            depends="-compile:before~hook,
-                     -compile:compile,
-                     -compile:after~hook" />
+    <target name="-compile:compile"
+            depends="-compile:source-and-test-files,
+                     -compile:fail-build-on-compile-error" />
 
-    <target name="-compile:compile">
-
+    <!--
+        Compiles all source and test source files of the current project.
+    -->
+    <target name="-compile:source-and-test-files">
         <apply executable="${commons.executable.php}"
-               failonerror="true"
-               output="${commons:logsdir}/compile.log">
+               failonerror="false"
+               errorproperty="commons:out-error"
+               append="true"
+               output="${compile.logfile}">
             <arg value="-l" />
-            <fileset dir="${commons.srcdir.php}">
+            <fileset dir="${commons.srcdir.php}" erroronmissingdir="false">
                 <include name="**/*.php" />
-                <modified/>
+                <modified>
+                    <param name="cache.cachefile" value="${compile.cachefile}" />
+                </modified>
             </fileset>
-            <fileset dir="${commons.testdir.php}">
+            <fileset dir="${commons.testdir.php}" erroronmissingdir="false">
                 <include name="**/*.php" />
                 <exclude name="**/_source/**" />
                 <exclude name="**/_files/**" />
                 <exclude name="**/_code/**" />
-                <modified/>
+                <modified>
+                    <param name="cache.cachefile" value="${compile.cachefile}" />
+                </modified>
             </fileset>
         </apply>
     </target>
 
+    <!--
+        Lets the build fail when a compilation error occurred.
+    -->
+    <target name="-compile:fail-build-on-compile-error">
+        <antcall target="commons:fail-build-on-error">
+            <param name="commons:in-error-result" value="${commons:out-error}" />
+        </antcall>
+    </target>
+
+    <!--
+        Deletes the temporary compile cache when an error occurred during the
+        compilation process.
+    -->
+    <target name="-compile:delete-cache-on-compile-error~hooked"
+            extensionOf="-commons:fail-build-on-error-before~hook">
+        <delete file="${compile.cachefile}" />
+    </target>
+
+    <!--
+        EXTENSION POINTS FOR THE COMPILE MODULE
+    -->
+
+    <!--
+        This extension point will be called before the source compile process
+        starts.
+    -->
     <extension-point name="-compile:before~hook" />
 
+    <!--
+        This extension point will be called after the source compile process
+        has finished.
+    -->
     <extension-point name="-compile:after~hook" />
 </project>
