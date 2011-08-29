@@ -93,6 +93,52 @@ Currently the following command line switches are available:
     </target>
 
     <!--
+        Target that let's the current build fail when the error result property.
+
+        Parameters:
+            ${commons:in-error-result} Any error message or an empty string.
+    -->
+    <target name="commons:fail-build-on-error"
+            depends="-commons:is-error-property-set-failed,
+                     -commons:fail-build-on-error" />
+
+    <!--
+        This target tests if the ${commons:in-error-result} is set and not equal
+        if both conditions are TRUE this target defines the ${-commons:out-is-error}
+        property to indicate a build error.
+
+        Parameters:
+            ${commons:in-error-result} Any error message or an empty string.
+
+        Defines:
+            ${-commons:out-is-error} Boolean flag that indicates a build error.
+    -->
+    <target name="-commons:is-error-property-set-failed">
+        <condition property="-commons:out-is-error">
+            <and>
+                <not>
+                    <equals arg1="${commons:in-error-result}" arg2="" trim="true" />
+                </not>
+                <not>
+                    <equals arg1="${commons:in-error-result}" arg2="$${commons:in-error-result}" trim="true" />
+                </not>
+            </and>
+        </condition>
+    </target>
+
+    <!--
+        This target let's the build fail when the ${-commons:out-is-error}
+         property is set.
+    -->
+    <target name="-commons:fail-build-on-error" if="-commons:out-is-error">
+        <!-- Call extension point -->
+        <antcall target="-commons:fail-build-on-error-before~hook" />
+
+        <!-- Fail build with error message -->
+        <fail message="ERROR: ${commons:in-error-result}" />
+    </target>
+
+    <!--
         Tests if the project build should run offline. To force an offline build
         you can supply the ${offline} property with "true", "on" or "1" to the
         ant command line:
@@ -112,10 +158,24 @@ Currently the following command line switches are available:
     </target>
 
     <!--
+        EXTENSION POINTS UTILIZED BY THE BASE MODULE
+    -->
+
+    <!--
         Hooks right before the validate step.
     -->
     <target name="-commons:validate:before~hooked"
             depends="-commons:is-offline-mode"
             extensionOf="-validate:before~hook" />
+
+    <!--
+        EXTENSION POINTS DEFINED BY THE BASE MODULE
+    -->
+
+    <!--
+        This extension point will be called right before the build will fail. It
+        can be used to clean up some resources before the build fails.
+    -->
+    <extension-point name="-commons:fail-build-on-error-before~hook" />
 
 </project>
