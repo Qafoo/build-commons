@@ -311,7 +311,7 @@
             ${-pear:in-package-name} Name of the pear package with optional version number.
     -->
     <target name="-pear:install">
-        <exec executable="${commons.executable.php}" failonerror="true">
+        <exec executable="${commons.executable.php}" errorproperty="~pear:install-error-result">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -322,6 +322,10 @@
             <arg value="--nobuild" />
             <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
+
+        <antcall target="commons:fail-build-on-error">
+            <param name="commons:in-error-result" value="${~pear:install-error-result}" />
+        </antcall>
     </target>
 
     <!--
@@ -334,7 +338,7 @@
             ${-pear:in-package-name} Name of the pear package with optional version number.
     -->
     <target name="-pear:upgrade">
-        <exec executable="${commons.executable.php}" failonerror="true">
+        <exec executable="${commons.executable.php}" errorproperty="~pear:upgrade-error-result">
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.executable}" />
@@ -344,6 +348,10 @@
             <arg value="--alldeps" />
             <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
+
+        <antcall target="commons:fail-build-on-error">
+            <param name="commons:in-error-result" value="${~pear:upgrade-error-result}" />
+        </antcall>
     </target>
 
     <!--
@@ -463,6 +471,20 @@
                 </not>
             </and>
         </condition>
+    </target>
+
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This build fail extension will remove the pear lock file when the build
+        fails.
+    -->
+    <target name="-pear:release-lock-on-failure~hooked"
+            extensionOf="-commons:fail-build-on-error-before~hook">
+
+        <antcall target="-pear:lock-release" />
     </target>
 
 </project>
