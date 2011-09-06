@@ -320,6 +320,7 @@
             <arg value="install" />
             <arg value="--alldeps" />
             <arg value="--nobuild" />
+            <arg value="--force" />
             <arg value="${-pear:in-channel-uri}/${-pear:in-package-name}" />
         </exec>
 
