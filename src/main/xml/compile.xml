@@ -60,6 +60,8 @@
                 <exclude name="**/_source/**" />
                 <exclude name="**/_files/**" />
                 <exclude name="**/_code/**" />
+                <exclude name="**/_fixture/**" />
+                <exclude name="**/_fixtures/**" />
                 <modified>
                     <param name="cache.cachefile" value="${compile.cachefile}" />
                 </modified>
