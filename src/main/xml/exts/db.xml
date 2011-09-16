@@ -17,10 +17,10 @@ db:initialize
   Creates the initial database schema for the current project and the configured
   RDBMS. To make this target work, the following properties must be configured:
 
-    - $${db.system} (Default: mysql)
-    - $${db.driver} (Default: com.mysql.jdbc.Driver)
+    - $${db.system}   (Default: mysql)
+    - $${db.driver}   (Default: com.mysql.jdbc.Driver)
     - $${db.hostname} (Default: localhost)
-    - $${db.database} (Mandatory)
+    - $${db.name}     (Mandatory)
         </echo>
     </target>
 
@@ -69,7 +69,7 @@ db:initialize
                 <isset property="db.system" />
                 <isset property="db.driver" />
                 <isset property="db.hostname" />
-                <isset property="db.database" />
+                <isset property="db.name" />
             </and>
         </condition>
     </target>

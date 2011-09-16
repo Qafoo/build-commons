@@ -22,10 +22,10 @@
             <classpath refid="-db:mysql:classpath" />
             
 			<transaction>
-                CREATE DATABASE IF NOT EXISTS `${db.database}`;
+                CREATE DATABASE IF NOT EXISTS `${db.name}`;
 			</transaction>
 			<transaction>
-                USE `${db.database}`;
+                USE `${db.name}`;
 			</transaction>
         </sql>
     </target>

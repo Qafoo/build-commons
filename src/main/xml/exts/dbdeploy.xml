@@ -145,7 +145,6 @@
         <condition property="-dbdeploy:enabled">
             <available file="${dbdeploy.delta.dir}" />
         </condition>
-        <echo>${-dbdeploy:enabled} - ${dbdeploy.delta.dir}</echo>
     </target>
 
     <!--

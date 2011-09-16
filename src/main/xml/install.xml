@@ -40,15 +40,19 @@
     <target name="-install:install" />
 
     <!--
+        Provided extension points.
+    -->
+
+    <!--
         Hook target that will be called during the build process, just before
         the main install target starts.
     -->
-    <target name="-install:before~hook" />
+    <extension-point name="-install:before~hook" />
 
     <!--
         Hook target that will be called during the build process, when the main
         install target has finished.
     -->
-    <target name="-install:after~hook" />
+    <extension-point name="-install:after~hook" />
 
 </project>
