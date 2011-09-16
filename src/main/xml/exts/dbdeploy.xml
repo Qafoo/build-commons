@@ -64,7 +64,7 @@
                   url="${dbdeploy.url}"
                   userid="${dbdeploy.userid}"
                   password="${dbdeploy.password}"
-                  dir="${dbdeploy.deltadir}"
+                  dir="${dbdeploy.delta.dir}"
                   outputfile="${-dbdeploy:migrate.script}"
                   dbms="${dbdeploy.system}"
                   undoOutputfile="${-dbdeploy:rollback.script}" />
@@ -143,8 +143,9 @@
     -->
     <target name="-dbdeploy:is-enabled">
         <condition property="-dbdeploy:enabled">
-            <available file="${dbdeploy.deltadir}" />
+            <available file="${dbdeploy.delta.dir}" />
         </condition>
+        <echo>${-dbdeploy:enabled} - ${dbdeploy.delta.dir}</echo>
     </target>
 
     <!--
