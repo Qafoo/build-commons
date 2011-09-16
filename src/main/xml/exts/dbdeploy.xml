@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-dbdeploy" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/dbdeploy/dbdeploy.properties" />
+
+    <!--
+        Default locations for the migrate sql script.
+    -->
+    <property name="-dbdeploy:migrate.script" location="${commons:builddir}/dbdeploy-migrate.sql" />
+
+    <!--
+        Default locations for the rollback sql script.
+    -->
+    <property name="-dbdeploy:rollback.script" location="${commons:builddir}/dbdeploy-rollback.sql" />
+
+    <path id="-dbdeploy:classpath">
+        <fileset dir="${resourcedir}/extensions">
+            <include name="dbdeploy/dbdeploy-ant-*.jar"/>
+            <include name="db-${dbdeploy.system}/${dbdeploy.system}*.jar"/>
+        </fileset>
+    </path>
+
+    <taskdef name="dbdeploy" classname="com.dbdeploy.AntTarget">
+        <classpath refid="-dbdeploy:classpath" />
+    </taskdef>
+
+    <!--
+        Shortcut for the "dbdeploy:dbdeploy" target
+    -->
+    <target name="dbdeploy" depends="dbdeploy:dbdeploy" />
+
+    <target name="dbdeploy:dbdeploy" depends="dbdeploy:migrate">
+        
+    </target>
+
+    <target name="dbdeploy:init">
+        <sql driver="${dbdeploy.driver}"
+             url="${dbdeploy.url}"
+             userid="${dbdeploy.userid}"
+             password="${dbdeploy.password}"
+             src="${dbdeploy.schema}">
+            <classpath refid="-dbdeploy:classpath" />
+        </sql>
+    </target>
+
+    <!--
+        This target generates a migrate and a rollback sql script for the
+        current database state.
+    -->
+    <target name="dbdeploy:generate" depends="-dbdeploy:is-enabled" if="-dbdeploy:enabled">
+        <antcall target="-dbdeploy:generate" />
+    </target>
+
+    <!--
+        This target generates a migrate and a rollback sql script for the
+        current database state.
+    -->
+    <target name="-dbdeploy:generate" depends="dbdeploy:init">
+
+        <dbdeploy driver="${dbdeploy.driver}"
+                  url="${dbdeploy.url}"
+                  userid="${dbdeploy.userid}"
+                  password="${dbdeploy.password}"
+                  dir="${dbdeploy.deltadir}"
+                  outputfile="${-dbdeploy:migrate.script}"
+                  dbms="${dbdeploy.system}"
+                  undoOutputfile="${-dbdeploy:rollback.script}" />
+    </target>
+
+    <!--
+        This target migrates the system database to the latest schema version.
+    -->
+    <target name="dbdeploy:migrate" depends="-dbdeploy:is-enabled" if="-dbdeploy:enabled">
+        <antcall target="-dbdeploy:migrate" />
+    </target>
+
+    <!--
+        This target migrates the system database to the latest schema version.
+    -->
+    <target name="-dbdeploy:migrate" depends="-dbdeploy:generate">
+        <sql driver="${dbdeploy.driver}"
+             url="${dbdeploy.url}"
+             userid="${dbdeploy.userid}"
+             password="${dbdeploy.password}"
+             src="${-dbdeploy:migrate.script}">
+
+            <classpath refid="-dbdeploy:classpath" />
+        </sql>
+    </target>
+
+    <!--
+        This target will revert the last database migration.
+    -->
+    <target name="dbdeploy:rollback" depends="-dbdeploy:is-enabled" if="-dbdeploy:enabled">
+        <antcall target="-dbdeploy:rollback" />
+    </target>
+
+    <!--
+        This target will revert the last database migration.
+    -->
+    <target name="-dbdeploy:rollback" depends="-dbdeploy:generate">
+        <sql driver="${dbdeploy.driver}"
+             url="${dbdeploy.url}"
+             userid="${dbdeploy.userid}"
+             password="${dbdeploy.password}"
+             src="${-dbdeploy:rollback.script}">
+
+            <classpath refid="-dbdeploy:classpath" />
+        </sql>
+    </target>
+
+    <!--
+        Simple utility target that can be used to drop a dbdeploy changelog
+        table. Be careful with this target, because it will drop all update
+        information.
+    -->
+    <target name="dbdeploy:drop" depends="-dbdeploy:is-enabled" if="-dbdeploy:enabled">
+        <antcall target="-dbdeploy:drop" />
+    </target>
+
+    <!--
+        Simple utility target that can be used to drop a dbdeploy changelog
+        table. Be careful with this target, because it will drop all update
+        information.
+    -->
+    <target name="-dbdeploy:drop">
+        <sql driver="${dbdeploy.driver}"
+             url="${dbdeploy.url}"
+             userid="${dbdeploy.userid}"
+             password="${dbdeploy.password}">
+            
+            <classpath refid="-dbdeploy:classpath" />
+            <transaction>DROP TABLE IF EXISTS changelog;</transaction>
+        </sql>
+    </target>
+
+    <!--
+        Tests if a dbdeploy delta dir is configured. If this is true we expect
+        that the dbdeploy extension should be enabled.
+    -->
+    <target name="-dbdeploy:is-enabled">
+        <condition property="-dbdeploy:enabled">
+            <available file="${dbdeploy.deltadir}" />
+        </condition>
+    </target>
+
+    <!--
+        Utilized extension points
+    -->
+
+    <!--
+        Hooks the light weight update into the initialization step.
+    -->
+    <target name="-db:initialize-after~hooked"
+            depends="dbdeploy:dbdeploy"
+            extensionOf="-db:initialize-after~hook" />
+
+</project>

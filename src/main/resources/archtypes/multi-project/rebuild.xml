@@ -7,13 +7,13 @@
 
     <target name="archtype:merge-build-files">
 
-        <concat destfile="foo.xml" overwrite="true">
+        <concat destfile="foo.xml" overwrite="true" fixlastline="true">
             <fileset dir="${basedir}/../../../xml/" includes="**/*.xml" />
             <filterchain>
                 <linecontains negate="true">
                     <contains value="&lt;?xml"/>
                     <contains value="version="/>
-                </linecontains>
+                </linecontains> 
             </filterchain>
 
             <header file="${basedir}/rebuild.header" />
@@ -21,7 +21,11 @@
         </concat>
     </target>
 
-    <target name="archtype:generate-build-file">
-        
+    <target name="archtype:generate-build-file"
+            depends="archtype:merge-build-files">
+
+        <xslt in="foo.xml" out="foo.txt" style="rebuild.xsl">
+            
+        </xslt>
     </target>
 </project>

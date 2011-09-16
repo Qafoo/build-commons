@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-db-mysql" basedir=".">
+
+    <!--
+        Define classpath for the mysql extension
+    -->
+    <path id="-db:mysql:classpath">
+        <fileset dir="${resourcedir}/extensions">
+            <include name="db-mysql/mysql*.jar"/>
+        </fileset>
+    </path>
+
+    <!--
+        Initializes the project database if it does not exist.
+    -->
+    <target name="-db:mysql:initialize-database" depends="-db:mysql:is-enabled" if="-db:mysql:enabled">
+        <sql driver="${db.driver}"
+             url="jdbc:${db.system}://${db.hostname}"
+             userid="${db.userid}"
+             password="${db.password}">
+
+            <classpath refid="-db:mysql:classpath" />
+            
+			<transaction>
+                CREATE DATABASE IF NOT EXISTS `${db.database}`;
+			</transaction>
+			<transaction>
+                USE `${db.database}`;
+			</transaction>
+        </sql>
+    </target>
+
+    <!--
+        Initializes the project database from a schema file
+    -->
+    <target name="-db:mysql:initialize-schema">
+        <sql driver="${db.driver}"
+             url="jdbc:${db.system}://${db.hostname}"
+             userid="${db.userid}"
+             password="${db.password}">
+
+            <classpath refid="-db:mysql:classpath" />
+
+			<transaction src="${db.schema.file}" />
+        </sql>
+    </target>
+
+    <!--
+        Tests if the current system is configured for mysql.
+    -->
+    <target name="-db:mysql:is-enabled">
+        <condition property="-db:mysql:enabled">
+            <equals arg1="${db.system}" arg2="mysql" />
+        </condition>
+    </target>
+
+</project>

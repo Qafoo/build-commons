@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-db" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/db/db.properties" />
+
+    <!--
+        Import sub extensions
+    -->
+    <import file="db-mysql.xml" />
+
+    <target name="db:help">
+        <echo taskname="help">
+db:initialize
+  Creates the initial database schema for the current project and the configured
+  RDBMS. To make this target work, the following properties must be configured:
+
+    - $${db.system} (Default: mysql)
+    - $${db.driver} (Default: com.mysql.jdbc.Driver)
+    - $${db.hostname} (Default: localhost)
+    - $${db.database} (Mandatory)
+        </echo>
+    </target>
+
+    <!--
+        Initializes the project database if the current configuration contains
+        the
+    -->
+    <target name="db:initialize"
+            depends="-db:is-enabled"
+            if ="-db:enabled">
+
+        <antcall target="-db:initialize" />
+    </target>
+
+    <!--
+        Meta target that defines the build order.
+    -->
+    <target name="-db:initialize"
+            depends="-db:initialize-before~hook,
+                     -db:initialize-database,
+                     -db:initialize-schema,
+                     -db:initialize-after~hook" />
+
+    <!--
+        Creates the initial database.
+    -->
+    <target name="-db:initialize-database"
+            depends="-db:mysql:initialize-database" />
+
+    <!--
+        Initializes the project database from a schema file
+    -->
+    <target name="-db:initialize-schema"
+            depends="-db:is-schema-defined"
+            if="-db:schema-defined">
+
+        <antcall target="-db:mysql:initialize-schema" />
+    </target>
+
+    <!--
+        Tests if the database extension is enabled.
+    -->
+    <target name="-db:is-enabled">
+        <condition property="-db:enabled">
+            <and>
+                <isset property="db.system" />
+                <isset property="db.driver" />
+                <isset property="db.hostname" />
+                <isset property="db.database" />
+            </and>
+        </condition>
+    </target>
+
+    <!--
+        Tests if the project configuration defines a schema file.
+    -->
+    <target name="-db:is-schema-defined">
+        <condition property="-db:schema-defined">
+            <available file="${db.schema.file}" />
+        </condition>
+    </target>
+
+    <!--
+        Utilized extension points
+    -->
+
+    <!--
+        Hook into the initialize build step and generate the system database
+        if the current project uses a database.
+    -->
+    <target name="-db:initialize:after~hooked"
+            depends="db:initialize"
+            extensionOf="-initialize:after~hook" />
+
+    <!--
+        Extension points provided by this build extension.
+    -->
+
+    <extension-point name="-db:initialize-before~hook" />
+
+    <extension-point name="-db:initialize-after~hook" />
+    
+</project>
