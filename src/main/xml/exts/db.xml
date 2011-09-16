@@ -88,12 +88,12 @@ db:initialize
     -->
 
     <!--
-        Hook into the initialize build step and generate the system database
-        if the current project uses a database.
+        Hook into the install build step and generate the system database if the
+        current project uses a database.
     -->
-    <target name="-db:initialize:after~hooked"
+    <target name="-db:install:after~hooked"
             depends="db:initialize"
-            extensionOf="-initialize:after~hook" />
+            extensionOf="-install:after~hook" />
 
     <!--
         Extension points provided by this build extension.
