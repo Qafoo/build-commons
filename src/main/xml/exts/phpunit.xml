@@ -265,11 +265,31 @@
             <param name="in.pear.package.name" value="${phpunit.package.name}" />
             <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
         </antcall>
+
+        <antcall target="pear:install">
+            <param name="in.pear.package.name" value="${phpunit.dbunit.package.name}" />
+            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
+        </antcall>
+
+        <antcall target="pear:install">
+            <param name="in.pear.package.name" value="${phpunit.selenium.package.name}" />
+            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
+        </antcall>
     </target>
 
     <target name="-phpunit:upgrade" if="-phpunit:out-installed">
         <antcall target="pear:upgrade">
             <param name="in.pear.package.name" value="${phpunit.package.name}" />
+            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
+        </antcall>
+
+        <antcall target="pear:upgrade">
+            <param name="in.pear.package.name" value="${phpunit.dbunit.package.name}" />
+            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
+        </antcall>
+
+        <antcall target="pear:upgrade">
+            <param name="in.pear.package.name" value="${phpunit.selenium.package.name}" />
             <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
         </antcall>
     </target>
