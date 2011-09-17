@@ -31,9 +31,11 @@
     -->
     <target name="integration-test:integration-test"
             depends="package,
+                     -integration-test:before~hook,
                      -integration-test:source,
                      -integration-test:pear,
-                     -integration-test:phar" />
+                     -integration-test:phar,
+                     -integration-test:after~hook" />
 
     <!--
         Runs the project's integration tests against the current source checkout.
@@ -66,5 +68,13 @@
             <param name="in.phpunit.include.path" location="${phar.archive.path}" />
         </antcall>
     </target>
+
+    <!--
+        EXTENSION POINTS DEFINED BY THIS BUILD MODULE.
+    -->
+
+    <extension-point name="-integration-test:before~hook" />
+
+    <extension-point name="-integration-test:after~hook" />
 
 </project>
