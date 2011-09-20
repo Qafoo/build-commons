@@ -44,7 +44,8 @@
     -->
     <target name="-initialize:initialize"
             depends="-initialize:properties,
-                     -initialize:directories"/>
+                     -initialize:directories,
+                     -initialize:environment"/>
 
     <!--
         Initializes all properties required for a project build.
@@ -82,6 +83,34 @@
         <mkdir dir="${commons:logsdir}" />
         <mkdir dir="${commons:builddir}/phpcb" />
         <mkdir dir="${commons:builddir}/coverage" />
+    </target>
+
+    <!--
+        Creates a temporary properties file with build environment specific
+        settings.
+
+        This target will define a property named ${commons:env.properties.file}
+        which contains all relevant settings for the current build environment.
+    -->
+    <target name="-initialize:environment">
+
+        <tempfile property="commons:env.properties.file"
+                  destDir="${commons:builddir}"
+                  suffix=".properties"
+                  deleteonexit="true" />
+
+        <echoproperties destfile="${commons:env.properties.file}.temp"
+                        regex=".*\.${commons.env}\..*" />
+
+        <copy file="${commons:env.properties.file}.temp"
+              tofile="${commons:env.properties.file}">
+
+            <filterset begintoken="." endtoken=".">
+                <filter token="${commons.env}" value="." />
+            </filterset>
+        </copy>
+
+        <delete file="${commons:env.properties.file}.temp" />
     </target>
 
     <!--

@@ -91,9 +91,11 @@ db:initialize
         Hook into the install build step and generate the system database if the
         current project uses a database.
     -->
-    <target name="-db:install:after~hooked"
-            depends="db:initialize"
-            extensionOf="-install:after~hook" />
+    <target name="-db:install:after~hooked" extensionOf="-install:after~hook">
+        <antcall target="db:initialize" inheritAll="false">
+            <param file="${commons:env.properties.file}" />
+        </antcall>
+    </target>
 
     <!--
         Extension points provided by this build extension.
