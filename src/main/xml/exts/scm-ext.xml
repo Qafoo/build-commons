@@ -41,11 +41,18 @@
         Performs a light update of the project's sub modules
     -->
     <target name="-scm:ext:update-light">
-        <exec executable="${commons.executable.php}" dir="${basedir}" failonerror="true">
+        <apply executable="${commons.executable.php}"
+               dir="${basedir}"
+               failonerror="true">
             <arg value="${scm-ext.executable}" />
             <arg value="${scm-ext.path}" />
-            <arg value="--ignore-externals" />
-        </exec>
+            
+            <fileset file="${scm-ext.path}">
+                <modified>
+                    <param name="cache.cachefile" value="${scm-ext.cachefile}" />
+                </modified>
+            </fileset>
+        </apply>
     </target>
 
     <!--
