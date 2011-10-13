@@ -33,8 +33,7 @@ changes:site
 
     </target>
 
-    <target name="changes:site" extensionOf="-site:content-copy-after~hook">
-
+    <target name="changes:site">
         <xslt basedir="${site.builddir}"
               destdir="${site.builddir}"
               style="${resourcedir}/extensions/changes/xsl/changes-to-rst.xsl"
@@ -50,5 +49,17 @@ changes:site
             <param name="changes.project.name" expression="${project.name}" />
         </xslt>
     </target>
+
+    <!--
+        Utilized extension points
+    -->
+
+    <!--
+        This target hooks into the site generation process and creates the
+        release overview for this project based on the changes.xml file.
+    -->
+    <target name="-changes:site:content-copy-after~hooked"
+            depends="changes:site"
+            extensionOf="-site:content-copy-after~hook" />
 
 </project>
