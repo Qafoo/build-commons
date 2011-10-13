@@ -54,11 +54,9 @@
     <!--
         Import commons build extensions
     -->
-    <import file="exts/changes.xml" />
-    <import file="exts/db.xml" />
-    <import file="exts/dbdeploy.xml" />
-    <import file="exts/pear.xml" />
-    <import file="exts/scm.xml" />
+    <import>
+        <fileset dir="${-commons:basedir}/exts" includes="*.xml" />
+    </import>
 
     <!--
         Common build variables

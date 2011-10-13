@@ -14,10 +14,11 @@
     <!--
         Import supported scm implementations.
     -->
+<!--
     <import file="scm-ext.xml" />
     <import file="scm-git.xml" />
     <import file="scm-svn.xml" />
-
+-->
     <!--
         Displays the help text for this
     -->

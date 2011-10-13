@@ -12,13 +12,6 @@
     <import file="package.xml" />
 
     <!--
-        Import utilized extensions
-    -->
-    <import file="exts/pear.xml" />
-    <import file="exts/phar.xml" />
-    <import file="exts/phpunit.xml" />
-
-    <!--
         Shortcut for the "integration-test:integration-test" target.
     -->
     <target name="integration-test"

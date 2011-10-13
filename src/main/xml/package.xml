@@ -12,12 +12,6 @@
     <import file="test.xml" />
 
     <!--
-        Import utilized extensions
-    -->
-    <import file="exts/pear.xml" />
-    <import file="exts/phar.xml" />
-
-    <!--
         Import default settings for this build step.
     -->
     <property file="${resourcedir}/package/package.properties" />

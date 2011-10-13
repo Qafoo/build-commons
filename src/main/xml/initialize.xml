@@ -17,11 +17,6 @@
     <import file="validate.xml" />
 
     <!--
-        Import the scm related targets.
-    -->
-    <import file="exts/scm.xml" />
-
-    <!--
         Main public target of this build file.
     -->
     <target name="initialize"

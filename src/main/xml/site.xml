@@ -12,11 +12,6 @@
     <import file="initialize.xml" />
 
     <!--
-        Import utilized extensions
-    -->
-    <import file="exts/remote.xml" />
-
-    <!--
         Import default properties for the site sub module
     -->
     <property file="${resourcedir}/site/site.properties" />

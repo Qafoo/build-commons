@@ -17,16 +17,6 @@
     <import file="integration-test.xml" />
 
     <!--
-        Import utilized extensions
-    -->
-    <import file="exts/codesniffer.xml" />
-    <import file="exts/pdepend.xml" />
-    <import file="exts/phpunit.xml" />
-    <import file="exts/phpcpd.xml" />
-    <import file="exts/phploc.xml" />
-    <import file="exts/phpmd.xml" />
-
-    <!--
         Shortcut for "verify:verify"
     -->
     <target name="verify"

@@ -17,11 +17,6 @@
     <import file="install.xml" />
 
     <!--
-        Import deployment related extensions
-    -->
-    <import file="exts/pirum.xml" />
-
-    <!--
         Shortcut for "deploy:deploy"
     -->
     <target name="deploy"

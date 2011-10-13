@@ -17,11 +17,6 @@
     <import file="compile.xml" />
 
     <!--
-        Import utilized build commons extensions
-    -->
-    <import file="exts/phpunit.xml" />
-
-    <!--
         Shortcut for the "test:test" target.
     -->
     <target name="test"
