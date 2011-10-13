@@ -125,5 +125,17 @@
         PEAR archive into the configured Pirum repository.
     -->
     <extension-point name="-pirum:deploy-after~hook" />
+
+    <!--
+        Utilized extension points in the primary build steps.
+    -->
+
+    <!--
+        This target hooks into the deploy before hook to optionally deploy a
+        pear archive into a pirum repository.
+    -->
+    <target name="-pirum:deploy:before~hooked"
+            depends="-pirum:deploy"
+            extensionOf="-deploy:before~hook" />
     
 </project>

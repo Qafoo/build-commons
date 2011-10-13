@@ -36,8 +36,7 @@
     <!--
         Private target that executes remote deployment.
     -->
-    <target name="-deploy:deploy"
-            depends="-pirum:deploy" />
+    <target name="-deploy:deploy" />
 
     <!--
         Extension points provided by this module
