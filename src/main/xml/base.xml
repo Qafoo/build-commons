@@ -27,6 +27,11 @@
     <property name="resourcedir" location="${commons:resourcedir}" />
 
     <!--
+        Import optional global settings for the current build commons user.
+    -->
+    <property file="${user.home}/.ant-build-commons/global.properties" />
+
+    <!--
         Import default properties. You should customize this properties in your
         own build environment.
     -->
