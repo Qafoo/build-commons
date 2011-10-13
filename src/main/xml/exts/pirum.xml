@@ -7,14 +7,9 @@
     </description>
 
     <!--
-        Declare basedir for pirum build file
-    -->
-    <dirname property="ant-build-commons-extensions-pirum.basedir" file="${ant.file.ant-build-commons-extensions-pirum}" />
-
-    <!--
         Import default settings
     -->
-    <property file="${ant-build-commons-extensions-pirum.basedir}/pirum.properties" />
+    <property file="${resourcedir}/extensions/pirum/pirum.properties" />
 
     <!--
         Import required extensions
@@ -28,6 +23,10 @@
     <target name="pirum"
             depends="pirum:deploy" />
 
+    <!--
+        This target will deploy a generated PEAR archive into a configured pirum
+        server.
+    -->
     <target name="pirum:deploy" if="-pear:enabled" depends="-pear:is-enabled">
         <antcall target="-pirum:deploy" />
     </target>
@@ -38,10 +37,6 @@
                      -pirum:add-archive,
                      -pirum:remove-archive,
                      -pirum:deploy-after~hook" />
-
-    <target name="-pirum:deploy-before~hook" />
-
-    <target name="-pirum:deploy-after~hook" />
 
     <target name="-pirum:copy-archive"
             depends="-pirum:define-archive-path">
@@ -114,5 +109,21 @@
     <target name="-pirum:define-archive-file" depends="-pirum:define-archive-path">
         <basename property="pirum.archive.file" file="${pirum.archive.path}" />
     </target>
+
+    <!--
+        Extension points provided by this module.
+    -->
+
+    <!--
+        This extension point will be called right before we deploy a PEAR archive
+        into a Pirum repository.
+    -->
+    <extension-point name="-pirum:deploy-before~hook" />
+
+    <!--
+        This extension point will be called right after we have deployed the
+        PEAR archive into the configured Pirum repository.
+    -->
+    <extension-point name="-pirum:deploy-after~hook" />
     
 </project>

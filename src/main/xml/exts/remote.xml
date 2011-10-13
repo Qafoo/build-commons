@@ -7,14 +7,9 @@
     </description>
 
     <!--
-        Declare basedir for the remote build file
-    -->
-    <dirname property="ant-build-commons-extensions-remote.basedir" file="${ant.file.ant-build-commons-extensions-remote}" />
-
-    <!--
         Import default settings
     -->
-    <property file="${ant-build-commons-extensions-remote.basedir}/remote.properties" />
+    <property file="${resourcedir}/extensions/remote/remote.properties" />
 
     <!--
         Executes a command on the remote machine
