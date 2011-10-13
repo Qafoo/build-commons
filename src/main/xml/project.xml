@@ -17,6 +17,23 @@
     -->
     <property name="-project:archtypes.available" refid="-project:archtypes.fileset" />
 
+    <!--
+        Displays the help text for this build step.
+    -->
+    <target name="project:help">
+        <echo taskname="project:help">
+The project module provides several tasks to create a project
+based on the Ant-Build-Commons framework.
+&#x00A0;
+project:help
+  Displays the help text for the project module.
+&#x00A0;
+project:create
+  This target will create a new empty project based on the
+  Ant-Build-Commons framework and a specified architecture
+  type.
+        </echo>
+    </target>
 
     <target name="project:create"
             depends="-project:check-archtype,
