@@ -7,11 +7,6 @@
     </description>
 
     <!--
-        Declare basedir for commons pear
-    -->
-    <dirname property="-package:basedir" file="${ant.file.ant-build-commons-package}" />
-
-    <!--
         Import the parent target file.
     -->
     <import file="test.xml" />
@@ -189,16 +184,6 @@
                      -package:pear:after~hook" />
 
     <!--
-        Hook target that will be called before the pear package will be build.
-    -->
-    <target name="-package:pear:before~hook" />
-
-    <!--
-        Hook target that will be called after the pear package was build.
-    -->
-    <target name="-package:pear:after~hook" />
-
-    <!--
         Initializes the required environment to generate pear package file.
     -->
     <target name="-package:pear:prepare"
@@ -306,18 +291,6 @@
             depends="common-pear-channel-discover,
                      common-pear-install-local" />
 
-    <!--
-        Empty hook target that will be called before the build process will
-        install the generated pear archive in a local pear setup.
-    -->
-    <target name="-package:pear:verify-before~hook" />
-
-    <!--
-        Empty hook target that will be called by the build process when the
-        generated pear archive is installed in a local pear setup.
-    -->
-    <target name="-package:pear:verify-after~hook" />
-
 <!-- }}} PEAR SUPPORT -->
 
 <!-- {{{ ARCHIVE SUPPORT -->
@@ -355,16 +328,6 @@
                      -package:archive:before~hook,
                      -package:archive:main,
                      -package:archive:after~hook" />
-
-    <!--
-        Hook target that will be called before the archive package will be build.
-    -->
-    <target name="-package:archive:before~hook" />
-
-    <!--
-        Hook target that will be called after the archive package was build.
-    -->
-    <target name="-package:archive:after~hook" />
 
     <!--
         Initializes the environment required to generated a project archive.
@@ -532,8 +495,52 @@
         </copy>
     </target>
 
+    <!--
+        Extension points provided by this module
+    -->
+
+    <!--
+        This extension point will be called right before the main package
+        build step starts.
+    -->
     <extension-point name="-package:before~hook" />
 
+    <!--
+        This extension point will be called by the build framework when the main
+        package build step and all sub steps have finished.
+    -->
     <extension-point name="-package:after~hook" />
+
+    <!--
+        Hook target that will be called before the archive package will be build.
+    -->
+    <extension-point name="-package:archive:before~hook" />
+
+    <!--
+        Hook target that will be called after the archive package was build.
+    -->
+    <extension-point name="-package:archive:after~hook" />
+
+    <!--
+        Empty hook target that will be called before the build process will
+        install the generated pear archive in a local pear setup.
+    -->
+    <extension-point name="-package:pear:verify-before~hook" />
+
+    <!--
+        Empty hook target that will be called by the build process when the
+        generated pear archive is installed in a local pear setup.
+    -->
+    <extension-point name="-package:pear:verify-after~hook" />
+
+    <!--
+        Hook target that will be called before the pear package will be build.
+    -->
+    <extension-point name="-package:pear:before~hook" />
+
+    <!--
+        Hook target that will be called after the pear package was build.
+    -->
+    <extension-point name="-package:pear:after~hook" />
 
 </project>
