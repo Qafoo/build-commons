@@ -37,13 +37,16 @@ changes:site
         This target generates the site release info, when the the current
         project contains a changes.xml file.
     -->
-    <target name="changes:site">
+    <target name="changes:site"
+            depends="-changes:is-changes-xml-available"
+            if="-changes:out-changes-xml-available">
+
         <xslt basedir="${site.builddir}"
               destdir="${site.builddir}"
-              style="${resourcedir}/extensions/changes/xsl/changes-to-rst.xsl"
-              in="${commons.sitedir}/docx/changes.xml"
+              style="${changes.xsl.site}"
+              in="${changes.filepath}"
               out="${site.builddir}${changes.webdir}/parts/latest.rst"
-              includes="changes.xml">
+              includes="${changes.filename}">
 
             <param name="changes.builddir"     expression="${site.builddir}" />
             <param name="changes.webdir"       expression="${changes.webdir}" />
@@ -52,6 +55,19 @@ changes:site
             <param name="changes.static.uri"   expression="http://${project.static.uri}" />
             <param name="changes.project.name" expression="${project.name}" />
         </xslt>
+    </target>
+
+    <!--
+        Tests if the changes.xml file is present. If it exists this target will
+        set the ${-changes:out-changes-xml-available} property.
+
+        Defines:
+            ${-changes:out-changes-xml-available}
+    -->
+    <target name="-changes:is-changes-xml-available">
+        <condition property="-changes:out-changes-xml-available">
+            <available file="${changes.filepath}" />
+        </condition>
     </target>
 
     <!--
