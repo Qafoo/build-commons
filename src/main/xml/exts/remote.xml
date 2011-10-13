@@ -52,7 +52,9 @@
             depends="-remote:shell:is-enabled"
             if="-remote:shell:enabled">
 
-        <echo message="ssh ${remote.shell.credentials} '${remote:execute-command}'" />
+        <echo message="ssh ${remote.shell.credentials} '${remote:execute-command}'"
+              level="debug" />
+        
         <exec executable="ssh" failonerror="true">
             <arg value="${remote.shell.credentials}" />
             <arg line="'${remote:execute-command}'" />
@@ -83,11 +85,13 @@
             depends="-remote:shell:is-enabled"
             if="-remote:shell:enabled">
 
+        <echo message="scp ${remote:copy.source} ${remote.shell.credentials}:${remote:copy.target}"
+              level="debug"/>
+
         <exec executable="scp" failonerror="true">
             <arg value="${remote:copy.from}" />
             <arg value="${remote.shell.credentials}:${remote:copy.to}" />
         </exec>
-        <echo message="scp ${remote:copy.source} ${remote.shell.credentials}:${remote:copy.target}" />
     </target>
 
     <!--
