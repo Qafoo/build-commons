@@ -45,16 +45,20 @@
             depends="-pirum:deploy" />
 
     <!--
+        Extension points provided by this module
+    -->
+
+    <!--
         Hook target that will be called during the build process, just before
         the main deploy target starts.
     -->
-    <target name="-deploy:before~hook" />
+    <extension-point name="-deploy:before~hook" />
 
     <!--
         Hook target that will be called during the build process, when the main
         deploy target has finished.
     -->
-    <target name="-deploy:after~hook" />
+    <extension-point name="-deploy:after~hook" />
 
     
 </project>

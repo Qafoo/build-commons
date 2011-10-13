@@ -40,20 +40,24 @@
                      -test:after~hook" />
 
     <!--
+        Executes the project's unittests.
+    -->
+    <target name="-test:test" depends="phpunit:unit" />
+
+    <!--
+        Extension points provided by this module.
+    -->
+
+    <!--
         Hook target that will be called by the build framework before it starts
         the project's unittests.
     -->
-    <target name="-test:before~hook" />
+    <extension-point name="-test:before~hook" />
 
     <!--
         Hook target that will be called by the build framework after it has
         executed the project's unittests.
     -->
-    <target name="-test:after~hook" />
-
-    <!--
-        Executes the project's unittests.
-    -->
-    <target name="-test:test" depends="phpunit:unit" />
+    <extension-point name="-test:after~hook" />
 
 </project>

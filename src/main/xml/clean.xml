@@ -34,15 +34,19 @@
     </target>
 
     <!--
+        Extension points provided by this build module
+    -->
+
+    <!--
         Hook target that will be called during the build process, just before
         the clean target starts.
     -->
-    <target name="-clean:before~hook" />
+    <extension-point name="-clean:before~hook" />
 
     <!--
         Hook target that will be called during the build process, when the clean
         target has finished.
     -->
-    <target name="-clean:after~hook" />
+    <extension-point name="-clean:after~hook" />
 
 </project>
