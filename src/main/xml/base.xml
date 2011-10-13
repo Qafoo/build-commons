@@ -77,23 +77,24 @@
         <echo taskname="commons:help">
 Command line switches:
 &#x00A0;
-The build commons environment provides some global command line switches that
-can be passed as additional ant parameters.
+The build commons environment provides some global command line
+switches that can be passed as additional ant parameters.
 &#x00A0;
   ~ $$ ant -Dparam1=foo -Dparam2=bar
 &#x00A0;
 Currently the following command line switches are available:
 &#x00A0;
 -Drelease=[true|false]
-  If this parameter is set to TRUE the build commons project will create a
-  release version of the project, instead of a timestamped development build.
-  By default this parameter is set to FALSE, so that the build commons framework
-  will create development builds.
+  If this parameter is set to TRUE the build commons project
+  will create a release version of the project, instead of a
+  timestamped development build. By default this parameter is
+  set to FALSE, so that the build commons framework will create
+  development builds.
 &#x00A0;
 -Doffline=[true|false]
-  If this parameter is set to TRUE all modules that normally require network
-  access should work without their network related tasks or they should simply
-  skip processing. 
+  If this parameter is set to TRUE all modules that normally
+  require network access should work without their network
+  related tasks or they should simply skip processing.
         </echo>
     </target>
 

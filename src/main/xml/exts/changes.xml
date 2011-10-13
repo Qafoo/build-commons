@@ -17,15 +17,21 @@
     -->
     <target name="changes:help">
         <echo taskname="help">
+The changes extension provides a unified mechanism to generate
+project CHANGELOG files, release histories on your project site
+or the actual release note in your project's PEAR package
+manifest.
+&#x00A0;
 changes:help
   Displays the help text for the changes build extension.
-
+&#x00A0;
 changes:log
-  Generates a changelog file from an existing xdocs/changes.xml file.
-
+  Generates a CHANGELOG file from an existing xdocs/changes.xml
+  file.
+&#x00A0;
 changes:site
-  Generates several files for the project's site from the entries in the
-  xdocs/changes.xml file.
+  Generates several files for the project's site from the
+  entries in the xdocs/changes.xml file.
         </echo>
     </target>
 
