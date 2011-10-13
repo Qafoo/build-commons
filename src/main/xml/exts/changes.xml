@@ -33,6 +33,10 @@ changes:site
 
     </target>
 
+    <!--
+        This target generates the site release info, when the the current
+        project contains a changes.xml file.
+    -->
     <target name="changes:site">
         <xslt basedir="${site.builddir}"
               destdir="${site.builddir}"
@@ -51,7 +55,7 @@ changes:site
     </target>
 
     <!--
-        Utilized extension points
+        Utilized extension points of other build steps.
     -->
 
     <!--
