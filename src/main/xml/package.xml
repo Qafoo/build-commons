@@ -194,7 +194,7 @@
         </antcall>
 
         <copy file="${basedir}/LICENSE" todir="${package.pear.builddir}" />
-        <copy file="${basedir}/CHANGELOG" todir="${package.pear.builddir}" />
+        <!--<copy file="${basedir}/CHANGELOG" todir="${package.pear.builddir}" />-->
 
         <copy file="${project.root}/conf/package.xml" todir="${package.pear.builddir}">
             <filterchain>
@@ -513,11 +513,17 @@
 
     <!--
         Hook target that will be called before the pear package will be build.
+
+        Parameters:
+            ${package.pear.builddir}  Root directory with PEAR styled source
     -->
     <extension-point name="-package:pear:before~hook" />
 
     <!--
         Hook target that will be called after the pear package was build.
+
+        Parameters:
+            ${package.pear.builddir}  Root directory with PEAR styled source
     -->
 	<extension-point name="-package:pear:after~hook" />
 

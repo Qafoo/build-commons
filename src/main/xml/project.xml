@@ -47,6 +47,7 @@
 
         <echo taskname="project:create" message="Available archtypes are:" />
         <echo taskname="project:create" message="${-project:archtypes.available.output}" />
+        <echo taskname="project:create" message="&#x00A0;" />
         <echo taskname="project:create" />
 
         <input taskname="project:create"

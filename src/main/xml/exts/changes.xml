@@ -29,8 +29,15 @@ changes:site
         </echo>
     </target>
 
-    <target name="changes:log">
+    <target name="changes:log"
+            depends="-changes:is-changes-xml-available"
+            if="-changes:out-changes-xml-available">
 
+        <dirname property="-changes:changelog.dirpath" file="${changes.changelog.filepath}" />
+
+        <xslt style="${changes.xsl.changelog}"
+              in="${changes.filepath}"
+              out="${changes.changelog.filepath}" />
     </target>
 
     <!--
@@ -81,5 +88,20 @@ changes:site
     <target name="-changes:site:content-copy-after~hooked"
             depends="changes:site"
             extensionOf="-site:content-copy-after~hook" />
+
+    <!--
+        This target hooks into the PEAR package generate target and generates
+        a CHANGELOG file.
+
+        Parameters:
+            ${package.pear.builddir}  Root directory with PEAR styled source
+    -->
+    <target name="-changes:package:pear:before~hooked"
+            extensionOf="-package:pear:before~hook">
+
+        <antcall target="changes:changelog" inheritAll="false">
+            <param name="changes.changelog.filepath" value="${package.pear.builddir}/${changes.changelog.filename}" />
+        </antcall>
+    </target>
 
 </project>
