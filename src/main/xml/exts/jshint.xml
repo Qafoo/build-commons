@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-jshint" basedir=".">
+
+    <property name="-jshint:builddir" value="${commons:tmpdir}/jshint_env" />
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/jshint/jshint.properties" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="npm.xml" />
+
+    <!--
+        Shortcut for the "jshint:jshint" target
+    -->
+    <target name="jshint" depends="jshint:jshint" />
+
+    <!--
+        Runs the jshint cli tool against the project source code.
+    -->
+    <target name="jshint:jshint"
+            depends="-jshint:before~hook,
+                     -jshint:run,
+                     -jshint:after~hook" />
+
+    <target name="-jshint:run" depends="-jshint:install-or-upgrade">
+        <mkdir dir="${-jshint:builddir}" />
+        <copy
+            file="${jshint.config}"
+            tofile="${-jshint:builddir}/.jshintrc" />
+
+        <apply executable="${commons.executable.node}"
+            dir="${-jshint:builddir}"
+               failonerror="${jshint.fail.on.violation}"
+               outputproperty="commons:out-error"
+               append="true"
+               parallel="true"
+               output="${jshint.logfile}">
+            <arg value="${npm.local.modulesdir}/${jshint.executable}" />
+            <fileset dir="${commons.srcdir.js}" erroronmissingdir="false">
+                <include name="**/*.js" />
+                <modified>
+                    <param name="cache.cachefile" value="${jshint.cachefile}" />
+                </modified>
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="-jshint:install-or-upgrade"
+            depends="-jshint:is-installed,
+                     -jshint:install,
+                     -jshint:upgrade" />
+
+    <target name="-jshint:install" unless="-jshint:out-installed">
+        <antcall target="npm:install">
+            <param name="in.npm.package.name"    value="${jshint.package.name}" />
+        </antcall>
+    </target>
+
+    <target name="-jshint:upgrade" if="-jshint:out-installed">
+        <antcall target="npm:upgrade">
+            <param name="in.npm.package.name"    value="${jshint.package.name}" />
+        </antcall>
+    </target>
+
+    <target name="-jshint:is-installed">
+        <condition property="-jshint:out-installed">
+            <available file="${npm.local.modulesdir}/${jshint.package.name}" />
+        </condition>
+    </target>
+
+    <extension-point name="-jshint:before~hook" />
+    <extension-point name="-jshint:after~hook" />
+
+</project>
