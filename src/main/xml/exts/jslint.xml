@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-jslint" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/jslint/jslint.properties" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="npm.xml" />
+
+    <!--
+        Shortcut for the "jslint:jslint" target
+    -->
+    <target name="jslint" depends="jslint:jslint" />
+
+    <!--
+        Runs the jslint cli tool against the project source code.
+    -->
+    <target name="jslint:jslint"
+            depends="-jslint:before~hook,
+                     -jslint:run,
+                     -jslint:after~hook" />
+
+    <target name="-jslint:run" depends="-jslint:install-or-upgrade">
+        <apply executable="${commons.executable.node}"
+               failonerror="${jslint.fail.on.violation}"
+               outputproperty="commons:out-error"
+               append="true"
+               output="${jslint.logfile}">
+            <arg value="${npm.local.modulesdir}/${jslint.executable}" />
+            <fileset dir="${commons.srcdir.js}" erroronmissingdir="false">
+                <include name="**/*.js" />
+                <modified>
+                    <param name="cache.cachefile" value="${jslint.cachefile}" />
+                </modified>
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="-jslint:install-or-upgrade"
+            depends="-jslint:is-installed,
+                     -jslint:install,
+                     -jslint:upgrade" />
+
+    <target name="-jslint:install" unless="-jslint:out-installed">
+        <antcall target="npm:install">
+            <param name="in.npm.package.name"    value="${jslint.package.name}" />
+        </antcall>
+
+        <patch
+            patchfile="${resourcedir}/extensions/jslint/returncode.patch"
+            originalfile="${npm.local.modulesdir}/${jslint.executable}" />
+    </target>
+
+    <target name="-jslint:upgrade" if="-jslint:out-installed">
+        <antcall target="npm:upgrade">
+            <param name="in.npm.package.name"    value="${jslint.package.name}" />
+        </antcall>
+    </target>
+
+    <target name="-jslint:is-installed">
+        <condition property="-jslint:out-installed">
+            <available file="${npm.local.modulesdir}/${jslint.package.name}" />
+        </condition>
+    </target>
+
+    <extension-point name="-jslint:before~hook" />
+    <extension-point name="-jslint:after~hook" />
+
+</project>
