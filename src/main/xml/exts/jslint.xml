@@ -31,6 +31,7 @@
                append="true"
                output="${jslint.logfile}">
             <arg value="${npm.local.modulesdir}/${jslint.executable}" />
+            <arg line="${jslint.options}" />
             <fileset dir="${commons.srcdir.js}" erroronmissingdir="false">
                 <include name="**/*.js" />
                 <modified>
