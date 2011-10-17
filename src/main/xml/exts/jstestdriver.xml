@@ -2,6 +2,9 @@
 <!--
     This build file contains all targets for the JSTestDriver extension package. So
     that you can use JSTestDriver without any trouble in your project.
+
+    @TODO: Generate code coverage information
+    @TODO: Generate client config
 -->
 <project name="ant-build-commons-extensions-jstestdriver" basedir=".">
 
@@ -37,7 +40,8 @@
     <target name="jstestdriver:server">
         <echo>Starting JSTestDriver server now</echo>
         <java jar="${jstestdriver.runtime}" fork="true">
-            <arg value="--verbose" />
+            <arg value="--runnerMode" />
+            <arg value="INFO" />
             <arg value="--port" />
             <arg value="${jstestdriver.port}" />
             <arg value="--browser" />
@@ -61,11 +65,10 @@
     </target>
 
     <target name="-jstestdriver:run"
-            depends="-jstestdriver:check-testconfig,
+            depends="-jstestdriver:check-or-generate-testconfig,
                      -jstestdriver:check-server,
                      -jstestdriver:run-testconfig-full,
-                     -jstestdriver:run-testconfig-client,
-                     -jstestdriver:run-fail" />
+                     -jstestdriver:run-testconfig-client" />
 
     <target name="-jstestdriver:run-testconfig-client"
             if="-jstestdriver:server-running">
@@ -105,26 +108,7 @@
         </condition>
     </target>
 
-    <target name="-jstestdriver:check-testconfig">
-    </target>
-
-    <!--
-        This target will fail the build of the  ${jstestdriver.testsuite.file} is
-        defined, but the referenced directory does not exist.
-    -->
-    <target name="-jstestdriver:run-fail">
-        <fail message="Cannot locate tests for the given project">
-            <condition>
-                <and>
-                    <not>
-                        <equals arg1="${jstestdriver.testsuite.file}" arg2="$${jstestdriver.testsuite.file}" trim="true" />
-                    </not>
-                    <not>
-                        <available file="${commons.testdir.php}/${jstestdriver.testsuite.file}" />
-                    </not>
-                </and>
-
-            </condition>
-        </fail>
+    <target name="-jstestdriver:check-or-generate-testconfig">
+        <!-- TODO: mapi! -->
     </target>
 </project>
