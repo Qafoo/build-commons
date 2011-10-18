@@ -34,7 +34,7 @@
             <arg line="${jslint.options}" />
             <fileset dir="${commons.srcdir.js}" erroronmissingdir="false">
                 <include name="**/*.js" />
-                <exclude name="vendor/*" />
+                <exclude name="vendor/**" />
                 <modified>
                     <param name="cache.cachefile" value="${jslint.cachefile}" />
                 </modified>
