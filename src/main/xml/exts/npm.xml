@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This build file contains common targets for handling npm and npm package
+    related tasks.
+-->
+<project name="ant-build-commons-extensions-npm" basedir=".">
+
+    <!--
+        Import default settings
+    -->
+    <property file="${resourcedir}/extensions/npm/npm.properties" />
+
+    <!--
+        This method will initialize a fresh npm root directory
+    -->
+    <target name="npm:initialize">
+        <antcall target="-npm:lock-release" />
+        <antcall target="-npm:initialize-or-ignore">
+            <param name="-npm:in-root" location="${npm.local.basedir}" />
+            <param name="-npm:in-repo" value="${npm.repository}" />
+        </antcall>
+    </target>
+
+    <!--
+        Parameters:
+            ${in.npm.package.name}
+    -->
+    <target name="npm:install">
+        <antcall target="-npm:lock-acquire" />
+        <antcall target="-npm:install">
+            <param name="-npm:in-conf"      location="${npm.local.conffile}" />
+            <param name="-npm:in-package-name" value="${in.npm.package.name}" />
+        </antcall>
+        <antcall target="-npm:lock-release" />
+
+        <antcall target="-npm:set-up2date" />
+    </target>
+
+    <!--
+        Parameters:
+            ${in.npm.package.name}
+    -->
+    <target name="npm:upgrade"
+            unless="-npm:out-up2date"
+            depends="-npm:is-up2date">
+
+        <antcall target="-npm:lock-acquire" />
+        <antcall target="-npm:upgrade">
+            <param name="-npm:in-conf"      location="${npm.local.conffile}" />
+            <param name="-npm:in-package-name" value="${in.npm.package.name}" />
+        </antcall>
+        <antcall target="-npm:lock-release" />
+        
+        <antcall target="-npm:set-up2date" />
+    </target>
+
+    <!--
+        Installs a remote npm package.
+
+        Parameters
+          ${npm-package}
+    -->
+    <target name="common-npm-install-remote" depends="-common-npm-prepare">
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${npm.local.include.path}" />
+            <arg value="${npm.executable}" />
+            <arg value="-c" />
+            <arg value="${common-npm-config}" />
+            <arg value="install" />
+            <arg value="--alldeps" />
+            <arg value="--loose" />
+            <arg value="--nobuild" />
+            <arg value="${npm-package}" />
+        </exec>
+    </target>
+
+    <!--
+        Installs a local npm package.
+
+        Parameters
+          ${npm-package-pattern}
+    -->
+    <target name="common-npm-install-local" depends="-common-npm-prepare">
+        <apply executable="${commons.executable.php}" failonerror="true">
+            <arg value="-d" />
+            <arg value="include_path=${npm.local.include.path}" />
+            <arg value="${npm.executable}" />
+            <arg value="-c" />
+            <arg value="${common-npm-config}" />
+            <arg value="install" />
+            <arg value="--force" />
+            <arg value="--alldeps" />
+            <arg value="--loose" />
+            <arg value="--nobuild" />
+            <fileset dir="${commons:distdir}">
+                <include name="*-${build.version.release}.tgz" />
+            </fileset>
+        </apply>
+    </target>
+
+    <!--
+        Creates a temporary npm environment and defines a few properties
+        required by most npm related targets:
+
+        Properties:
+          ${common-npm-base-dir}  The npm root directory.
+          ${common-npm-bin-dir}   The npm binary directory.
+          ${common-npm-root-dir}  The npm library install directory.
+          ${common-npm-config}    The npm configuration file.
+    -->
+    <target name="-common-npm-prepare"
+            depends="-common-npm-prepare-properties,
+                     -common-npm-prepare-test-exists,
+                     -common-npm-prepare-if-not-exists" />
+
+    <!--
+        Defines a few properties required by most npm related targets:
+
+        Properties:
+          ${common-npm-base-dir}  The npm root directory.
+          ${common-npm-bin-dir}   The npm binary directory.
+          ${common-npm-root-dir}  The npm library install directory.
+          ${common-npm-config}    The npm configuration file.
+    -->
+    <target name="-common-npm-prepare-properties">
+        <property name="common-npm-base-dir" value="${commons:builddir}/npm" />
+        <property name="common-npm-bin-dir" value="${common-npm-base-dir}/npm" />
+        <property name="common-npm-root-dir" value="${common-npm-bin-dir}/php" />
+        <property name="common-npm-config" value="${common-npm-base-dir}/.npmrc" />
+    </target>
+
+    <!--
+        Checks if the temporary npm environment already exists. If it exists
+        this target will set the ${common-npm-prepare-exists} property.
+    -->
+    <target name="-common-npm-prepare-test-exists">
+        <available file="${common-npm-config}" property="common-npm-prepare-exists" />
+    </target>
+
+    <!--
+        Creates a temporary npm environment and defines two properties required
+        by most npm related targets:
+    -->
+    <target name="-common-npm-prepare-if-not-exists" unless="common-npm-prepare-exists">
+        <antcall target="-npm:initialize">
+            <param name="-npm:in-root" location="${common-npm-base-dir}" />
+            <param name="-npm:in-conf" location="${common-npm-config}" />
+            <param name="-npm:in-state"   value="alpha" />
+        </antcall>
+    </target>
+
+    <!--
+        Initializes an existing local npm installation for the current project
+        or it keeos an already existing installation.
+
+        Parameters:
+            ${-npm:in-root}   The npm root directory.
+            ${-npm:in-conf}   The npm main config file
+            ${-npm:in-state}  The preferred package state
+    -->
+    <target name="-npm:initialize-or-ignore"
+            depends="-npm:is-initialized,
+                     -npm:initialize" />
+
+    <!--
+        Tests if the project related npm installation is already initialized
+        and sets the property ${-npm:out-initialized}.
+
+        Parameters:
+            ${-npm:in-root} The npm root directory.
+            ${-npm:in-conf} The npm main config file
+
+        Defines:
+            ${-npm:out-initialized} Will be set if the given npm root directory
+                                     and config file already exists.
+    -->
+    <target name="-npm:is-initialized">
+        <condition property="-npm:out-initialized">
+            <available file="${-npm:in-root}" />
+        </condition>
+    </target>
+
+    <!--
+        Initializes an fresh npm root directory.
+
+        Parameters:
+            ${-npm:in-root}  The npm root directory.
+            ${-npm:in-conf}  The npm main config file
+            ${-npm:in-state} The preferred package state
+    -->
+    <target name="-npm:initialize" unless="-npm:out-initialized">
+        <exec executable="${commons.executable.git}" failonerror="true">
+            <arg value="clone" />
+            <arg value="${-npm:in-repo}" />
+            <arg value="${-npm:in-root}" />
+        </exec>
+
+        <exec executable="${commons.executable.make}" dir="${-npm:in-root}" failonerror="true" >
+            <arg value="submodules" />
+        </exec>
+
+        <exec executable="${commons.executable.make}" dir="${-npm:in-root}" failonerror="true" >
+            <arg value="doc" />
+        </exec>
+    </target>
+
+    <!--
+        Installs a package with all it's dependencies in the project's local
+        npm installation.
+
+        Parameters:
+            ${-npm:in-conf}         The npm main configuration file.
+            ${-npm:in-package-name} Name of the npm package with optional version number.
+    -->
+    <target name="-npm:install" depends="npm:initialize">
+        <exec executable="${commons.executable.node}" failonerror="true" dir="${npm.local.basedir}">
+            <arg value="${npm.local.executable}" />
+            <arg value="install" />
+            <arg value="${-npm:in-package-name}" />
+        </exec>
+    </target>
+
+    <!--
+        Upgrades an existing npm package in the npm installation of the
+        current project.
+
+        Parameters:
+            ${-npm:in-conf}         The npm main configuration file.
+            ${-npm:in-package-name} Name of the npm package with optional version number.
+    -->
+    <target name="-npm:upgrade">
+        <exec executable="${commons.executable.node}" failonerror="true" dir="${npm.local.basedir}">
+            <arg value="${npm.local.executable}" />
+            <arg value="update" />
+            <arg value="${-npm:in-package-name}" />
+        </exec>
+    </target>
+
+    <!--
+        Tests if the local NPM installation is up2date. This up2date check uses
+        the ${npm.local.update.file} property to determine the next update time.
+    -->
+    <target name="-npm:is-up2date">
+        <tstamp>
+            <format property="-npm:last-touch-time"
+                    pattern="MM/dd/yyyy kk:mm:ss"
+                    offset="${npm.local.update.interval}"
+                    unit="hour" />
+        </tstamp>
+        <condition property="-npm:out-up2date">
+            <and>
+                <available file="${npm.local.update.file}" />
+                <islastmodified pattern="MM/dd/yyyy kk:mm:ss"
+                                datetime="${-npm:last-touch-time}"
+                                mode="after">
+                    <file file="${npm.local.update.file}" />
+                </islastmodified>
+            </and>
+        </condition>
+    </target>
+
+    <!--
+        Flags the local NPM installation as up2date.
+    -->
+    <target name="-npm:set-up2date">
+        <touch file="${npm.local.update.file}" />
+    </target>
+
+    <!--
+        Acquires a lock for the local npm installation.
+    -->
+    <target name="-npm:lock-acquire">
+        <waitfor>
+            <not>
+                <available file="${npm.local.lockfile}" />
+            </not>
+        </waitfor>
+    </target>
+
+    <!--
+        Releases a lock on the local npm installation.
+    -->
+    <target name="-npm:lock-release">
+        <delete file="${npm.local.lockfile}" failonerror="false" />
+    </target>
+
+    <!--
+        This target will install a local version of the given package in the
+        project's npm installation, so that we can use it in the project. If
+        the package is already installed, this target will perform an upgrade of
+        the package.
+
+        Parameters:
+            ${in.npm.package.file}    A file from the package that will be used to
+                                       check if the package is already installed.
+            ${in.npm.package.name}    The name of the npm package that should
+                                       be installed.
+    -->
+    <target name="-npm:package-install-or-upgrade"
+            depends="-npm:package-is-installed,
+                     -npm:package-install,
+                     -npm:package-upgrade" />
+
+    <target name="-npm:package-install" unless="-npm:package-out-installed">
+        <antcall target="npm:install" />
+    </target>
+
+    <target name="-npm:package-upgrade" if="-npm:package-out-installed">
+        <antcall target="npm:upgrade" />
+    </target>
+
+    <!--
+        Tests if phpunit is already installed and sets the a property named
+        ${-npm:package-out-installed} to true if it exists.
+
+        Parameters:
+            ${in.npm.package.file}    A file from the package that will be used to
+                                       check if the package is already installed.
+
+        Defines:
+            ${-npm:package-out-installed} If phpunit is already installed locally.
+    -->
+    <target name="-npm:package-is-installed">
+        <condition property="-npm:package-out-installed">
+            <available file="${npm.local.bindir}/${in.npm.package.file}" />
+        </condition>
+    </target>
+
+    <!--
+        Defines a property with the absolute path that points to the temporary
+        npm source dir.
+
+        Defines:
+            ${npm.source.path} - Absolute path to the npm source dir.
+    -->
+    <target name="-npm:define-source-path"
+            depends="-common-npm-prepare-properties">
+
+        <property name="npm.source.path" value="${common-npm-root-dir}" />
+    </target>
+
+    <!--
+        Tests if the npm package format is enabled for this project.
+    -->
+    <target name="-npm:is-enabled">
+        <condition property="-npm:enabled">
+            <isset property="npm.repository" />
+        </condition>
+    </target>
+
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This build fail extension will remove the npm lock file when the build
+        fails.
+    -->
+    <target name="-npm:release-lock-on-failure~hooked"
+            extensionOf="-commons:fail-build-on-error-before~hook">
+
+        <antcall target="-npm:lock-release" />
+    </target>
+
+</project>
