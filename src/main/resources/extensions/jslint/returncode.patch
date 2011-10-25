@@ -1,0 +1,15 @@
+--- jslint.js.orig  2011-10-17 15:33:58.445400344 +0200
++++ jslint.js   2011-10-17 15:34:51.305400322 +0200
+@@ -62,8 +62,11 @@
+         } else {
+             reporter.report(file, lint);
+         }
++
++        if ( !lint.ok ) {
++            process.exit( 2 );
++        }
+     });
+-    // TODO process.exit with correct return value
+ }
+ 
+ parsed.argv.remain.forEach(lintFile);
