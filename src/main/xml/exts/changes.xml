@@ -39,11 +39,14 @@ changes:site
             depends="-changes:is-changes-xml-available"
             if="-changes:out-changes-xml-available">
 
-        <dirname property="-changes:changelog.dirpath" file="${changes.changelog.filepath}" />
+        <dirname property="-changes:changelog.dirpath" file="${changes.log.filepath}" />
 
         <xslt style="${changes.xsl.changelog}"
               in="${changes.filepath}"
-              out="${changes.changelog.filepath}" />
+              out="${changes.log.filepath}">
+            
+            <param name="changes.project.name" expression="${project.name}" />
+        </xslt>
     </target>
 
     <!--
@@ -105,8 +108,8 @@ changes:site
     <target name="-changes:package:pear:before~hooked"
             extensionOf="-package:pear:before~hook">
 
-        <antcall target="changes:changelog" inheritAll="false">
-            <param name="changes.changelog.filepath" value="${package.pear.builddir}/${changes.changelog.filename}" />
+        <antcall target="changes:log" inheritAll="false">
+            <param name="changes.log.filepath" value="${package.pear.builddir}/${changes.log.filename}" />
         </antcall>
     </target>
 
