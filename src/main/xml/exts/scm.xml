@@ -27,15 +27,15 @@
 scm:update
   Updates the project's source code from the configured version control system
   and all submodules.
-
+&#x00A0;
 scm:update-light
   Updates the project's source code from the configured version control system
   without it's submodules.
-
+&#x00A0;
 scm:tag
   Creates a tag for the current project source. It will generate a tag label
   in the following format:
-
+&#x00A0;
       $${project.name}-$${project.version}build$${build.number}
         </echo>
     </target>

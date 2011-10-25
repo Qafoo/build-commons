@@ -16,7 +16,7 @@
 db:initialize
   Creates the initial database schema for the current project and the configured
   RDBMS. To make this target work, the following properties must be configured:
-
+&#x00A0;
     - $${db.system}   (Default: mysql)
     - $${db.driver}   (Default: com.mysql.jdbc.Driver)
     - $${db.hostname} (Default: localhost)
