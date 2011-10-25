@@ -193,8 +193,12 @@
             <param name="output.dir" value="${package.pear.builddir}" />
         </antcall>
 
-        <copy file="${basedir}/LICENSE" todir="${package.pear.builddir}" />
-        <!--<copy file="${basedir}/CHANGELOG" todir="${package.pear.builddir}" />-->
+        <copy todir="${package.pear.builddir}">
+            <fileset dir="${basedir}">
+                <include name="LICENSE" />
+                <include name="CHANGELOG" />
+            </fileset>
+        </copy>
 
         <copy file="${project.root}/conf/package.xml" todir="${package.pear.builddir}">
             <filterchain>
