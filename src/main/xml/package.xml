@@ -217,6 +217,10 @@
         <antcall target="do-copy-files-for-xyz-archive">
             <param name="output.dir" value="${package.pear.builddir}" />
         </antcall>
+
+        <antcall target="pear:manifest">
+            <param name="pear.manifest.file" value="${package.pear.builddir}/package.xml" />
+        </antcall>
     </target>
 
     <target name="-package:bin-dir-copy-if-exists"

@@ -20,6 +20,52 @@
     </pathconvert>
 
     <!--
+        Displays the help text for this build extension.
+    -->
+    <target name="pear:help">
+        <echo taskname="help">
+The pear extension provides a large set of build targets that can
+be used to interact with PEAR repositories and to develop components
+that utilize PEAR as distribution channel.
+&#x00A0;
+changes:help
+  Displays the help text for the pear build extension.
+&#x00A0;
+pear:manifest
+  Updates a package manifest with contents found in the current
+  working directory.
+&#x00A0;
+    - $${pear.manifest.file}     (Mandatory)
+        </echo>
+    </target>
+
+    <!--
+        This target will update a given package.xml manifest with the contents
+        found in the context directory and all sub directories.
+
+        Parameters:
+          ${pear.manifest.file} Location of the package.xml manifest
+    -->
+    <target name="pear:manifest"
+            depends="-pear:manifest-before~hook,
+                     -pear:manifest,
+                     -pear:manifest-after~hook" />
+
+    <!--
+        This target will update a given package.xml manifest with the contents
+        found in the context directory and all sub directories.
+
+        Parameters:
+          ${pear.manifest.file} Location of the package.xml manifest
+    -->
+    <target name="-pear:manifest">
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${pear.update.executable}" />
+            <arg value="${pear.manifest.file}" />
+        </exec>
+    </target>
+
+    <!--
         This method will initialize a fresh pear root directory
     -->
     <target name="pear:initialize">
@@ -487,5 +533,27 @@
 
         <antcall target="-pear:lock-release" />
     </target>
+
+    <!--
+        EXTENSION POINTS PROVIDED BY THIS MODULE
+    -->
+
+    <!--
+        Will be called, right before this module starts to update a package.xml
+        file.
+
+        Parameters:
+          ${pear.manifest.file} Location of the package.xml manifest
+    -->
+    <extension-point name="-pear:manifest-before~hook" />
+
+    <!--
+        Will be called, after this module has finished the update process of
+        a package.xml file.
+
+        Parameters:
+          ${pear.manifest.file} Location of the package.xml manifest
+    -->
+    <extension-point name="-pear:manifest-after~hook" />
 
 </project>
