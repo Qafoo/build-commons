@@ -7,7 +7,7 @@
 
     <xsl:include href="rst.xsl" />
 
-    <xsl:param name="project.name" select="'phpmd'" />
+    <xsl:param name="changes.project.name" select="'example.com'" />
 
     <xsl:variable name="nl">
         <xsl:text>
@@ -106,7 +106,7 @@
     </xsl:template>
 
     <xsl:template match="changes:release" mode="release-title">
-        <xsl:value-of select="$project.name" />
+        <xsl:value-of select="$changes.project.name" />
         <xsl:text>-</xsl:text>
         <xsl:value-of select="@version" />
         <xsl:text> (</xsl:text>
