@@ -35,6 +35,9 @@ changes:site
         </echo>
     </target>
 
+    <!--
+        This target will generate the project's CHANGELOG file.
+    -->
     <target name="changes:log"
             depends="-changes:is-changes-xml-available"
             if="-changes:out-changes-xml-available">
@@ -47,6 +50,26 @@ changes:site
             
             <param name="changes.project.name" expression="${project.name}" />
         </xslt>
+    </target>
+
+    <!--
+        Parameters:
+            ${manifest}
+    -->
+    <target name="changes:manifest"
+            depends="-changes:is-changes-xml-available"
+            if="-changes:out-changes-xml-available">
+
+        <tempfile property="-changes:manifest.tempfile" suffix=".xml" />
+
+        <xslt style="${changes.xsl.manifest}"
+              in="${pear.manifest.file}"
+              out="${-changes:manifest.tempfile}">
+
+            <param name="changes.file" expression="${changes.filepath}" />
+        </xslt>
+
+        <move file="${-changes:manifest.tempfile}" tofile="${pear.manifest.file}" />
     </target>
 
     <!--
@@ -110,6 +133,14 @@ changes:site
 
         <antcall target="changes:log" inheritAll="false">
             <param name="changes.log.filepath" value="${package.pear.builddir}/${changes.log.filename}" />
+        </antcall>
+    </target>
+
+    <target name="-changes:pear:manifest-after~hooked"
+            extensionOf="-pear:manifest-after~hook">
+
+        <antcall target="changes:manifest" inheritAll="false">
+            <param name="manifest" value="${pear.manifest.file}" />
         </antcall>
     </target>
 
