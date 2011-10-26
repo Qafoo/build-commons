@@ -29,6 +29,12 @@ changes:log
   Generates a CHANGELOG file from an existing xdocs/changes.xml
   file.
 &#x00A0;
+changes:manifest
+  Generates the changelog section of a PEAR package manifest
+  based on the entries in the xdocs/changes.xml file.
+&#x00A0;
+    - ${manifest} Input/Output manifest file.
+&#x00A0;
 changes:site
   Generates several files for the project's site from the
   entries in the xdocs/changes.xml file.
@@ -53,6 +59,8 @@ changes:site
     </target>
 
     <!--
+        Updates the changelog section of the given pear package manifest file.
+
         Parameters:
             ${manifest}
     -->
@@ -136,6 +144,13 @@ changes:site
         </antcall>
     </target>
 
+    <!--
+        This target hooks into the PEAR manifest generate target and creates a
+        changelog based on the changes.xml data
+
+        Parameters:
+            ${pear.manifest.file} The temporary pear package manifest.
+    -->
     <target name="-changes:pear:manifest-after~hooked"
             extensionOf="-pear:manifest-after~hook">
 
