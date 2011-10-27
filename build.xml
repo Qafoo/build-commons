@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons" basedir=".">
+
+    <!--
+        Import the build commons framework
+    -->
+    <import file="src/main/xml/base.xml" />
+
+</project>
