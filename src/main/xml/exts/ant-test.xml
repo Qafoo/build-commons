@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant-build-commons-extension-ant-test" basedir="." default="ant:test:help">
+<project name="ant-build-commons-extensions-ant-test" basedir="." default="ant:test:help">
 
     <tempfile property="ant:test:tempdir"
               suffix="/test"
@@ -21,6 +21,21 @@ files in a unified way with the Ant-Build-Commons framework.
 changes:help
   Displays the help text for the ant:test build extension.
 &#x00A0;
+ant:test
+  This build target will execute all available ant build file
+  tests for the current project.
+&#x00A0;
+ant:test:unit
+  This build target will execute all available unittests of the
+  ant build file tests available in the this project.
+&#x00A0;
+ant:test:regression
+  This build target will execute all available regression tests
+  of the ant build file tests available in the this project.
+&#x00A0;
+ant:test:integration
+  This build target will execute all available integration tests
+  of the ant build file tests available in the this project.
         </echo>
     </target>
 
@@ -39,15 +54,43 @@ changes:help
     </target>
 
     <!--
-        Executes all
+        Executes all ant unit tests
     -->
     <target name="ant:test:unit"
             if="-ant:test:out-test-dir-present"
             depends="-ant:test:is-test-dir-present">
-<echo>**/*-${phpunit.group.unit}.xml</echo>
+
         <subant target="">
             <fileset dir="${ant.test.testdir}">
-                <include name="**/*-${phpunit.group.unit}.xml" />
+                <include name="**/*-${test.type.unit}.xml" />
+            </fileset>
+        </subant>
+    </target>
+
+    <!--
+        Executes all ant integration tests
+    -->
+    <target name="ant:test:integration"
+            if="-ant:test:out-test-dir-present"
+            depends="-ant:test:is-test-dir-present">
+
+        <subant target="">
+            <fileset dir="${ant.test.testdir}">
+                <include name="**/*-${test.type.integration}.xml" />
+            </fileset>
+        </subant>
+    </target>
+
+    <!--
+        Executes all ant regression tests
+    -->
+    <target name="ant:test:regression"
+            if="-ant:test:out-test-dir-present"
+            depends="-ant:test:is-test-dir-present">
+
+        <subant target="">
+            <fileset dir="${ant.test.testdir}">
+                <include name="**/*-${test.type.regression}.xml" />
             </fileset>
         </subant>
     </target>
@@ -70,7 +113,11 @@ changes:help
     </target>
 
     <!--
+        Tests if file ${expected} exists in the temporary test directory.
 
+        Parameters:
+            ${expected} Expected local file path.
+            ${message} The error message to show.
     -->
     <target name="ant:test:assertFileExists">
         <property name="message" value="Cannot find file '${expected}' in '${ant:test:tempdir}'." />

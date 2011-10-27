@@ -42,7 +42,7 @@
 
     <!--
         This target runs all tests flagged with the @group annotation that
-        matches the value of the ${phpunit.group.unit} property.
+        matches the value of the ${test.type.unit} property.
 
         Parameters:
             ${in.phpunit.include.path} Optional include path that should be
@@ -53,7 +53,7 @@
     -->
     <target name="phpunit:unit">
         <antcall target="-phpunit:run">
-            <param name="in.phpunit.group"        value="${phpunit.group.unit}" />
+            <param name="in.phpunit.group"        value="${test.type.unit}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
         </antcall>
@@ -61,7 +61,7 @@
 
     <!--
         This target runs all tests flagged with the @group annotation that
-        matches the value of the ${phpunit.group.integration} property.
+        matches the value of the ${test.type.integration} property.
 
         Parameters:
             ${in.phpunit.include.path} Optional include path that should be
@@ -72,7 +72,7 @@
     -->
     <target name="phpunit:integration">
         <antcall target="-phpunit:run">
-            <param name="in.phpunit.group"        value="${phpunit.group.integration}" />
+            <param name="in.phpunit.group"        value="${test.type.integration}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
         </antcall>
@@ -80,7 +80,7 @@
 
     <!--
         This target runs all tests flagged with the @group annotation that
-        matches the value of the ${phpunit.group.regression} property.
+        matches the value of the ${test.type.regression} property.
 
         Parameters:
             ${in.phpunit.include.path} Optional include path that should be
@@ -91,7 +91,7 @@
     -->
     <target name="phpunit:regression">
         <antcall target="-phpunit:run">
-            <param name="in.phpunit.group"        value="${phpunit.group.regression}" />
+            <param name="in.phpunit.group"        value="${test.type.regression}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
         </antcall>
