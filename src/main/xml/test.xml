@@ -17,6 +17,11 @@
     <import file="compile.xml" />
 
     <!--
+        Import default properties for the test build step.
+    -->
+    <property file="${commons:resourcedir}/test/test.properties" />
+
+    <!--
         Shortcut for the "test:test" target.
     -->
     <target name="test"
