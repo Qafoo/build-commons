@@ -319,4 +319,19 @@
             <available file="${pear.local.bindir}/phpunit" />
         </condition>
     </target>
+
+
+
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This target will hook the the "phpunit:unit" target into the main TEST
+        build-step
+    -->
+    <target name="-phpunit:test:main~hooked"
+            depends="phpunit:unit"
+            extensionOf="-test:main~hook" />
+
 </project>
