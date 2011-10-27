@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-changes-test" basedir="." default="changes:testsuite">
+
+    <import file="../../../main/xml/base.xml" />
+    <import file="../../../../build.xml" />
+
+    <target name="changes:testsuite">
+        <antcall target="ant:test:run" inheritall="false">
+            <param name="ant:test:target" value="changes:test:a" />
+        </antcall>
+    </target>
+
+    <target name="changes:test:a">
+
+        <antcall target="ant:test:assertFileExists">
+            <param name="expected" value="" />
+        </antcall>
+    </target>
+
+</project>

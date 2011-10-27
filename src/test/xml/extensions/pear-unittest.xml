@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-pear-test" basedir="." default="pear:testsuite">
+
+    <import file="../../../main/xml/base.xml" />
+
+    <target name="pear:testsuite">
+        <antcall target="ant:test:run">
+            <param name="ant:test:target" value="pear:test:pear-initialize" />
+        </antcall>
+        <!--
+        <antcall target="ant:test:run">
+            <param name="ant:test:target" value="pear:test:pear-initialize2" />
+        </antcall>
+        -->
+    </target>
+
+    <target name="pear:test:pear-initialize">
+        <antcall target="pear:initialize" />
+        <antcall target="ant:test:assertFileExists">
+            <param name="expected" value="../.pear" />
+        </antcall>
+    </target>
+
+    <!--
+    <target name="pear:test:pear-initialize2">
+        <antcall target="pear:initialize" />
+        <antcall target="ant:test:assertFileExists">
+            <param name="expected" value="../.pear2" />
+        </antcall>
+    </target>
+    -->
+
+</project>
