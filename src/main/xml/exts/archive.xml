@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-archive" basedir="." default="archive:help">
+
+    <!--
+        Enable archive package format by default
+    -->
+    <property name="package.archive.enabled" value="true" />
+
+    <!--
+        Displays the help for this build extension
+    -->
+    <target name="archive:help">
+        <echo taskname="help">
+The archive extension can be used to generate a simple
+distributable archive from your project's source code.
+&#x00A0;
+archive:help
+  Displays the help text for the archive build extension.
+        </echo>
+    </target>
+
+    <!--
+        Shortcut target for "archive:archive"
+    -->
+    <target name="archive" depends="archive:archive" />
+
+    <!--
+        Creates a archive package of the project source
+    -->
+    <target name="archive:archive"
+            if="-archive:is.enabled"
+            depends="-archive:is-enabled">
+
+        <antcall target="-archive:archive" />
+    </target>
+
+    <!--
+        Tests if the archive package format is enabled for this project.
+    -->
+    <target name="-archive:is-enabled">
+        <condition property="-archive:is.enabled">
+            <istrue value="${package.archive.enabled}" />
+        </condition>
+    </target>
+
+    <!--
+        This target defines the main workflow required/used to generate a
+        archive package file.
+    -->
+    <target name="-archive:archive"
+            depends="-archive:prepare,
+                     -archive:before~hook,
+                     -archive:main,
+                     -archive:after~hook" />
+
+    <!--
+        Initializes the environment required to generated a project archive.
+    -->
+    <target name="-archive:prepare"
+            depends="-archive:prepare-properties,
+                     -archive:prepare-files" />
+
+    <!--
+        Defines the properties required to generate a project archive.
+    -->
+    <target name="-archive:prepare-properties">
+        <property name="-archive:builddir" location="${commons:builddir}/tar-archive" />
+        <property name="-archive:filename" location="${commons:distdir}/${build.file}.tar.bz2" />
+    </target>
+
+    <target name="-archive:prepare-files">
+        <property name="output.dir" value="${-archive:builddir}/${build.file}" />
+
+        <copy todir="${output.dir}/source">
+            <fileset dir="${commons.srcdir}" />
+            <filterchain>
+                <replacestring from="@package_version@" to="${build.version.release}" />
+            </filterchain>
+        </copy>
+
+        <antcall target="copy-optional-dirs">
+            <param name="output.dir" value="${output.dir}" />
+        </antcall>
+
+        <copy todir="${output.dir}">
+            <fileset dir="${basedir}">
+                <include name="LICENSE" />
+                <include name="CHANGELOG" />
+            </fileset>
+        </copy>
+
+        <antcall target="do-copy-files-for-xyz-archive">
+            <param name="output.dir" value="${output.dir}" />
+        </antcall>
+    </target>
+
+    <!--
+        Creates a tar.bz2 archive of the project source
+    -->
+    <target name="-archive:main">
+        <tar basedir="${-archive:builddir}"
+             destfile="${commons:distdir}/${build.file}.tar.bz2"
+             compression="bzip2"
+             longfile="gnu">
+
+            <include name="${build.file}/**" />
+        </tar>
+    </target>
+
+    <!--
+        Extension points provided by this module
+    -->
+
+    <!--
+        Hook target that will be called before the archive package will be build.
+    -->
+    <extension-point name="-archive:before~hook" />
+
+    <!--
+        Hook target that will be called after the archive package was build.
+    -->
+    <extension-point name="-archive:after~hook" />
+
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <target name="-archive:main~hooked"
+            depends="archive:archive"
+            extensionOf="-package:main~hook" />
+    
+</project>

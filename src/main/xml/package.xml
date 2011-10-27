@@ -29,9 +29,9 @@
     <target name="package:package"
             depends="test:test,
                      -package:before~hook,
+                     -package:main~hook,
                      package:phar,
                      package:pear,
-                     package:archive,
                      -package:after~hook" />
 
     <!--
@@ -279,98 +279,6 @@
 
 <!-- }}} PEAR SUPPORT -->
 
-<!-- {{{ ARCHIVE SUPPORT -->
-
-    <!--
-        Enable archive package format by default
-    -->
-    <property name="package.archive.enabled" value="true" />
-
-    <!--
-        Creates a archive package of the project source
-    -->
-    <target name="package:archive"
-            if="-package:archive:is.enabled"
-            depends="initialize, -package:archive:is-enabled">
-
-        <antcall target="-package:archive" />
-    </target>
-
-    <!--
-        Tests if the archive package format is enabled for this project.
-    -->
-    <target name="-package:archive:is-enabled">
-        <condition property="-package:archive:is.enabled">
-            <istrue value="${package.archive.enabled}" />
-        </condition>
-    </target>
-
-    <!--
-        This target defines the main workflow required/used to generate a
-        archive package file.
-    -->
-    <target name="-package:archive"
-            depends="-package:archive:prepare,
-                     -package:archive:before~hook,
-                     -package:archive:main,
-                     -package:archive:after~hook" />
-
-    <!--
-        Initializes the environment required to generated a project archive.
-    -->
-    <target name="-package:archive:prepare"
-            depends="-package:archive:prepare-properties,
-                     -package:archive:prepare-files" />
-
-    <!--
-        Defines the properties required to generate a project archive.
-    -->
-    <target name="-package:archive:prepare-properties">
-        <property name="-package:archive:builddir" location="${commons:builddir}/tar-archive" />
-        <property name="-package:archive:filename" location="${commons:distdir}/${build.file}.tar.bz2" />
-    </target>
-
-    <target name="-package:archive:prepare-files">
-        <property name="output.dir" value="${-package:archive:builddir}/${build.file}" />
-
-        <copy todir="${output.dir}/source">
-            <fileset dir="${commons.srcdir.php}"/>
-            <filterchain>
-                <replacestring from="@package_version@" to="${build.version.release}" />
-            </filterchain>
-        </copy>
-
-        <antcall target="copy-optional-dirs">
-            <param name="output.dir" value="${output.dir}" />
-        </antcall>
-
-        <copy todir="${output.dir}">
-            <fileset dir="${basedir}">
-                <include name="LICENSE" />
-                <include name="CHANGELOG" />
-            </fileset>
-        </copy>
-
-        <antcall target="do-copy-files-for-xyz-archive">
-            <param name="output.dir" value="${output.dir}" />
-        </antcall>
-    </target>
-
-    <!--
-        Creates a tar.bz2 archive of the project source
-    -->
-    <target name="-package:archive:main">
-        <tar basedir="${-package:archive:builddir}"
-             destfile="${commons:distdir}/${build.file}.tar.bz2"
-             compression="bzip2"
-             longfile="gnu">
-
-            <include name="${build.file}/**" />
-        </tar>
-    </target>
-
-<!-- }}} ARCHIVE SUPPORT -->
-
     <!--
         Hook method for copying files for the project's xyz archive format.
 
@@ -492,20 +400,15 @@
     <extension-point name="-package:before~hook" />
 
     <!--
+        Extension point that can be used to register a custom package format.
+    -->
+    <extension-point name="-package:main~hook" />
+
+    <!--
         This extension point will be called by the build framework when the main
         package build step and all sub steps have finished.
     -->
     <extension-point name="-package:after~hook" />
-
-    <!--
-        Hook target that will be called before the archive package will be build.
-    -->
-    <extension-point name="-package:archive:before~hook" />
-
-    <!--
-        Hook target that will be called after the archive package was build.
-    -->
-    <extension-point name="-package:archive:after~hook" />
 
     <!--
         Empty hook target that will be called before the build process will
