@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant-build-commons" basedir=".">
+<project name="AntBuildCommons" basedir=".">
+
+    <!--
+        Import project specific settings
+    -->
+    <property file="build.properties" />
 
     <!--
         Import the build commons framework
