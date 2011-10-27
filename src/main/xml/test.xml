@@ -26,22 +26,25 @@
     <!--
         Runs the unit tests for the current project.
     -->
-    <target name="test:test" depends="compile, -test" />
-
-
-    <target name="-test"
-            depends="-test:before~hook,
-                     -test:test,
-                     -test:after~hook" />
+    <target name="test:test" depends="compile,
+                                      -test:test" />
 
     <!--
-        Executes the project's unittests.
+
     -->
-    <target name="-test:test" depends="phpunit:unit" />
+    <target name="-test:test"
+            depends="-test:before~hook,
+                     -test:main~hook,
+                     -test:after~hook" />
 
     <!--
         Extension points provided by this module.
     -->
+
+    <!--
+        Executes the project's unittests.
+    -->
+    <extension-point name="-test:main~hook" />
 
     <!--
         Hook target that will be called by the build framework before it starts
