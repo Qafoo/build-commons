@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-extensions-pear-test" basedir="." default="pear:testsuite">
 
+    <!--
+        Import the framework under test
+    -->
     <import file="../../../main/xml/base.xml" />
 
     <target name="pear:testsuite">

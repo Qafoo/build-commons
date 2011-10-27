@@ -2,7 +2,6 @@
 <project name="ant-build-commons-extensions-changes-test" basedir="." default="changes:testsuite">
 
     <import file="../../../main/xml/base.xml" />
-    <import file="../../../../build.xml" />
 
     <target name="changes:testsuite">
         <antcall target="ant:test:run" inheritall="false">
@@ -10,6 +9,9 @@
         </antcall>
     </target>
 
+    <!--
+        Dummy test case
+    -->
     <target name="changes:test:a">
 
         <antcall target="ant:test:assertFileExists">
