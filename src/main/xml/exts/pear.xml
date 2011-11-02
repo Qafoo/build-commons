@@ -315,6 +315,11 @@ pear:manifest
             <arg value="auto_discover" />
             <arg value="1" />
         </exec>
+
+        <antcall target="-pear:install">
+            <param name="-pear:in-channel-uri" value="pear.php.net" />
+            <param name="-pear:in-package-name" value="pear" />
+        </antcall>
     </target>
 
     <!--
