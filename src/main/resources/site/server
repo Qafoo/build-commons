@@ -1,0 +1,157 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This code was taken and adapted from the following gist:
+ *
+ * https://gist.github.com/949850
+ */
+
+if ( !isset( $argv[1] ) )
+{
+    echo "Missing the document root argument.", PHP_EOL,
+         PHP_EOL,
+         "Usage: {$argv[0]} /path/to/document/root <port>", PHP_EOL;
+    exit( 1 );
+}
+
+if ( !isset( $argv[2] ) )
+{
+    echo "Missing the server port argument.", PHP_EOL,
+         PHP_EOL,
+         "Usage: {$argv[0]} <docroot> 2342", PHP_EOL;
+    exit( 1 );
+}
+
+$docroot = realpath( $argv[1] );
+
+$handler = function( $request ) use ( $docroot ) {
+    $info = array(
+        'method'  =>  'GET',
+        'path'    =>  '/',
+        'query'   =>  ''
+    );
+    
+    if ( preg_match( '((?P<method>GET|POST) +(?P<path>/[^\?&]*)(\?(?P<query>.*))? +HTTP/1\.)', $request, $match ) )
+    {
+        $info['method'] = $match['method'];
+        $info['path']   = $match['path'];
+        $info['query']  = ( isset( $match['query'] ) ? $match['query'] : '' );
+    }
+
+    $filename = realpath( $docroot . $info['path'] );
+    if ( 0 !== strpos( $filename, $docroot ) )
+    {
+        $status = '404 Not Found';
+        $type   = 'text/html';
+    	$body   = '404 Not Found<!DOCTYPE html><html><meta charset=utf-8><title>404 Not Found</title><h1>404 Not Found</h1></html>';
+    }
+    else if ( file_exists( $filename ) && is_file( $filename ) )
+    {
+        $status = '200 OK';
+        $body   = file_get_contents( $filename );
+        
+        switch ( pathinfo( $filename, PATHINFO_EXTENSION ) )
+        {
+            case 'css':
+                $type = 'text/css';
+                break;
+                
+            default:
+                $type = mime_content_type( $filename );
+                break;
+        }
+    }
+    else if ( file_exists( $filename ) && is_dir( $filename ) )
+    {
+        $status = '200 OK';
+        $type   = 'text/html';
+    	$body   = "<!DOCTYPE html><html><meta charset=utf-8><title>Index of {$info['path']}</title><h1>Index of {$info['path']}</h1><ul>";
+    	
+    	$files = array();
+    	foreach ( new DirectoryIterator( $filename ) as $file )
+    	{
+    	    if ( 0 === strpos( $file->getFilename(), '.' ) )
+    	    {
+    	        continue;
+    	    }
+    	    if ( $file->isFile() )
+    	    {
+    	        $files[] = $file->getFilename();
+    	    }
+    	    else if ( $file->isDir() )
+    	    {
+    	        $files[] = $file->getFilename();
+    	    }
+    	}
+    	
+    	sort( $files );
+    	foreach ( $files as $file )
+    	{
+            $body .= '<li><a href="' . rtrim( $info['path'], '/' ) . '/' . $file . '">' . $file . '</a></li>';
+        }
+    	$body .= '</ul></html>';
+
+    }
+    else
+    {
+        $status = '500 Internal Server Error';
+        $type   = 'text/html';
+    	$body   = '<!DOCTYPE html><html><meta charset=utf-8><title>500 Internal Server Error</title><h1>500 Internal Server Error</h1></html>';
+    }
+
+	return array(
+		$status,
+		array('Content-Type' => $type . ';charset=utf-8'),
+		$body
+	);
+};
+
+$socket = stream_socket_server('tcp://0.0.0.0:7879', $errno, $errstr);
+if ( false === is_resource( $socket ) )
+{
+    fwrite( STDERR, "({$errno})\n" );
+}
+else
+{
+	$defaults = array(
+		'Content-Type'  =>  'text/html',
+		'Server'        =>  'PHP ' . phpversion()
+	);
+	
+	echo 'Server is running on 0.0.0.0:7879.', PHP_EOL;
+	
+	while ( $conn = stream_socket_accept( $socket, -1 ) )
+	{
+		$request = '';
+		while ( substr( $request, -4 ) !== "\r\n\r\n" ) 
+		{
+			$request .= fread( $conn, 1024 );
+		}
+		
+		list( $status, $headers, $body ) = $handler( $request );
+		
+		$headers += $defaults;
+		if ( false === isset( $headers['Content-Length'] ) ) 
+		{
+			$headers['Content-Length'] = strlen( $body );
+		}
+		$header = '';
+		foreach ( $headers as $name => $value ) 
+		{
+			$header .= $name . ': ' . $value . "\r\n";
+		}
+		fwrite(
+		    $conn, 
+		    implode(
+		        "\r\n", 
+		        array(
+        			'HTTP/1.1 ' . $status,
+        			$header,
+		        	$body
+        		)
+            )
+        );
+		fclose( $conn );
+	}
+	fclose( $socket );
+}
