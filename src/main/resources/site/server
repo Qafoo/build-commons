@@ -23,6 +23,7 @@ if ( !isset( $argv[2] ) )
 }
 
 $docroot = realpath( $argv[1] );
+$port    = (int) $argv[2];
 
 $handler = function( $request ) use ( $docroot ) {
     $info = array(
@@ -106,7 +107,7 @@ $handler = function( $request ) use ( $docroot ) {
 	);
 };
 
-$socket = stream_socket_server('tcp://0.0.0.0:7879', $errno, $errstr);
+$socket = stream_socket_server("tcp://0.0.0.0:${port}", $errno, $errstr);
 if ( false === is_resource( $socket ) )
 {
     fwrite( STDERR, "({$errno})\n" );
@@ -118,7 +119,7 @@ else
 		'Server'        =>  'PHP ' . phpversion()
 	);
 	
-	echo 'Server is running on 0.0.0.0:7879.', PHP_EOL;
+	echo "Server is running on 0.0.0.0:${port}.", PHP_EOL;
 	
 	while ( $conn = stream_socket_accept( $socket, -1 ) )
 	{
