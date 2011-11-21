@@ -1,15 +1,22 @@
---- jslint.js.orig  2011-10-17 15:33:58.445400344 +0200
-+++ jslint.js   2011-10-17 15:34:51.305400322 +0200
-@@ -62,8 +62,11 @@
-         } else {
-             reporter.report(file, lint);
+--- jslint.js.orig  2011-11-21 09:00:41.000000000 +0100
++++ jslint.js   2011-11-21 09:00:05.000000000 +0100
+@@ -57,12 +57,15 @@
          }
+         data = data.toString("utf8");
+         var lint = linter.lint(data, parsed);
+-        if (parsed.json) {
+-            console.log(JSON.stringify([file, lint]));
+-        } else {
+-            reporter.report(file, lint);
 +
 +        if ( !lint.ok ) {
++            if (parsed.json) {
++                console.log(JSON.stringify([file, lint]));
++            } else {
++                reporter.report(file, lint);
++            }
 +            process.exit( 2 );
-+        }
+         }
+-        // TODO process.exit with correct return value
      });
--    // TODO process.exit with correct return value
  }
- 
- parsed.argv.remain.forEach(lintFile);
