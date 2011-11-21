@@ -2,14 +2,9 @@
 <project name="@project.name@" basedir=".">
 
     <!--
-
+        Import the project specific settings.
     -->
     <property file="build.properties" />
-
-    <!--
-        Import common build targets
-    -->
-    <import file="${basedir}/setup/src/main/xml/base.xml" />
 
     <!--
         Import the archtype specific build file.
