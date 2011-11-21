@@ -23,14 +23,18 @@
         <echo taskname="help">
 site:site
   Generate a site for a single project.
-
+&#x00A0;
 site:help
   Displays the help text for the site build module.
-
+&#x00A0;
+site:run
+  Runs the generated site with an embedded, local webserver. The site is
+  available under the following url "http://localhost:${site.server.port}"
+&#x00A0;
 site:deploy
   Deploys the generated site using scp or file protocol to the site URL
   specified in your build
-
+&#x00A0;
 site:zip
   Bundles the site output into a ZIP so that it can be deployed to a repository.
         </echo>
@@ -117,6 +121,32 @@ site:zip
                 <include name="**/*.*" />
             </fileset>
         </copy>
+    </target>
+
+    <!--
+        Starts the generated site in an embedded webserver.
+    -->
+    <target name="site:run"
+            depends="site:site,
+                     -site:run-before~hook,
+                     -site:run,
+                     -site:run-after~hook" />
+
+    <!--
+        Starts the generated site in an embedded webserver.
+    -->
+    <target name="-site:run">
+
+        <echo taskname="site:run">
+Starting site under "http://localhost:${site.server.port}"...
+
+To stop the server, just abort the ant script.
+        </echo>
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${site.server.executable}" />
+            <arg value="${site.outputdir}" />
+            <arg value="${site.server.port}" />
+        </exec>
     </target>
 
     <!--
@@ -270,6 +300,18 @@ site:zip
         site:zip build process has finished.
     -->
     <extension-point name="-site:zip-after~hook" />
+
+    <!--
+        Extension point target that will be called from the build environment
+        before the site:run build process starts.
+    -->
+    <extension-point name="-site:run-before~hook" />
+
+    <!--
+        Extension point that will be called from the build environment after the
+        site:run build process has finished.
+    -->
+    <extension-point name="-site:run-after~hook" />
 
     <!--
         Extension point target that will be called from the build environment
