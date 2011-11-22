@@ -181,6 +181,12 @@
             <arg value="${phpunit.testsuite.class}" />
             <arg value="${commons.testdir.php}/${phpunit.testsuite.file}" />
         </exec>
+
+        <copy todir="${commons:builddir}/coverage">
+            <fileset dir="${commons:logsdir}">
+                <include name="clover.xml" />
+            </fileset>
+        </copy>
     </target>
 
     <!--
@@ -231,6 +237,12 @@
             <arg line="${phpunit.clover}" />
             <arg value="${commons.testdir.php}" />
         </exec>
+
+        <copy todir="${commons:builddir}/coverage">
+            <fileset dir="${commons:logsdir}">
+                <include name="clover.xml" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="-phpunit:is-testdir-present">
