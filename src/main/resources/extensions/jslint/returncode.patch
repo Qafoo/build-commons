@@ -17,6 +17,6 @@
 +            }
 +            process.exit( 2 );
          }
--        // TODO process.exit with correct return value
      });
+-    // TODO process.exit with correct return value
  }
