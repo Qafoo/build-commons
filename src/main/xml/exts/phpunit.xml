@@ -220,6 +220,18 @@
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
+        <condition property="phpunit.conf0" value="--configuration '${basedir}/phpunit.xml'" else="">
+            <available file="${basedir}/phpunit.xml" />
+        </condition>
+
+        <condition property="phpunit.conf1" value="--configuration '${basedir}/phpunit.xml.dist'" else="">
+            <available file="${basedir}/phpunit.xml.dist" />
+        </condition>
+
+        <condition property="phpunit.conf" value="${phpunit.conf0}" else="${phpunit.conf1}">
+            <equals arg1="${phpunit.conf1}" arg2="" trim="true" />
+        </condition>
+
         <exec executable="${commons.executable.php}"
               failonerror="true"
               dir="${commons.testdir.php}">
@@ -235,6 +247,7 @@
             <arg line="${phpunit.group}" />
             <arg line="${phpunit.html}" />
             <arg line="${phpunit.clover}" />
+            <arg line="${phpunit.conf}" />
             <arg value="${commons.testdir.php}" />
         </exec>
 
