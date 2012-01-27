@@ -390,7 +390,10 @@
                 <xsl:text> #</xsl:text>
                 <xsl:value-of select="@issue" />
                 <xsl:text>: </xsl:text>
-            </xsl:when>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>: </xsl:text>
+			</xsl:otherwise>
         </xsl:choose>
         <xsl:value-of select="normalize-space(text())" />
         <xsl:if test="@date">
