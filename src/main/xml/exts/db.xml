@@ -15,12 +15,15 @@
         <echo taskname="help">
 db:initialize
   Creates the initial database schema for the current project and the configured
-  RDBMS. To make this target work, the following properties must be configured:
+  RDBMS.
 &#x00A0;
-    - $${db.system}   (Default: mysql)
-    - $${db.driver}   (Default: com.mysql.jdbc.Driver)
-    - $${db.hostname} (Default: localhost)
-    - $${db.name}     (Mandatory)
+To make the database related targets work, the following properties must be
+configured:
+&#x00A0;
+  - $${db.system}   (Default: mysql)
+  - $${db.driver}   (Default: com.mysql.jdbc.Driver)
+  - $${db.hostname} (Default: localhost)
+  - $${db.name}     (Mandatory)
         </echo>
     </target>
 
@@ -29,10 +32,12 @@ db:initialize
         the
     -->
     <target name="db:initialize"
-            depends="-db:is-enabled"
+            depends="-db:is-enabled,initialize:environment"
             if ="-db:enabled">
 
-        <antcall target="-db:initialize" />
+        <antcall target="-db:initialize" inheritAll="false">
+            <param file="${commons:env.properties.file}" />
+        </antcall>
     </target>
 
     <!--
@@ -59,6 +64,44 @@ db:initialize
 
         <antcall target="-db:mysql:initialize-schema" />
     </target>
+
+    <!--
+        Drops the project's database.
+    -->
+    <target name="db:drop"
+            depends="-db:is-enabled,initialize:environment"
+            if ="-db:enabled">
+
+        <antcall target="-db:drop" inheritAll="false">
+            <param file="${commons:env.properties.file}" />
+        </antcall>
+    </target>
+
+    <!--
+        Drops the project's database.
+    -->
+    <target name="-db:drop"
+            depends="-db:drop-before~hook,
+                     -db:drop-main~hook,
+                     -db:drop-after~hook" />
+
+    <!--
+        Resets the project's database schema to it's initial state.
+    -->
+    <target name="db:reset"
+            depends="-db:is-enabled,initialize:environment"
+            if ="-db:enabled">
+
+        <antcall target="-db:reset" inheritAll="false">
+            <param file="${commons:env.properties.file}" />
+        </antcall>
+    </target>
+
+    <target name="-db:reset"
+            depends="-db:reset-before~hook,
+                     -db:drop,
+                     -db:initialize,
+                     -db:reset-after~hook" />
 
     <!--
         Tests if the database extension is enabled.
@@ -91,11 +134,9 @@ db:initialize
         Hook into the install build step and generate the system database if the
         current project uses a database.
     -->
-    <target name="-db:install:after~hooked" extensionOf="-install:after~hook">
-        <antcall target="db:initialize" inheritAll="false">
-            <param file="${commons:env.properties.file}" />
-        </antcall>
-    </target>
+    <target name="-db:install:after~hooked"
+            depends="db:initialize"
+            extensionOf="-install:after~hook" />
 
     <!--
         Extension points provided by this build extension.
@@ -104,5 +145,15 @@ db:initialize
     <extension-point name="-db:initialize-before~hook" />
 
     <extension-point name="-db:initialize-after~hook" />
-    
+
+    <extension-point name="-db:drop-before~hook" />
+
+    <extension-point name="-db:drop-main~hook" />
+
+    <extension-point name="-db:drop-after~hook" />
+
+    <extension-point name="-db:reset-before~hook" />
+
+    <extension-point name="-db:reset-after~hook" />
+        
 </project>

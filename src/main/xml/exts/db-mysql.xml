@@ -46,6 +46,24 @@
     </target>
 
     <!--
+        This target will drop the project's mysql database if the mysql extension
+        is enabled for this project.
+    -->
+    <target name="-db:mysql:drop" depends="-db:mysql:is-enabled" if="-db:mysql:enabled">
+        <sql driver="${db.driver}"
+             url="jdbc:${db.system}://${db.hostname}"
+             userid="${db.userid}"
+             password="${db.password}">
+
+            <classpath refid="-db:mysql:classpath" />
+
+			<transaction>
+                DROP DATABASE IF EXISTS `${db.name}`;
+			</transaction>
+        </sql>
+    </target>
+
+    <!--
         Tests if the current system is configured for mysql.
     -->
     <target name="-db:mysql:is-enabled">
@@ -53,5 +71,17 @@
             <equals arg1="${db.system}" arg2="mysql" />
         </condition>
     </target>
+
+    <!--
+        Extension points utilized by this extension
+    -->
+
+    <!--
+        Hooks into the generic db:drop extension point and calls the mysql
+        related drop target in this file.
+    -->
+    <target name="-db:mysql:db-drop-main~hooked"
+            depends="-db:mysql:drop"
+            extensionOf="-db:drop-main~hook" />
 
 </project>

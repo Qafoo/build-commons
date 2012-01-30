@@ -90,6 +90,15 @@
         This target will define a property named ${commons:env.properties.file}
         which contains all relevant settings for the current build environment.
     -->
+    <target name="initialize:environment" depends="-initialize:environment" />
+
+    <!--
+        Creates a temporary properties file with build environment specific
+        settings.
+
+        This target will define a property named ${commons:env.properties.file}
+        which contains all relevant settings for the current build environment.
+    -->
     <target name="-initialize:environment">
 
         <tempfile property="commons:env.properties.file"
