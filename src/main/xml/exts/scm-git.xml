@@ -6,6 +6,9 @@
         control management systems.
     </description>
 
+    <!--
+        Displays the help text for this build commons extension.
+    -->
     <target name="scm:git:help">
         <echo taskname="help">
 The scm:git extension provides a Git specific implementation for the generic scm
@@ -21,6 +24,9 @@ scm:git:update
 scm:git:update-light
   Performs a light update of the project source code without any embedded sub
   modules.
+&#x00A0;
+scm:git:tag
+  This target will create a new tag for the current version of the software.
         </echo>
     </target>
 
@@ -46,8 +52,6 @@ scm:git:update-light
     <target name="-scm:git:update-module">
         <exec dir="${basedir}" executable="git">
             <arg line="pull" />
-            <arg line="${scm.git.remote}" />
-            <arg line="${scm.git.branch}" />
         </exec>
     </target>
 
@@ -56,7 +60,7 @@ scm:git:update-light
             <arg value="submodule" />
             <arg value="foreach" />
             <arg value="--recursive" />
-            <arg value="git pull origin master" />
+            <arg value="git pull" />
         </exec>
     </target>
 
