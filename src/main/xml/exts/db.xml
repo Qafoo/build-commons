@@ -155,5 +155,5 @@ configured:
     <extension-point name="-db:reset-before~hook" />
 
     <extension-point name="-db:reset-after~hook" />
-        
+
 </project>
