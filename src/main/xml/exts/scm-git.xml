@@ -6,6 +6,24 @@
         control management systems.
     </description>
 
+    <target name="scm:git:help">
+        <echo taskname="help">
+The scm:git extension provides a Git specific implementation for the generic scm
+extension.
+&#x00A0;
+scm:git:help
+  Displays the help text for the scm:git extension.
+&#x00A0;
+scm:git:update
+  Performs a full update on the current project and all embedded sub modules,
+  similar to Subversion's svn:externals.
+&#x00A0;
+scm:git:update-light
+  Performs a light update of the project source code without any embedded sub
+  modules.
+        </echo>
+    </target>
+
     <target name="scm:git:update" depends="-scm:git:is-checkout" if="-scm:git:out-checkout">
         <antcall target="-scm:git:update" />
     </target>
