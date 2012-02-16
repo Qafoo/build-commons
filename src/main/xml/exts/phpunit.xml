@@ -32,7 +32,7 @@
             $in.phpunit.group}         Optional test group that should be used
                                        to filter the executed tests.
     -->
-    <target name="phpunit:phpunit" depends="php:is-php-project" if="php:php-project">
+    <target name="phpunit:phpunit" depends="php:is-php-project" if="php:is-php-project">
         <antcall target="-phpunit:run">
             <param name="in.phpunit.group"        value="${in.phpunit.group}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
@@ -51,7 +51,7 @@
             ${in.phpunit.coverage}     Optional boolean flag that enables the
                                        collection of code coverage data.
     -->
-    <target name="phpunit:unit" depends="php:is-php-project" if="php:php-project">
+    <target name="phpunit:unit" depends="php:is-php-project" if="php:is-php-project">
         <antcall target="-phpunit:run">
             <param name="in.phpunit.group"        value="${test.type.unit}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
