@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-phpcb" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/phpcb/phpcb.properties" />
+
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="pear.xml" />
+
+    <!--
+        Shortcut for the "phpcb:phpcb" target
+    -->
+    <target name="phpcb" depends="phpcb:phpcb" />
+
+    <!--
+        Runs the phpcb cli tool against the project source code.
+    -->
+    <target name="phpcb:phpcb"
+            depends="-phpcb:before~hook,
+                     -phpcb:run,
+                     -phpcb:after~hook" />
+
+    <target name="-phpcb:run" depends="-phpcb:install-or-upgrade">
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="-d" />
+            <arg value="memory_limit=1024M" />
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.local.bindir}/phpcb" />
+            <arg value="-l" />
+            <arg value="${commons:logsdir}" />
+            <arg value="-o" />
+            <arg value="${commons:builddir}/phpcb" />
+            <arg value="-s" />
+            <arg value="${commons.srcdir.php}" />
+        </exec>
+    </target>
+
+    <target name="-phpcb:install-or-upgrade"
+            depends="-phpcb:is-installed,
+                     -phpcb:install,
+                     -phpcb:upgrade" />
+
+    <target name="-phpcb:install" unless="-phpcb:out-installed">
+        <antcall target="pear:install">
+            <param name="in.pear.package.name"    value="${phpcb.package.name}" />
+            <param name="in.pear.package.channel" value="${phpcb.package.channel}" />
+        </antcall>
+    </target>
+
+    <target name="-phpcb:upgrade" if="-phpcb:out-installed">
+        <antcall target="pear:upgrade">
+            <param name="in.pear.package.name"    value="${phpcb.package.name}" />
+            <param name="in.pear.package.channel" value="${phpcb.package.channel}" />
+        </antcall>
+    </target>
+
+    <target name="-phpcb:is-installed">
+        <condition property="-phpcb:out-installed">
+            <available file="${pear.local.bindir}/phpcb" />
+        </condition>
+    </target>
+
+    <extension-point name="-phpcb:before~hook" />
+    <extension-point name="-phpcb:after~hook" />
+
+</project>
