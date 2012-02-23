@@ -50,6 +50,13 @@ class AntBuildCommonsExtensionPearPackageUpdate
      * @var DOMDocument
      */
     private $manifest;
+    
+    /**
+     * Optional baseinstalldir for the package.
+     *
+     * @var string
+     */
+    private $basedir;
 
     /**
      * Constructs a new pear package.xml updater instance.
@@ -110,11 +117,15 @@ class AntBuildCommonsExtensionPearPackageUpdate
             for ( $i = $element->childNodes->length - 1; $i >= 0; --$i )
             {
                 $childNode = $element->childNodes->item( $i );
+                
+                if ( $childNode->hasAttribute( 'baseinstalldir' ) )
+                {
+                    $this->basedir = $childNode->getAttribute( 'baseinstalldir' );
+                }
 
                 $element->removeChild( $childNode );
             }
         }
-        
         return $manifest;
     }
     
@@ -165,6 +176,10 @@ class AntBuildCommonsExtensionPearPackageUpdate
     {
         $dir = $parent->ownerDocument->createElement( 'dir' );
         $dir->setAttribute( 'name', $directory->getFilename() );
+        if ( $this->basedir ) 
+        {
+            $dir->setAttribute( 'baseinstalldir', $this->basedir );
+        } 
         
         $parent->appendChild( $dir );
     
@@ -191,6 +206,10 @@ class AntBuildCommonsExtensionPearPackageUpdate
         $elem = $parent->ownerDocument->createElement( 'file' );
         $elem->setAttribute( 'name', $file->getFilename() );
         $elem->setAttribute( 'role', $role );
+        if ( $this->basedir ) 
+        {
+            $elem->setAttribute( 'baseinstalldir', $this->basedir );
+        } 
         
         $parent->appendChild( $elem );
         
