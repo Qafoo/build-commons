@@ -31,7 +31,11 @@
     <target name="-codesniffer:run"
             depends="-codesniffer:install-or-upgrade">
 
-        <exec executable="${commons.executable.php}" failonerror="${codesniffer.fail.on.violation}">
+        <tempfile property="-codesniffer:run-report-file"
+                  destdir="${commons:tmpdir}"
+                  deleteonexit="true" />
+
+        <exec executable="${commons.executable.php}" resultproperty="-codesniffer:run-exit-code">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
@@ -40,9 +44,21 @@
             <arg value="--standard=${codesniffer.standard}" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${commons:logsdir}/checkstyle.xml" />
+            <arg value="--report-full=${-codesniffer:run-report-file}" />
             <arg value="${commons.srcdir.php}" />
         </exec>
 
+        <loadfile property="-codesniffer:run-report-output" srcFile="${-codesniffer:run-report-file}" />
+        <fail message="CodeSniffer failed&#10;&#10;${-codesniffer:run-report-output}&#10;BUILD FAILED">
+            <condition>
+                <and>
+                    <istrue value="${codesniffer.fail.on.violation}" />
+                    <not>
+                        <equals arg1="0" arg2="${-codesniffer:run-exit-code}" />
+                    </not>
+                </and>
+            </condition>
+        </fail>
     </target>
 
     <!--
