@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-version" basedir=".">
+
+    <description>
+        This build file contains all targets related to the automatic version
+        number extension.
+    </description>
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/version/version.properties" />
+
+    <!--
+        Displays the help text for this extension
+    -->
+    <target name="version:help">
+        <echo taskname="help">
+This extension can be used to auto increment the version number of a
+project when a concrete build step was completed. This extension uses
+to regular expressions, one to extract the number that will be
+incremented and one that will be used to extract the fragments that
+are untouched.
+&#x00A0;
+    version.match = \d+\.\d+.(\d+)
+&#x00A0;
+    version.replace = (\d+\.\d+\.)\d+()
+&#x00A0;
+version:version
+  Increments the projects version number.
+        </echo>
+    </target>
+
+    <!--
+        Shortcut for version:version
+    -->
+    <target name="version"
+            depends="version:version" />
+
+    <!--
+        Main target that increments the project's version number
+    -->
+    <target name="version:version"
+            depends="-version:before~hook,
+                     -version:version,
+                     -version:after~hook" />
+
+    <!--
+        Creates a temporary file with the current version number. Then increments
+        this version number and finally writes an incremented version number into
+        the project's properties file.
+    -->
+    <target name="-version:version">
+        <tempfile destdir="${commons:tmpdir}" property="temp.file" deleteonexit="true" />
+        <echo file="${temp.file}">build.number=${project.version}</echo>
+
+        <antcall target="-version:increment" inheritAll="false">
+            <param name="temp.file" value="${temp.file}" />
+        </antcall>
+
+        <property file="${temp.file}" />
+
+        <antcall target="-version:update" inheritAll="false">
+            <param name="build.number" value="${build.number}" />
+        </antcall>
+    </target>
+
+    <!--
+        Increments the the pure version number.
+    -->
+    <target name="-version:increment">
+
+        <replaceregexp file="${temp.file}"
+                       match="build.number=${version.match}"
+                       replace="build.number=\1" />
+
+        <buildnumber file="${temp.file}" />
+    </target>
+
+    <!--
+        Updates the project's properties file with the new version number.
+    -->
+    <target name="-version:update">
+        <replaceregexp file="${version.file}"
+                       match="project.version(\s*)=(\s*)${version.replace}"
+                       replace="project.version\1=\2\3${build.number}\4"
+                       byline="true" />
+    </target>
+
+    <!--
+        Extension points provided by this module
+    -->
+
+    <!--
+        This extension point will be called before this extension increments the
+        project's version number.
+    -->
+    <extension-point name="-version:before~hook" />
+
+    <!--
+        This extension point will be called after this extension has incremented
+        the project's version number.
+    -->
+    <extension-point name="-version:after~hook" />
+</project>
