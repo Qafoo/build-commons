@@ -64,7 +64,7 @@ scm:svn:commit
             <arg value="ci" />
             <arg value="-m" />
             <arg value="${scm.message}" />
-            <arg location="${scm.resource}" />
+            <arg file="${scm.resource}" />
         </exec>
     </target>
 
