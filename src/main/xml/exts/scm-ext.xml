@@ -17,7 +17,8 @@
     <target name="scm:ext:update"
             depends="-scm:ext:update-before~hook,
                      -scm:ext:update,
-                     -scm:ext:update-after~hook" />
+                     -scm:ext:update-after~hook"
+            extensionOf="-scm:update~hook" />
 
     <!--
         Performs an update or full checkout of the project's sub modules
@@ -35,7 +36,8 @@
     <target name="scm:ext:update-light"
             depends="-scm:ext:update-light-before~hook,
                      -scm:ext:update-light,
-                     -scm:ext:update-light-after~hook" />
+                     -scm:ext:update-light-after~hook"
+            extensionOf="-scm:update-light~hook" />
     
     <!--
         Performs a light update of the project's sub modules

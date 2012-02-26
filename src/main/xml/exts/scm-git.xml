@@ -7,6 +7,11 @@
     </description>
 
     <!--
+        Load default extension settings.
+    -->
+    <property file="${commons:resourcedir}/extensions/scm-git/scm-git.properties" />
+
+    <!--
         Displays the help text for this build commons extension.
     -->
     <target name="scm:git:help">
@@ -16,6 +21,9 @@ extension.
 &#x00A0;
 scm:git:help
   Displays the help text for the scm:git extension.
+&#x00A0;
+scm:git:commit
+  Will commit and push a specified file or directory to the main repository.
 &#x00A0;
 scm:git:update
   Performs a full update on the current project and all embedded sub modules,
@@ -30,11 +38,65 @@ scm:git:tag
         </echo>
     </target>
 
-    <target name="scm:git:update" depends="-scm:git:is-checkout" if="-scm:git:out-checkout">
+    <!--
+        Will commit and push a specified file or directory to the main repository.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="scm:git:commit"
+            depends="-scm:git:is-checkout"
+            if="-scm:git:out-checkout"
+            extensionOf="-scm:commit~hook">
+
+        <antcall target="-scm:git:commit" />
+    </target>
+
+    <!--
+        Will commit and push a specified file or directory to the main repository.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="-scm:git:commit"
+            depends="-scm:git:commit-before~hook,
+                     -scm:git:commit-main,
+                     -scm:git:commit-after~hook" />
+
+    <!--
+        Will commit and push a specified file or directory to the main repository.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="-scm:git:commit-main">
+        <exec dir="${basedir}" executable="${scm-git.executable}">
+            <arg value="commit" />
+            <arg value="-m" />
+            <arg value="${scm.message}" />
+            <arg location="${scm.resource}" />
+        </exec>
+
+        <antcall target="-scm:git:pull" />
+        <antcall target="-scm:git:push" />
+    </target>
+
+    <target name="scm:git:update"
+            depends="-scm:git:is-checkout"
+            if="-scm:git:out-checkout"
+            extensionOf="-scm:update~hook">
+
         <antcall target="-scm:git:update" />
     </target>
 
-    <target name="scm:git:update-light" depends="-scm:git:is-checkout" if="-scm:git:out-checkout">
+    <target name="scm:git:update-light"
+            depends="-scm:git:is-checkout"
+            if="-scm:git:out-checkout"
+            extensionOf="-scm:update-light~hook">
+
         <antcall target="-scm:git:update-light" />
     </target>
 
@@ -72,7 +134,11 @@ scm:git:tag
             ${-scm:tag-label}
             ${scm-tag-commit-message}
     -->
-    <target name="scm:git:tag" depends="-scm:git:is-checkout" if="-scm:git:out-checkout">
+    <target name="scm:git:tag"
+            depends="-scm:git:is-checkout"
+            if="-scm:git:out-checkout"
+            extensionOf="-scm:tag~hook">
+
         <antcall target="-scm:git:tag-before~hook" />
 
         <exec dir="${basedir}" executable="git">
@@ -92,11 +158,43 @@ scm:git:tag
     </target>
 
     <!--
+        Pulls all changes from the git repository
+    -->
+    <target name="-scm:git:pull">
+        <exec dir="${basedir}" executable="${scm-git.executable}">
+            <arg value="pull" />
+        </exec>
+    </target>
+
+    <!--
+        Pushes all local changes to the git remote repository.
+    -->
+    <target name="-scm:git:push">
+        <exec dir="${basedir}" executable="${scm-git.executable}">
+            <arg value="push" />
+        </exec>
+    </target>
+
+    <!--
         Checks if the current project is a git checkout.
     -->
     <target name="-scm:git:is-checkout">
         <available file="${basedir}/.git" property="-scm:git:out-checkout" />
     </target>
+
+    <!-- Extension points provided by this module. -->
+
+    <!--
+        This extension point will be called before a change will be committed
+        and pushed.
+    -->
+    <extension-point name="-scm:git:commit-before~hook" />
+
+    <!--
+        This extension point will be called after a change was committed
+        and pushed.
+    -->
+    <extension-point name="-scm:git:commit-after~hook" />
 
     <extension-point name="-scm:git:update-before~hook" />
 
