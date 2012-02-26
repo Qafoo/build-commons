@@ -77,7 +77,7 @@ scm:git:tag
             <arg value="commit" />
             <arg value="-m" />
             <arg value="${scm.message}" />
-            <arg location="${scm.resource}" />
+            <arg file="${scm.resource}" />
         </exec>
 
         <antcall target="-scm:git:pull" />
