@@ -20,8 +20,7 @@
     <!--
         Shortcut for "pirum:deploy"
     -->
-    <target name="pirum"
-            depends="pirum:deploy" />
+    <target name="pirum" depends="pirum:deploy" />
 
     <!--
         This target will deploy a generated PEAR archive into a configured pirum
@@ -135,7 +134,7 @@
         pear archive into a pirum repository.
     -->
     <target name="-pirum:deploy:before~hooked"
-            depends="-pirum:deploy"
+            depends="pirum:deploy"
             extensionOf="-deploy:before~hook" />
     
 </project>
