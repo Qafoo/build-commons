@@ -132,28 +132,45 @@ scm:git:tag
 
         Parameters:
             ${-scm:tag-label}
-            ${scm-tag-commit-message}
     -->
     <target name="scm:git:tag"
             depends="-scm:git:is-checkout"
             if="-scm:git:out-checkout"
             extensionOf="-scm:tag~hook">
-<echo>A</echo>
-        <antcall target="-scm:git:tag-before~hook" />
-<echo>B</echo>
+
+        <antcall target="-scm:git:tag" />
+    </target>
+
+    <!--
+        Sets a tag for the current software configuration and pushes it to the
+        remote repository.
+
+        Parameters:
+            ${-scm:tag-label}
+    -->
+    <target name="-scm:git:tag"
+            depends="-scm:git:tag-before~hook,
+                     -scm:git:tag-main,
+                     -scm:git:tag-after~hook" />
+
+    <!--
+        Sets a tag for the current software configuration and pushes it to the
+        remote repository.
+
+        Parameters:
+            ${-scm:tag-label}
+    -->
+    <target name="-scm:git:tag-main">
         <exec dir="${basedir}" executable="${scm-git.executable}">
             <arg line="tag" />
             <arg line="${-scm:tag-label}" />
         </exec>
-<echo>C</echo>
+
         <exec dir="${basedir}" executable="${scm-git.executable}">
             <arg line="push" />
             <arg line="${scm.git.remote}" />
             <arg line="--tags" />
         </exec>
-<echo>D</echo>
-        <antcall target="-scm:git:tag-after~hook" />
-<echo>E</echo>
     </target>
 
     <!--
