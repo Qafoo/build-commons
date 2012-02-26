@@ -112,13 +112,13 @@ scm:git:tag
                      -scm:git:update-light-after~hook" />
 
     <target name="-scm:git:update-module">
-        <exec dir="${basedir}" executable="git">
+        <exec dir="${basedir}" executable="${scm-git.executable}">
             <arg line="pull" />
         </exec>
     </target>
 
     <target name="-scm:git:update-submodules">
-        <exec dir="${basedir}" executable="git" failonerror="false">
+        <exec dir="${basedir}" executable="${scm-git.executable}" failonerror="false">
             <arg value="submodule" />
             <arg value="foreach" />
             <arg value="--recursive" />
@@ -138,23 +138,22 @@ scm:git:tag
             depends="-scm:git:is-checkout"
             if="-scm:git:out-checkout"
             extensionOf="-scm:tag~hook">
-
+<echo>A</echo>
         <antcall target="-scm:git:tag-before~hook" />
-
-        <exec dir="${basedir}" executable="git">
+<echo>B</echo>
+        <exec dir="${basedir}" executable="${scm-git.executable}">
             <arg line="tag" />
-            <arg line="-m" />
-            <arg line="${-scm:tag-commit-message}" />
             <arg line="${-scm:tag-label}" />
         </exec>
-
-        <exec dir="${basedir}" executable="git">
+<echo>C</echo>
+        <exec dir="${basedir}" executable="${scm-git.executable}">
             <arg line="push" />
             <arg line="${scm.git.remote}" />
             <arg line="--tags" />
         </exec>
-
+<echo>D</echo>
         <antcall target="-scm:git:tag-after~hook" />
+<echo>E</echo>
     </target>
 
     <!--

@@ -108,11 +108,8 @@ scm:tag
     <!--
         Generates a default tag label, when it wasn't specified/defined earlier.
     -->
-    <target name="-scm:tag-label" unless="-scm:tag-label">
-        <buildnumber file="build.number" />
-
-        <property name="-scm:tag-label"
-                  value="${project.name}-${project.version}build${build.number}" />
+    <target name="-scm:tag-label" depends="initialize:initialize" unless="-scm:tag-label">
+        <property name="-scm:tag-label" value="${build.version}" />
     </target>
 
     <!--
