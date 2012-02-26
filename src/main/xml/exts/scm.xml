@@ -12,18 +12,14 @@
     <property file="${commons:resourcedir}/extensions/scm/scm.properties" />
 
     <!--
-        Import supported scm implementations.
-    -->
-<!--
-    <import file="scm-ext.xml" />
-    <import file="scm-git.xml" />
-    <import file="scm-svn.xml" />
--->
-    <!--
         Displays the help text for this
     -->
     <target name="scm:help">
         <echo taskname="help">
+scm:commit
+  Will commit a specified file or directory to the configured version control
+  system.
+&#x00A0;
 scm:update
   Updates the project's source code from the configured version control system
   and all submodules.
@@ -41,6 +37,35 @@ scm:tag
     </target>
 
     <!--
+        Will commit a specified file or directory to the configured version control
+        system. If the ${scm.resource} parameter is not specified this target will
+        commit all changes.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="scm:commit" unless="commons:run-offline">
+
+        <property name="scm.resource" location="${basedir}" />
+
+        <antcall target="-scm:commit" />
+    </target>
+
+    <!--
+        Will commit a specified file or directory to the configured version control
+        system.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="-scm:commit"
+            depends="-scm:commit-before~hook,
+                     -scm:commit~hook,
+                     -scm:commit-after~hook" />
+
+    <!--
         Performs a full source update on the current base directory and all
         dependencies.
     -->
@@ -52,10 +77,7 @@ scm:tag
         Performs a full source update on the current base directory and all
         dependencies.
     -->
-    <target name="-scm:update"
-            depends="scm:ext:update,
-                     scm:svn:update,
-                     scm:git:update" />
+    <target name="-scm:update" depends="-scm:update~hook" />
 
     <!--
         Performs a light update on the current base directory, but without any
@@ -69,10 +91,7 @@ scm:tag
         Performs a light update on the current base directory, but without any
         dependencies.
     -->
-    <target name="-scm:update-light"
-            depends="scm:ext:update-light,
-                     scm:svn:update-light,
-                     scm:git:update-light" />
+    <target name="-scm:update-light" depends="-scm:update-light~hook" />
 
     <!--
         Sets a tag for the current project configuration.
@@ -84,8 +103,7 @@ scm:tag
     <target name="scm:tag"
             depends="-scm:tag-commit-message,
                      -scm:tag-label,
-                     scm:svn:tag,
-                     scm:git:tag" />
+                     -scm:tag~hook" />
 
     <!--
         Generates a default tag label, when it wasn't specified/defined earlier.
@@ -108,6 +126,38 @@ scm:tag
         <property name="-scm:tag-commit-message"
                   value="# Auto created tag '${-scm:tag-label}' after successful build." />
     </target>
+
+    <!-- Extension points provided by this module -->
+
+    <!--
+        This hook will be called before a change will be committed.
+    -->
+    <extension-point name="-scm:commit-before~hook" />
+
+    <!--
+        Main commit hook, that can be used by concrete scm implementations.
+    -->
+    <extension-point name="-scm:commit~hook" />
+
+    <!--
+        This hook will be called after a change was committed.
+    -->
+    <extension-point name="-scm:commit-after~hook" />
+
+    <!--
+        Main update hook, that can be used by concrete scm implementations.
+    -->
+    <extension-point name="-scm:update~hook" />
+
+    <!--
+        Main update-light hook, that can be used by concrete scm implementations.
+    -->
+    <extension-point name="-scm:update-light~hook" />
+
+    <!--
+        Main tag hook, that can be used by concrete scm implementations.
+    -->
+    <extension-point name="-scm:tag~hook" />
 
     <!--
         Utilized extension points

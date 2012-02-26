@@ -6,11 +6,81 @@
         control management systems.
     </description>
 
-    <target name="scm:svn:update" depends="-scm:svn:is-checkout" if="-scm:svn:out-checkout">
+    <!--
+        Displays the help text for this build commons extension.
+    -->
+    <target name="scm:svn:help">
+        <echo taskname="help">
+The scm:svn extension provides a Subversion specific implementation for the
+generic scm extension.
+&#x00A0;
+scm:svn:help
+  Displays the help text for the scm:git extension.
+&#x00A0;
+scm:svn:commit
+  Will commit a specified file or directory to the main repository.
+&#x00A0;
+  -Dscm.message="..." - The commit message
+  -Dscm.resource=/path/to/... - File or directory to commit.
+        </echo>
+    </target>
+
+    <!--
+        Will commit a specified file or directory to the main repository.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="scm:svn:commit"
+            depends="-scm:svn:is-checkout"
+            if="-scm:svn:out-checkout"
+            extensionOf="-scm:commit~hook">
+
+        <antcall target="-scm:svn:commit" />
+    </target>
+
+    <!--
+        Will commit a specified file or directory to the main repository.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="-scm:svn:commit"
+            depends="-scm:svn:commit-before~hook,
+                     -scm:svn:commit-main,
+                     -scm:svn:commit-after~hook" />
+
+    <!--
+        Will commit a specified file or directory to the main repository.
+
+        Parameters:
+            - ${scm.message}
+            - ${scm.resource}
+    -->
+    <target name="-scm:svn:commit-main">
+        <exec dir="${basedir}" executable="svn">
+            <arg value="ci" />
+            <arg value="-m" />
+            <arg value="${scm.message}" />
+            <arg location="${scm.resource}" />
+        </exec>
+    </target>
+
+    <target name="scm:svn:update"
+            depends="-scm:svn:is-checkout"
+            if="-scm:svn:out-checkout"
+            extensionOf="-scm:update~hook">
+
         <antcall target="-scm:svn:update" />
     </target>
 
-    <target name="scm:svn:update-light" depends="-scm:svn:is-checkout" if="-scm:svn:out-checkout">
+    <target name="scm:svn:update-light"
+            depends="-scm:svn:is-checkout"
+            if="-scm:svn:out-checkout"
+            extensionOf="-scm:update-light~hook">
+
         <antcall target="-scm:svn:update-light" />
     </target>
 
@@ -44,7 +114,11 @@
             ${-scm:tag-label}
             ${-scm:tag-commit-message}
     -->
-    <target name="scm:svn:tag" depends="-scm:svn:is-checkout" if="-scm:svn:out-checkout">
+    <target name="scm:svn:tag"
+            depends="-scm:svn:is-checkout"
+            if="-scm:svn:out-checkout"
+            extensionOf="-scm:tag~hook">
+
         <antcall target="-scm:svn:tag" />
     </target>
 
@@ -117,5 +191,17 @@
 
         <delete file="${.common.svn.info.tmp}" />
     </target>
+
+    <!-- Extension points provided by this module -->
+
+    <!--
+        This extension point will be called before a change will be committed.
+    -->
+    <extension-point name="-scm:svn:commit-before~hook" />
+
+    <!--
+        This extension point will be called after a change was committed.
+    -->
+    <extension-point name="-scm:svn:commit-after~hook" />
     
 </project>
