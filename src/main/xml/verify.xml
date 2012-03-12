@@ -7,11 +7,6 @@
     </description>
 
     <!--
-        Declare basedir for the verify build file.
-    -->
-    <dirname property="-verify:basedir" file="${ant.file.ant-build-commons-verify}" />
-
-    <!--
         Import the parent target file.
     -->
     <import file="integration-test.xml" />
@@ -66,5 +61,11 @@
         of the project's source has finished.
     -->
     <extension-point name="-verify:after~hook" />
+
+    <!--
+        Backdoor that allows execution of the verify step without the complete
+        build pipeline.
+    -->
+    <target name="verify:backdoor" depends="-verify:verify" />
 
 </project>
