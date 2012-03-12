@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-sonar-php" basedir=".">
+
+    <description>
+        This extension provides a concrete implementation of the sonar
+        integration module for PHP.
+    </description>
+
+    <!--
+        Main target that executes the available before and after hooks and the
+        main php project analysis target.
+    -->
+    <target name="-sonar:php:main"
+            depends="-sonar:php:before~hook,
+                     -sonar:php:execute,
+                     -sonar:php:before~hook" />
+
+    <!--
+        Executes the main php project analysis.
+    -->
+    <target name="-sonar:php:execute"
+            depends="-sonar:php:validate">
+
+        <!-- Required due to some strange requirements in the Sonar php plugin -->
+        <mkdir dir="${basedir}/.sonar/target" />
+
+        <property name="-sonar:relative.tempdir" value="${commons:logsdir}" relative="yes" />
+        <property name="-sonar:relative.logsdir" value="../../${-sonar:relative.tempdir}" />
+
+        <property name="sonar.projectName" value="${project.name}" />
+        <property name="sonar.sources" value="${commons.srcdir.php}" />
+        <property name="sonar.tests" value="${commons.testdir.php}" />
+        <property name="sonar.language" value="php" />
+
+        <property name="sonar.phpDepend.analyzeOnly" value="true" />
+        <property name="sonar.phpDepend.reportFileRelativePath" value="${-sonar:relative.logsdir}" />
+        <property name="sonar.phpDepend.reportFileName" value="${pdepend.phpunit.logfile}" />
+
+        <property name="sonar.phpCodesniffer.analyzeOnly" value="true" />
+        <property name="sonar.phpCodesniffer.reportFileRelativePath" value="${-sonar:relative.logsdir}" />
+        <property name="sonar.phpCodesniffer.reportFileName" value="checkstyle.xml" />
+
+        <property name="sonar.phpPmd.analyzeOnly" value="true" />
+        <property name="sonar.phpPmd.reportFileRelativePath" value="${-sonar:relative.logsdir}" />
+        <property name="sonar.phpPmd.reportFileName" value="pmd.xml" />
+
+        <property name="sonar.phpUnit.analyzeOnly" value="true" />
+        <property name="sonar.phpUnit.reportFileRelativePath" value="${-sonar:relative.logsdir}" />
+        <property name="sonar.phpUnit.reportFileName" value="junit.xml" />
+        <property name="sonar.phpUnit.coverageReportFile" value="clover.xml" />
+
+        <sonar:sonar key="${project.uri}:${project.name}"
+                     version="${-sonar:version}"
+                     xmlns:sonar="antlib:org.sonar.ant"/>
+    </target>
+
+    <!--
+        This target checks all requirements for the PHP sonar module and it will
+        stop the build process on failing checks.
+    -->
+    <target name="-sonar:php:validate" if="sonar.enable">
+        <fail message="Sonar PHP failed:&#10;&#10;Please set pdepend.enable.phpunit.compatible.log=true">
+            <condition>
+                <or>
+                    <equals arg1="${pdepend.enable.phpunit.compatible.log}"
+                            arg2="$${pdepend.enable.phpunit.compatible.log}" />
+                    <isfalse value="${pdepend.enable.phpunit.compatible.log}" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!--
+        Extension points utilized by this module.
+    -->
+
+    <!--
+        This target hooks into the main validation step and checks if sonar is
+        enabled for the current project and if all required settings are
+        available.
+    -->
+    <target name="-sonar:php:validate-main~hooked"
+            if="sonar.enable">
+
+        <antcall target="-sonar:php:validate" />
+    </target>
+
+    <!--
+        This target hooks into the main sonar hook and executes the php related
+        sonar targets, when the current project is a php project.
+    -->
+    <target name="-sonar:php:sonar-main~hooked"
+            extensionOf="-sonar:main~hook"
+            depends="php:is-php-project"
+            if="php:is-php-project">
+
+        <antcall target="-sonar:php:main" />
+    </target>
+
+    <!--
+        Extension points provided by this module.
+    -->
+
+    <!--
+        This extension will be called just before the project analysis starts.
+    -->
+    <extension-point name="-sonar:php:before~hook" />
+
+    <!--
+        This extension will be called after the project analysis has finished.
+    -->
+    <extension-point name="-sonar:php:after~hook" />
+
+</project>

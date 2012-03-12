@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-sonar" basedir=".">
+
+    <description>
+        This extension provides an integration with the code analysis tool
+        Sonar.
+    </description>
+
+    <!--
+        Classpath with the sonar ant archive.
+    -->
+    <path id="-sonar:classpath">
+        <fileset dir="${resourcedir}/extensions/sonar">
+            <include name="sonar-ant-task-*.jar"/>
+        </fileset>
+    </path>
+
+    <!--
+        Load the sonar task definition.
+    -->
+    <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+        <classpath refid="-sonar:classpath" />
+    </taskdef>
+
+    <!--
+        Displays the help for this extension.
+    -->
+    <target name="sonar:help">
+        <echo taskname="help">
+This extension provides an easy integration with the code analysis tool. It
+uses the output of several other extensions to fill sonar with the required
+code information.
+&#x00A0;
+sonar:help
+  Displays this help message.
+&#x00A0;
+sonar:sonar
+  This target starts the main sonar analysis process.
+        </echo>
+    </target>
+
+    <!--
+        Shortcut for the "sonar:sonar" target.
+    -->
+    <target name="sonar" depends="sonar:sonar" />
+
+    <!--
+        Main target that start the sonar analysis process for the current project.
+    -->
+    <target name="sonar:sonar" if="sonar.enable">
+        <antcall target="-sonar:sonar" />
+    </target>
+
+    <!--
+        Main target that start the sonar analysis process for the current project.
+    -->
+    <target name="-sonar:sonar"
+            depends="-sonar:before~hook,
+                     -sonar:version,
+                     -sonar:main~hook,
+                     -sonar:after~hook" />
+
+    <!--
+        This target sets a property with the project's sonar version number.
+    -->
+    <target name="-sonar:version">
+        <condition property="-sonar:version"
+                   value="${project.version}-snapshot"
+                   else="${build.file}">
+            <equals arg1="${build.file}" arg2="$${build.file}" trim="true" />
+        </condition>
+    </target>
+
+    <!--
+        Extension points utilized by this module.
+    -->
+
+    <!--
+        This target triggers the sonar analysis as part of the deploy build
+        step, when the current project has activated sonar support with:
+
+        sonar.enable=true
+    -->
+    <target name="-sonar:deploy:main~hooked"
+            extensionOf="-deploy:main~hook"
+            if="sonar.enabled">
+
+        <antcall target="sonar:sonar" />
+    </target>
+
+    <!--
+        Extension points provided by this module.
+    -->
+
+    <!--
+        This extension point will be called before the main analysis process
+        starts.
+    -->
+    <extension-point name="-sonar:before~hook" />
+
+    <!--
+        This extension point will be called during the main analysis phase. It
+        should be used by language specific implementations of the sonar module.
+    -->
+    <extension-point name="-sonar:main~hook" />
+
+    <!--
+        This extension point will be called after the main analysis process has
+        finished.
+    -->
+    <extension-point name="-sonar:after~hook" />
+</project>
