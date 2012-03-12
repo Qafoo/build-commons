@@ -19,10 +19,8 @@
     <target name="validate:validate"
             depends="clean:clean,
                      -validate:before~hook,
-                     -validate:validate,
+                     -validate:main~hook,
                      -validate:after~hook" />
-
-    <target name="-validate:validate" />
 
     <!--
         Available extension points for this build step.
@@ -32,6 +30,12 @@
 
     -->
     <extension-point name="-validate:before~hook" />
+
+    <!--
+        This hook represents the main validation process. It can be extended by
+        other modules or build files to perform some custom validation steps.
+    -->
+    <extension-point name="-validate:main~hook" />
 
     <!--
 

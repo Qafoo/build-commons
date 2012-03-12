@@ -24,7 +24,9 @@
                      -pdepend:run,
                      -pdepend:after~hook" />
 
-    <target name="-pdepend:run" depends="-pdepend:install-or-upgrade">
+    <target name="-pdepend:run"
+            depends="-pdepend:install-or-upgrade,
+                     -pdepend:phpunit-log">
 
         <exec executable="${commons.executable.php}" failonerror="${pdepend.fail.on.violation}">
             <arg value="-d" />
@@ -32,10 +34,29 @@
             <arg value="-d" />
             <arg value="include_path=${pear.local.include.path}" />
             <arg value="${pear.local.bindir}/pdepend" />
-            <arg value="--summary-xml=${commons:logsdir}/pdepend.xml" />
-            <arg value="--jdepend-xml=${commons:logsdir}/jdepend.xml" />
+            <arg value="--summary-xml=${commons:logsdir}/${pdepend.summary.logfile}" />
+            <arg value="--jdepend-xml=${commons:logsdir}/${pdepend.jdepend.logfile}" />
+            <arg line="${-pdepend:phpunit.log}" />
             <arg value="${commons.srcdir.php}" />
         </exec>
+    </target>
+
+    <!--
+        Tests if the deprecated phpunit compatible log file format is activated
+        and sets an internal property to a cli argument, so that PHP_Depend
+        generates that file.
+    -->
+    <target name="-pdepend:phpunit-log">
+        <condition property="-pdepend:phpunit.log"
+                   value=""
+                   else="'--phpunit-xml=${commons:logsdir}/${pdepend.phpunit.logfile}'">
+            <or>
+                <equals arg1="${pdepend.enable.phpunit.compatible.log}"
+                        arg2="$${pdepend.enable.phpunit.compatible.log}"
+                        trim="true" />
+                <isfalse value="${pdepend.enable.phpunit.compatible.log}" />
+            </or>
+        </condition>
     </target>
 
     <target name="-pdepend:install-or-upgrade"

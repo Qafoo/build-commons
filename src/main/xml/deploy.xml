@@ -25,13 +25,8 @@
     <target name="deploy:deploy"
             depends="install,
                      -deploy:before~hook,
-                     -deploy:deploy,
+                     -deploy:main~hook,
                      -deploy:after~hook" />
-
-    <!--
-        Private target that executes remote deployment.
-    -->
-    <target name="-deploy:deploy" />
 
     <!--
         Extension points provided by this module
@@ -44,10 +39,16 @@
     <extension-point name="-deploy:before~hook" />
 
     <!--
+        This extension point will be called during the main deploy phase,
+        Concrete deploy extensions can hook in here to deploy their project
+        artifacts.
+    -->
+    <extension-point name="-deploy:main~hook" />
+
+    <!--
         Hook target that will be called during the build process, when the main
         deploy target has finished.
     -->
     <extension-point name="-deploy:after~hook" />
 
-    
 </project>
