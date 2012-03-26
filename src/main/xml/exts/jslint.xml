@@ -25,6 +25,7 @@
                output="${jslint.logfile}"
                parallel="true">
             <arg line="-f ${jslint.jslint.js}" />
+            <arg line="-f ${jslint.options}" />
             <arg line="${jslint.runner}" />
             <fileset dir="${commons.srcdir.js}" erroronmissingdir="true">
                 <include name="**/*.js" />
