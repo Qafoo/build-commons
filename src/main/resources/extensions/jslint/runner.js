@@ -1,4 +1,5 @@
 var result, i, j;
+var jslintOptions = jslintOptions || {};
 
 result = true;
 
@@ -10,7 +11,7 @@ print( '<?xml version="1.0" encoding="UTF-8"?>' );
 print( '<checkstyle version="1.3.3">' );
 for ( i in arguments ) {
     print( ' <file name="' + arguments[i] + '">' );
-    if ( !JSLINT( readFile( arguments[i] ) ) ) {
+    if ( !JSLINT( readFile( arguments[i] ), jslintOptions ) ) {
         result = false;
         for ( j in JSLINT.errors ) {
             var error = JSLINT.errors[j];
