@@ -161,17 +161,10 @@ scm:tag
     -->
 
     <!--
-        Hooks the light weight update into the initialization step.
+        Hooks the full update procedure into the initialization step.
     -->
     <target name="-scm:initialize:after~hooked"
-            depends="scm:update-light"
+            depends="scm:update"
             extensionOf="-initialize:after~hook" />
 
-    <!--
-        Hooks the full update procedure before the package step.
-    -->
-    <target name="-scm:package:before~hooked"
-            depends="scm:update"
-            extensionOf="-package:before~hook" />
-    
 </project>
