@@ -6,25 +6,37 @@
     -->
     <property file="${resourcedir}/extensions/requirejs/requirejs.properties" />
 
+    <!--
+         Shortcut for the extension entrypoint
+    -->
     <target name="requirejs" depends="requirejs:requirejs" />
 
     <!--
-        Create the bootstrap file for the given entrypoint
-
-        This bootstrap file does include the the requirejs loader, specified
-        extra loaders, as well as the necessary code to load and run the
-        entrypoint upon execution
+         External entrypoint to this module
     -->
     <target name="requirejs:requirejs"
             depends="-requirejs:is-javascript-available,
                      -requirejs:requirejs" />
-    
+
+    <!--
+         Internal entrypoint to the module
+
+         Only executed if the javascript source directory exists
+    -->
     <target name="-requirejs:requirejs"
             depends="-requirejs:before~hook,
                      -requirejs:run,
                      -requirejs:after~hook"
             if="-requirejs:out-javascript-is-available" />
 
+    <!--
+         Check if the javascript src directory is available
+
+         @TODO: Maybe move checks for this and all others sources into the base
+         commons environment?
+
+         @param -requirejs:out-javascript-is-available
+    -->
     <target name="-requirejs:is-javascript-available">
         <condition property="-requirejs:out-javascript-is-available">
             <and>
@@ -33,6 +45,9 @@
         </condition>
     </target>
 
+    <!--
+         Build the needed bootstrapping file
+    -->
     <target name="-requirejs:run"
             depends="-requirejs:create-build-js">
         <exec executable="${commons.executable.rhino}"
@@ -43,6 +58,12 @@
         </exec>
     </target>
 
+    <!--
+         Construct the pathname of the bootstrap file to be created based on
+         the entrypoint property as well as the given bootstrapping prefix
+
+         @param -requirejs:out-bootstrap-path
+    -->
     <target name="-requirejs:create-bootstrap-path">
         <script language="javascript" setbeans="false"><![CDATA[
             var entrypoint = new java.io.File(
@@ -53,11 +74,21 @@
             var prefixedFullPathname = [
                 fullPath, "/", prefix, entrypoint.getName()
             ].join("");
-            
+
             project.setProperty('-requirejs:out-bootstrap-path', prefixedFullPathname);
         ]]></script>
     </target>
-    
+
+    <!--
+         Generate the ´include´ and ´paths´ contents for the build
+         configuration file, which is sent to r.js for correct resolvement of
+         loader and requirejs dependencies
+
+         The output is in JSON format
+
+        @param -requirejs:out-build-config-paths
+        @param -requirejs:out-build-config-include
+    -->
     <target name="-requirejs:create-build-config-paths-and-include">
         <script language="javascript" setbeans="false"><![CDATA[
             var paths = {};
@@ -66,7 +97,7 @@
             var i = null;
 
             paths.requireJS = project.getProperty("resourcedir") + '/extensions/requirejs/require';
-            
+
             var enumeration = project.getProperties().keys();
             var propertyNameRegExp = /^(requirejs\.loader\.)([a-zA-Z0-9]+)$/;
             var propertyValueRegExp = /^(.*?)(\.js)?$/;
@@ -76,7 +107,7 @@
                     if (nameMatches === null) {
                         return;
                     }
-                    
+
                     var propertyValue = project.getProperty(property);
                     var valueMatches = propertyValueRegExp.exec(propertyValue);
 
@@ -104,11 +135,15 @@
         ]]></script>
     </target>
 
-    <target name="-requirejs:create-build-js" 
+    <!--
+         Create the necessary build file, which is used by r.js to create the
+         needed bootstrapping file with all dependencies handled properly
+    -->
+    <target name="-requirejs:create-build-js"
             depends="-requirejs:create-bootstrap-path,
                      -requirejs:create-build-config-paths-and-include">
         <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-build-js" prefix="requirejs" deleteonexit="false" />
-        <copy file="${resourcedir}/extensions/requirejs/build.config/bootstrap.build.js" 
+        <copy file="${resourcedir}/extensions/requirejs/build.config/bootstrap.build.js"
                tofile="${-requirejs:out-build-js}" />
         <replace file="${-requirejs:out-build-js}">
             <!-- The .js is left out, as it added by the requirejs module
@@ -119,9 +154,16 @@
         </replace>
     </target>
 
+    <!--
+         Extension points of the requirejs module
+    -->
     <extension-point name="-requirejs:before~hook" />
     <extension-point name="-requirejs:after~hook" />
 
+    <!--
+         Hook this module into the build-process, by executing it after the
+         compile step
+    -->
     <target name="-requirejs:compile:after~hooked"
             depends="requirejs:requirejs"
             extensionOf="-compile:after~hook" />
