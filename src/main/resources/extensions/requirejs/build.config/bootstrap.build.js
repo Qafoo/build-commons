@@ -2,6 +2,6 @@
     "baseUrl": ".",
     "paths": %build.paths%,
     "include": %build.include%,
-    "out": "%bootstrap.path%",
+    "out": "%build.out%",
     "optimize": "none"
 })
