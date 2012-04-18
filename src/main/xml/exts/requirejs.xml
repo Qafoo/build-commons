@@ -47,8 +47,23 @@
 
     <!--
          Build the needed bootstrapping file
+
+         The file contains the requirejs library, all defined loaders as well
+         as an initial request to the application entrypoint file
     -->
     <target name="-requirejs:run"
+            depends="-requirejs:create-bootstrap-path,
+                     -requirejs:combine-requirejs-and-loaders">
+         <copy file="${-requirejs:out-combined-requirejs-and-loaders}" tofile="${-requirejs:out-bootstrap-path}" />
+    </target>
+
+    <!--
+         Build a combined version of the requirejs library as well as all defined loaders.
+
+         Dependencies will be resolved and remapped to proper naming,
+         eventhough the loaders may reside at an arbitrary position
+    -->
+    <target name="-requirejs:combine-requirejs-and-loaders"
             depends="-requirejs:create-build-js">
         <exec executable="${commons.executable.rhino}"
                failonerror="true">
@@ -138,19 +153,23 @@
     <!--
          Create the necessary build file, which is used by r.js to create the
          needed bootstrapping file with all dependencies handled properly
+
+         The path of the buildfile as well as the path of the file which will
+         be generated, if the buildfile is executed is returned.
+
+         @param -requirejs:out-build-js
+         @param -requirejs:out-combined-requirejs-and-loaders
     -->
     <target name="-requirejs:create-build-js"
-            depends="-requirejs:create-bootstrap-path,
-                     -requirejs:create-build-config-paths-and-include">
-        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-build-js" prefix="requirejs" deleteonexit="false" />
+            depends="-requirejs:create-build-config-paths-and-include">
+        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-build-js" prefix="requirejs" deleteonexit="true" />
+        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-combined-requirejs-and-loaders" prefix="requirejs" deleteonexit="false" />
         <copy file="${resourcedir}/extensions/requirejs/build.config/bootstrap.build.js"
                tofile="${-requirejs:out-build-js}" />
         <replace file="${-requirejs:out-build-js}">
-            <!-- The .js is left out, as it added by the requirejs module
-                 handler -->
             <replacefilter token="%build.paths%" value="${-requirejs:out-build-config-paths}" />
             <replacefilter token="%build.include%" value="${-requirejs:out-build-config-include}" />
-            <replacefilter token="%bootstrap.path%" value="${-requirejs:out-bootstrap-path}" />
+            <replacefilter token="%build.out%" value="${-requirejs:out-combined-requirejs-and-loaders}" />
         </replace>
     </target>
 
