@@ -15,8 +15,10 @@
          External entrypoint to this module
     -->
     <target name="requirejs:requirejs"
-            depends="-requirejs:is-javascript-available,
-                     -requirejs:requirejs" />
+            depends="-requirejs:is-javascript-available"
+            if="out-javascript-is-available">
+        <antcall target="-requirejs:requirejs" />
+    </target>
 
     <!--
          Internal entrypoint to the module
@@ -27,7 +29,7 @@
             depends="-requirejs:before~hook,
                      -requirejs:run,
                      -requirejs:after~hook"
-            if="-requirejs:out-javascript-is-available" />
+            unless="out-javascript-is-available" />
 
     <!--
          Check if the javascript src directory is available
@@ -38,10 +40,8 @@
          @param -requirejs:out-javascript-is-available
     -->
     <target name="-requirejs:is-javascript-available">
-        <condition property="-requirejs:out-javascript-is-available">
-            <and>
-                <available file="${commmons.srcdir.js}" type="dir" />
-            </and>
+        <condition property="out-javascript-is-available">
+            <available file="${commons.srcdir.js}" type="dir" />
         </condition>
     </target>
 
