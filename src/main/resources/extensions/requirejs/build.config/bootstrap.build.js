@@ -1,11 +1,7 @@
 ({
     "baseUrl": ".",
-    "paths": {
-        "requireJsIncludeHACK": "%requirejs.path%"
-    },
-    "include": [
-        "requireJsIncludeHACK"
-    ],
+    "paths": %build.paths%,
+    "include": %build.include%,
     "out": "%bootstrap.path%",
     "optimize": "none"
 })
