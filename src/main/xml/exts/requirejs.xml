@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-requirejs" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/requirejs/requirejs.properties" />
+
+    <target name="requirejs" depends="requirejs:requirejs" />
+
+    <!--
+        Create the bootstrap file for the given entrypoint
+
+        This bootstrap file does include the the requirejs loader, specified
+        extra loaders, as well as the necessary code to load and run the
+        entrypoint upon execution
+    -->
+    <target name="requirejs:requirejs"
+            depends="-requirejs:is-javascript-available,
+                     -requirejs:requirejs" />
+    
+    <target name="-requirejs:requirejs"
+            depends="-requirejs:before~hook,
+                     -requirejs:run,
+                     -requirejs:after~hook"
+            if="-requirejs:out-javascript-is-available" />
+
+    <target name="-requirejs:is-javascript-available">
+        <condition property="-requirejs:out-javascript-is-available">
+            <and>
+                <available file="${commmons.srcdir.js}" type="dir" />
+            </and>
+        </condition>
+    </target>
+
+    <target name="-requirejs:run"
+            depends="-requirejs:create-build-js">
+        <exec executable="${commons.executable.rhino}"
+               failonerror="true">
+            <arg value="${resourcedir}/extensions/requirejs/r.js" />
+            <arg value="-o" />
+            <arg value="${-requirejs:out-build-js}" />
+        </exec>
+    </target>
+
+    <target name="-requirejs:create-bootstrap-path">
+        <script language="javascript"><![CDATA[
+            var entrypoint = new java.io.File(
+                project.getProperty('requirejs.entrypoint')
+            );
+            var prefix = project.getProperty('requirejs.compiler.prefix');
+            var fullPath = entrypoint.getParent();
+            var prefixedFullPathname = [
+                fullPath, "/", prefix, entrypoint.getName()
+            ].join("");
+            
+            project.setProperty('-requirejs:out-bootstrap-path', prefixedFullPathname);
+        ]]></script>
+    </target>
+
+    <target name="-requirejs:create-build-js" 
+            depends="-requirejs:create-bootstrap-path">
+        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-build-js" prefix="requirejs" deleteonexit="false" />
+        <copy file="${resourcedir}/extensions/requirejs/build.config/bootstrap.build.js" 
+               tofile="${-requirejs:out-build-js}" />
+        <replace file="${-requirejs:out-build-js}">
+            <!-- The .js is left out, as it added by the requirejs module
+                 handler -->
+            <replacefilter token="%requirejs.path%" value="${resourcedir}/extensions/requirejs/require" />
+            <replacefilter token="%bootstrap.path%" value="${-requirejs:out-bootstrap-path}" />
+        </replace>
+    </target>
+
+    <extension-point name="-requirejs:before~hook" />
+    <extension-point name="-requirejs:after~hook" />
+
+    <target name="-requirejs:compile:after~hooked"
+            depends="requirejs:requirejs"
+            extensionOf="-compile:after~hook" />
+
+</project>
