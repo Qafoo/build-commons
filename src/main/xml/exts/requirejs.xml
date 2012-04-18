@@ -53,8 +53,12 @@
     -->
     <target name="-requirejs:run"
             depends="-requirejs:create-bootstrap-path,
-                     -requirejs:combine-requirejs-and-loaders">
-         <copy file="${-requirejs:out-combined-requirejs-and-loaders}" tofile="${-requirejs:out-bootstrap-path}" />
+                     -requirejs:combine-requirejs-and-loaders,
+                     -requirejs:create-entrypoint-module-name">
+        <concat destfile="${-requirejs:out-bootstrap-path}">
+            <file file="${-requirejs:out-combined-requirejs-and-loaders}" />
+            <string value="require(['${-requirejs:out-entrypoint-module-name}']);" />
+        </concat>
     </target>
 
     <!--
@@ -71,6 +75,32 @@
             <arg value="-o" />
             <arg value="${-requirejs:out-build-js}" />
         </exec>
+    </target>
+
+    <!--
+         Create the path/modulename needed to include and run the defined
+         entrypoint from within the application
+
+         @param -requirejs:out-entrypoint-module-name
+    -->
+    <target name="-requirejs:create-entrypoint-module-name">
+        <script language="javascript" setbeans="false"><![CDATA[
+            var jsdir = project.getProperty("commons.srcdir.js");
+            var entrypoint = project.getProperty("requirejs.entrypoint");
+            var jsdirRemovalRegExp = new RegExp(
+                "^(" + jsdir + ")(.+)$"
+            );
+            var modulenameExtractorRegExp = /^(.+?)(.js)?$/;
+            var matches;
+
+            matches = jsdirRemovalRegExp.exec(entrypoint);
+            matches = modulenameExtractorRegExp.exec(matches[2]);
+
+            project.setProperty(
+                '-requirejs:out-entrypoint-module-name',
+                matches[1]
+            );
+        ]]></script>
     </target>
 
     <!--
@@ -115,7 +145,7 @@
 
             var enumeration = project.getProperties().keys();
             var propertyNameRegExp = /^(requirejs\.loader\.)([a-zA-Z0-9]+)$/;
-            var propertyValueRegExp = /^(.*?)(\.js)?$/;
+            var propertyValueRegExp = /^(.+?)(\.js)?$/;
             while(enumeration.hasMoreElements()) {
                 (function(property) {
                     var nameMatches = propertyNameRegExp.exec(property);
