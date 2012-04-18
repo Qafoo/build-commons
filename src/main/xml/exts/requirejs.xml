@@ -54,11 +54,34 @@
     <target name="-requirejs:run"
             depends="-requirejs:create-bootstrap-path,
                      -requirejs:combine-requirejs-and-loaders,
-                     -requirejs:create-entrypoint-module-name">
+                     -requirejs:create-runtime-configuration">
         <concat destfile="${-requirejs:out-bootstrap-path}">
             <file file="${-requirejs:out-combined-requirejs-and-loaders}" />
-            <string value="require(['${-requirejs:out-entrypoint-module-name}']);" />
+            <string value="${-requirejs:out-runtime-configuration}" />
+            <string value="require(['${requirejs.entrypoint}']);" />
         </concat>
+    </target>
+
+    <target name="-requirejs:create-runtime-configuration">
+        <script language="javascript" setbeans="false"><![CDATA[
+            var entrypointDirectory = new java.io.File(
+                project.getProperty('requirejs.entrypoint')
+            ).getParent();
+
+            var baseUrl = "/";
+            if (entrypointDirectory !== null) {
+                baseUrl = entrypointDirectory;
+            }
+
+            project.setProperty(
+                '-requirejs:out-runtime-configuration',
+                [
+                    'require.config({baseUrl: "',
+                    baseUrl,
+                    '"});'
+                ].join('')
+            );
+        ]]></script>
     </target>
 
     <!--
@@ -78,32 +101,6 @@
     </target>
 
     <!--
-         Create the path/modulename needed to include and run the defined
-         entrypoint from within the application
-
-         @param -requirejs:out-entrypoint-module-name
-    -->
-    <target name="-requirejs:create-entrypoint-module-name">
-        <script language="javascript" setbeans="false"><![CDATA[
-            var jsdir = project.getProperty("commons.srcdir.js");
-            var entrypoint = project.getProperty("requirejs.entrypoint");
-            var jsdirRemovalRegExp = new RegExp(
-                "^(" + jsdir + ")(.+)$"
-            );
-            var modulenameExtractorRegExp = /^(.+?)(.js)?$/;
-            var matches;
-
-            matches = jsdirRemovalRegExp.exec(entrypoint);
-            matches = modulenameExtractorRegExp.exec(matches[2]);
-
-            project.setProperty(
-                '-requirejs:out-entrypoint-module-name',
-                matches[1]
-            );
-        ]]></script>
-    </target>
-
-    <!--
          Construct the pathname of the bootstrap file to be created based on
          the entrypoint property as well as the given bootstrapping prefix
 
@@ -112,7 +109,9 @@
     <target name="-requirejs:create-bootstrap-path">
         <script language="javascript" setbeans="false"><![CDATA[
             var entrypoint = new java.io.File(
-                project.getProperty('requirejs.entrypoint')
+                project.getProperty('commons.sitedir')
+                + '/'
+                + project.getProperty('requirejs.entrypoint')
             );
             var prefix = project.getProperty('requirejs.compiler.prefix');
             var fullPath = entrypoint.getParent();
