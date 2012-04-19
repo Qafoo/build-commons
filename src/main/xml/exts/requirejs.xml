@@ -58,7 +58,7 @@
         <concat destfile="${-requirejs:out-bootstrap-path}">
             <file file="${-requirejs:out-combined-requirejs-and-loaders}" />
             <string value="${-requirejs:out-runtime-configuration}" />
-            <string value="require(['${requirejs.entrypoint}']);" />
+            <string value="require(['/${requirejs.entrypoint}']);" />
         </concat>
     </target>
 
@@ -70,7 +70,7 @@
 
             var baseUrl = "/";
             if (entrypointDirectory !== null) {
-                baseUrl = entrypointDirectory;
+                baseUrl = "/" + entrypointDirectory;
             }
 
             project.setProperty(
@@ -191,7 +191,7 @@
     -->
     <target name="-requirejs:create-build-js"
             depends="-requirejs:create-build-config-paths-and-include">
-        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-build-js" prefix="requirejs" deleteonexit="true" />
+        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-build-js" prefix="requirejs" deleteonexit="false" />
         <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-combined-requirejs-and-loaders" prefix="requirejs" deleteonexit="false" />
         <copy file="${resourcedir}/extensions/requirejs/build.config/bootstrap.build.js"
                tofile="${-requirejs:out-build-js}" />
