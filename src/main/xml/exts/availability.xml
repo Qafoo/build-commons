@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extension-availability" basedir=".">
+    <!--
+         Set properties based on source/test dir avaialbilty and print out info
+         messages for each directory not found
+    -->
+    <target name="availability:availability"
+            depends="availability:php-srcdir-is-available,
+                     availability:js-srcdir-is-available,
+                     availability:php-testdir-is-available,
+                     availability:js-testdir-is-available" />
+
+    <!--
+        Check the availability of all source and test dirs.
+
+        Furthermore print out information if a certain src/test directory is
+        not found and a generic explanation of the consequences. This should
+        minimize WTF moments during execution, caused to non existant or
+        misconfigured directories.
+    -->
+
+    <target name="availability:php-srcdir-is-available" 
+            depends="-availability:check-php-srcdir-is-available"
+            unless="available:php-srcdir-is-available">
+        <echo message="No PHP source directory was found at '${commons.srcdir.php}'. All related tasks will be skipped."
+              level="info" />
+    </target>
+
+    <target name="availability:js-srcdir-is-available" 
+            depends="-availability:check-js-srcdir-is-available"
+            unless="available:js-srcdir-is-available">
+        <echo message="No JS source directory was found at '${commons.srcdir.js}'. All related tasks will be skipped."
+              level="info" />
+    </target>
+
+    <target name="availability:php-testdir-is-available" 
+            depends="-availability:check-php-testdir-is-available"
+            unless="available:php-testdir-is-available">
+        <echo message="No PHP test directory was found at '${commons.testdir.php}'. All related tasks will be skipped."
+              level="info" />
+    </target>
+
+    <target name="availability:js-testdir-is-available" 
+            depends="-availability:check-js-testdir-is-available"
+            unless="available:js-testdir-is-available">
+        <echo message="No JS test directory was found at '${commons.testdir.js}'. All related tasks will be skipped."
+              level="info" />
+    </target>
+
+
+     <!--
+        Check which of the directories does exist and which does not
+
+        The gathered information can be used later on to enable or disable
+        certain tasks and extensions based on the availability of the
+        correlating source/test code.
+
+        The availability information is defined as properties like this one:
+        ${availability:php-srcdir-is-available} or
+        ${availability:js-testdir-is-available}
+    -->
+
+    <target name="-availability:check-php-srcdir-is-available">
+        <available property="available:php-srcdir-is-available"
+                   file="${commons.srcdir.php}"
+                   type="dir" />
+    </target>
+
+    <target name="-availability:check-js-srcdir-is-available">
+        <available property="available:js-srcdir-is-available"
+                   file="${commons.srcdir.js}"
+                   type="dir" />
+    </target>
+
+    <target name="-availability:check-php-testdir-is-available">
+        <available property="available:php-testdir-is-available"
+                   file="${commons.testdir.php}"
+                   type="dir" />
+    </target>
+
+    <target name="-availability:check-js-testdir-is-available">
+        <available property="available:js-testdir-is-available"
+                   file="${commons.testdir.js}"
+                   type="dir" />
+    </target>
+
+</project>
