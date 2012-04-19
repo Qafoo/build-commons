@@ -10,6 +10,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="availability.xml" />
     <import file="pear.xml" />
 
     <!--
@@ -18,9 +19,18 @@
     <target name="phpcb" depends="phpcb:phpcb" />
 
     <!--
-        Runs the phpcb cli tool against the project source code.
+         Execute the phpcb task only, if a php source directory is available
     -->
     <target name="phpcb:phpcb"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <antcall target="-phpcb:phpcb" />
+    </target>
+
+    <!--
+        Runs the phpcb cli tool against the project source code.
+    -->
+    <target name="-phpcb:phpcb"
             depends="-phpcb:before~hook,
                      -phpcb:run,
                      -phpcb:after~hook" />
