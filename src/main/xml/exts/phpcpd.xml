@@ -9,6 +9,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="availability.xml" />
     <import file="pear.xml" />
 
     <!--
@@ -17,9 +18,18 @@
     <target name="phpcpd" depends="phpcpd:phpcpd" />
 
     <!--
-        Runs the PHPCPD cli tool against the project source code.
+         Execute the phpcpd task only, if a php source directory is available
     -->
     <target name="phpcpd:phpcpd"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <antcall target="-phpcpd:phpcpd" />
+    </target>
+
+    <!--
+        Runs the PHPCPD cli tool against the project source code.
+    -->
+    <target name="-phpcpd:phpcpd"
             depends="-phpcpd:before~hook,
                      -phpcpd:run,
                      -phpcpd:after~hook" />
