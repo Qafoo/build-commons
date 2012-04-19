@@ -21,28 +21,28 @@
 
     <target name="availability:php-srcdir-is-available" 
             depends="-availability:check-php-srcdir-is-available"
-            unless="available:php-srcdir-is-available">
+            unless="availability:php-srcdir-is-available">
         <echo message="No PHP source directory was found at '${commons.srcdir.php}'. All related tasks will be skipped."
               level="info" />
     </target>
 
     <target name="availability:js-srcdir-is-available" 
             depends="-availability:check-js-srcdir-is-available"
-            unless="available:js-srcdir-is-available">
+            unless="availability:js-srcdir-is-available">
         <echo message="No JS source directory was found at '${commons.srcdir.js}'. All related tasks will be skipped."
               level="info" />
     </target>
 
     <target name="availability:php-testdir-is-available" 
             depends="-availability:check-php-testdir-is-available"
-            unless="available:php-testdir-is-available">
+            unless="availability:php-testdir-is-available">
         <echo message="No PHP test directory was found at '${commons.testdir.php}'. All related tasks will be skipped."
               level="info" />
     </target>
 
     <target name="availability:js-testdir-is-available" 
             depends="-availability:check-js-testdir-is-available"
-            unless="available:js-testdir-is-available">
+            unless="availability:js-testdir-is-available">
         <echo message="No JS test directory was found at '${commons.testdir.js}'. All related tasks will be skipped."
               level="info" />
     </target>
@@ -61,25 +61,25 @@
     -->
 
     <target name="-availability:check-php-srcdir-is-available">
-        <available property="available:php-srcdir-is-available"
+        <available property="availability:php-srcdir-is-available"
                    file="${commons.srcdir.php}"
                    type="dir" />
     </target>
 
     <target name="-availability:check-js-srcdir-is-available">
-        <available property="available:js-srcdir-is-available"
+        <available property="availability:js-srcdir-is-available"
                    file="${commons.srcdir.js}"
                    type="dir" />
     </target>
 
     <target name="-availability:check-php-testdir-is-available">
-        <available property="available:php-testdir-is-available"
+        <available property="availability:php-testdir-is-available"
                    file="${commons.testdir.php}"
                    type="dir" />
     </target>
 
     <target name="-availability:check-js-testdir-is-available">
-        <available property="available:js-testdir-is-available"
+        <available property="availability:js-testdir-is-available"
                    file="${commons.testdir.js}"
                    type="dir" />
     </target>
