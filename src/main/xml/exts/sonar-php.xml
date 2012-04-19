@@ -71,6 +71,20 @@
     </target>
 
     <!--
+         Check whether a php src as well as test directory is available
+    -->
+    <target name="-sonar:php:is-php-project"
+            depends="availability:php-srcdir-is-available,
+                     availability:php-testdir-is-available">
+         <condition property="-sonar:php:is-php-project">
+             <and>
+                <isset property="availability:php-srcdir-is-available" />
+                <isset property="availability:php-testdir-is-available" />
+             </and>
+         </condition>
+    </target>
+
+    <!--
         Extension points utilized by this module.
     -->
 
@@ -91,8 +105,8 @@
     -->
     <target name="-sonar:php:sonar-main~hooked"
             extensionOf="-sonar:main~hook"
-            depends="php:is-php-project"
-            if="php:is-php-project">
+            depends="-sonar:php:is-php-project"
+            if="-sonar:php:is-php-project">
 
         <antcall target="-sonar:php:main" />
     </target>
