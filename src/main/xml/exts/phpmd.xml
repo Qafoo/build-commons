@@ -9,6 +9,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="availability.xml" />
     <import file="pear.xml" />
 
     <!--
@@ -17,9 +18,18 @@
     <target name="phpmd" depends="phpmd:phpmd" />
 
     <!--
-        Runs the phpmd cli tool against the project source code.
+         Execute the phpmd task only, if a php source directory is available
     -->
     <target name="phpmd:phpmd"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <antcall target="-phpmd:phpmd" />
+    </target>
+
+    <!--
+        Runs the phpmd cli tool against the project source code.
+    -->
+    <target name="-phpmd:phpmd"
             depends="-phpmd:before~hook,
                      -phpmd:run,
                      -phpmd:after~hook" />
