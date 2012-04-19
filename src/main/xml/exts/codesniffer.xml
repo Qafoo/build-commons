@@ -9,6 +9,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="availability.xml" />
     <import file="pear.xml" />
 
     <!--
@@ -17,9 +18,20 @@
     <target name="codesniffer" depends="codesniffer:codesniffer" />
 
     <!--
-        Runs the CodeSniffer cli tool against the project source code.
+         Public entrypoint.
+
+         Only run the codesniffer target, if phpsrc is available
     -->
     <target name="codesniffer:codesniffer"
+        depends="availability:php-srcdir-is-available"
+        if="availability:php-srcdir-is-available">
+        <antcall target="-codesniffer:codesniffer" />
+    </target>
+
+    <!--
+        Runs the CodeSniffer cli tool against the project source code.
+    -->
+    <target name="-codesniffer:codesniffer"
             depends="-codesniffer:before~hook,
                      -codesniffer:run,
                      -codesniffer:after~hook" />
