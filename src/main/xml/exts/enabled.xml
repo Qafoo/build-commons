@@ -80,7 +80,7 @@
 
     <target name="-enabled:log-if-property-is-disabled"
             unless="-enabled:property-is-enabled">
-        <echo message="Target '${in.enabled.target}' has been disabled by property '${in.enabled.property}'"
+            <echo message="Target '${in.enabled.target}' has been disabled by property '${in.enabled.property}' being set to '${in.enabled.property.value}'"
               level="info"
               taskname="info" />
     </target>
