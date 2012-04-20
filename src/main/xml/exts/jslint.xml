@@ -9,6 +9,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
     <import file="availability.xml" />
 
     <!--
@@ -23,7 +24,8 @@
     <target name="jslint:jslint"
             depends="availability:js-srcdir-is-available"
             if="availability:js-srcdir-is-available">
-        <antcall target="-jslint:jslint" />
+        <common.enabled.antcall target="-jslint:jslint"
+                                property="jslint.enabled" />
     </target>
 
     <!--
@@ -66,5 +68,13 @@
 
     <extension-point name="-jslint:before~hook" />
     <extension-point name="-jslint:after~hook" />
+
+    <!--
+         Hook jslint into the compile step to be executed before compilation if
+         enabled
+    -->
+    <target name="-jslint:compile-before~hooked"
+            depends="jslint:jslint"
+            extensionOf="-compile:before~hook" />
 
 </project>
