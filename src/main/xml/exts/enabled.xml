@@ -36,6 +36,7 @@
                      inheritAll="@{inheritAll}"
                      inheritRefs="@{inheritRefs}">
                 <param name="in.enabled.target" value="@{target}" />
+                <param name="in.enabled.property" value="@{property}" />
                 <param name="in.enabled.property.value" value="${@{property}}" />
                 <params />
             </antcall>
@@ -51,7 +52,8 @@
             ${in.enabled.property.value}
     -->
     <target name="-enabled:call-target-if-property-is-enabled"
-            depends="-enabled:check-if-property-is-enabled"
+            depends="-enabled:check-if-property-is-enabled,
+                     -enabled:log-if-property-is-disabled"
             if="-enabled:property-is-enabled">
         <antcall target="${in.enabled.target}" />
     </target>
@@ -74,5 +76,12 @@
                 <equals arg1="${in.enabled.property.value}" arg2="1" trim="true" />
             </or>
         </condition>
+    </target>
+
+    <target name="-enabled:log-if-property-is-disabled"
+            unless="-enabled:property-is-enabled">
+        <echo message="Target '${in.enabled.target}' has been disabled by property '${in.enabled.property}'"
+              level="info"
+              taskname="info" />
     </target>
 </project>
