@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-docbook" basedir=".">
+
+    <!--
+        Import extension default settings
+    -->
+    <property file="${commons:resourcedir}/extensions/docbook/docbook.properties" />
+
+    <target name="docbook:help">
+        <echo taskname="help">
+            This extension provides an easy to use integration of the
+            technical documentation format DocBook into the Build-Commons
+            project.
+            &#x00A0;
+            docbook:help
+            Displays the help for the DocBook extensions.
+            &#x00A0;
+            docbook:docbook
+            Generates the configured output artifacts for the given
+            DocBook project.
+        </echo>
+    </target>
+
+    <!--
+        Shotcut for the docbook:docbook target
+    -->
+    <target name="docbook" depends="docbook:docbook" />
+
+    <!--
+
+    -->
+    <target name="docbook:docbook"
+            depends="-docbook:has-output-variant,
+                     -docbook:output-single,
+                     -docbook:output-multiple">
+
+    </target>
+
+    <target name="-docbook:has-output-variant">
+        <property name="language" value="" />
+        <property name="variant" value="${language}" />
+
+        <condition property="-docbook:output.variant" value="${variant}">
+            <or>
+                <available file="${docbook.file}" />
+                <not>
+                    <equals arg1="${variant}" arg2="" />
+                </not>
+            </or>
+        </condition>
+    </target>
+
+    <target name="-docbook:output-single"
+            if="-docbook:output.variant">
+
+        <antcall target="-docbook:output">
+            <param name="basedir" value="${docbook.srcdir}/${-docbook:output.variant}" />
+        </antcall>
+    </target>
+
+    <target name="-docbook:output-multiple"
+            unless="-docbook:output.variant">
+
+        <subant genericantfile="${ant.file}" target="-docbook:multiple-variant" inheritAll="true">
+            <dirset dir="${docbook.srcdir}">
+                <include name="*" />
+                <present targetdir="${docbook.srcdir}" present="both">
+                    <mapper type="regexp" from="(.*)" to="\1/${docbook.file.name}" />
+                </present>
+            </dirset>
+        </subant>
+    </target>
+
+    <target name="-docbook:multiple-variant"
+            depends="-docbook:output-variant,
+                     -docbook:output" />
+
+    <target name="-docbook:output-variant">
+        <basename property="-docbook:output.variant" file="${basedir}" />
+    </target>
+
+    <!--
+        Generates the different output formats for the current docbook project.
+    -->
+    <target name="-docbook:output"
+            depends="-docbook:output-pdf" />
+
+    <target name="-docbook:output-pdf"
+            depends="-docbook:output-type-pdf,
+                     -docbook:output-file">
+
+        <exec executable="${docbook.executable.fop}" failonerror="true">
+            <arg value="-xml" />
+            <arg value="${basedir}/${docbook.file.name}" />
+            <arg value="-xsl" />
+            <arg value="${docbook.xsl.srcdir}/fo/docbook.xsl" />
+            <arg value="-pdf" />
+            <arg value="${-docbook:output.file}" />
+        </exec>
+    </target>
+
+    <target name="-docbook:output-type-pdf">
+        <property name="-docbook:output.extension" value="pdf" />
+    </target>
+
+    <!--
+        Generates a output context/variant specific file name.
+    -->
+    <target name="-docbook:output-file">
+
+        <basename property="-docbook:output.temp.file.name"
+                  file="${docbook.file.name}"
+                  suffix=".xml" />
+
+        <condition property="-docbook:output.variant.suffix"
+                   value=""
+                   else="_${-docbook:output.variant}">
+            <or>
+                <equals arg1="${-docbook:output.variant}" arg2="$${-docbook:output.variant}" />
+                <equals arg1="${-docbook:output.variant}" arg2="" />
+            </or>
+        </condition>
+
+        <property name="-docbook:output.file"
+                  location="${commons:distdir}/${-docbook:output.temp.file.name}${-docbook:output.variant.suffix}.${-docbook:output.extension}" />
+
+    </target>
+</project>
