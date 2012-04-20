@@ -16,6 +16,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
     <import file="availability.xml" />
 
     <!--
@@ -35,10 +36,11 @@
     <target name="jstestdriver:jstestdriver"
             depends="availability:js-testdir-is-available"
             if="availability:js-testdir-is-available">
-        <antcall target="-jstestdriver:run">
+        <common.enabled.antcall target="-jstestdriver:run"
+                                property="jstestdriver.enabled">
             <param name="in.jstestdriver.coverage" value="${in.jstestdriver.coverage}" />
             <param name="in.jstestdriver.config"   value="${in.jstestdriver.config}" />
-        </antcall>
+        </common.enabled.antcall>
     </target>
 
     <!--
@@ -67,10 +69,11 @@
     <target name="jstestdriver:coverage"
             depends="availability:js-testdir-is-available"
             if="availability:js-testdir-is-available">
-        <antcall target="-jstestdriver:run">
+        <common.enabled.antcall target="-jstestdriver:run"
+                                property="jstestdriver.enabled">
             <param name="in.jstestdriver.coverage" value="true" />
             <param name="in.jstestdriver.config"   value="${in.jstestdriver.config}" />
-        </antcall>
+        </common.enabled.antcall>
     </target>
 
     <target name="-jstestdriver:run"
@@ -120,4 +123,12 @@
     <target name="-jstestdriver:check-or-generate-testconfig">
         <!-- TODO: mapi! -->
     </target>
+
+    <!--
+         Hook jstestdriver into the main testing step
+    -->
+    <target name="-jstestdriver:test:main~hooked"
+            depends="jstestdriver:jstestdriver"
+            extensionOf="-test:main~hook" />
+
 </project>
