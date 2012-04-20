@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-extensions-archive" basedir="." default="archive:help">
-
     <!--
-        Enable archive package format by default
+         Import utilized extensions
     -->
-    <property name="package.archive.enabled" value="true" />
+    <import file="enabled.xml" />
 
     <!--
         Displays the help for this build extension
@@ -27,20 +26,8 @@ archive:help
     <!--
         Creates a archive package of the project source
     -->
-    <target name="archive:archive"
-            if="-archive:is.enabled"
-            depends="-archive:is-enabled">
-
-        <antcall target="-archive:archive" />
-    </target>
-
-    <!--
-        Tests if the archive package format is enabled for this project.
-    -->
-    <target name="-archive:is-enabled">
-        <condition property="-archive:is.enabled">
-            <istrue value="${package.archive.enabled}" />
-        </condition>
+    <target name="archive:archive">
+        <common.enabled.antcall target="-archive:archive" property="package.archive.enabled" />
     </target>
 
     <!--
