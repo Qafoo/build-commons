@@ -32,6 +32,14 @@
     <property file="${user.home}/.ant-build-commons/global.properties" />
 
     <!--
+         Import default configuration of enabled and disabled extensions.
+
+         You can easily change the default behaviour using your
+         build.progqperties file on a project basis.
+    -->
+    <property file="${commons:resourcedir}/defaults.properties" />
+
+    <!--
         Import default properties. You should customize this properties in your
         own build environment.
     -->
