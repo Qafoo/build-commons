@@ -11,6 +11,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
     <import file="availability.xml" />
     <import file="npm.xml" />
 
@@ -26,7 +27,8 @@
     <target name="jshint:jshint"
             depends="availability:js-srcdir-is-available"
             if="availability:js-srcdir-is-available">
-        <antcall target="-jshint:jshint" />
+        <common.enabled.antcall target="-jshint:jshint"
+                                property="jshint.enabled" />
     </target>
 
     <!--
@@ -85,5 +87,12 @@
 
     <extension-point name="-jshint:before~hook" />
     <extension-point name="-jshint:after~hook" />
+
+    <!--
+         Hook into the compile step to call jshint before compiling stuff
+    -->
+    <target name="-jshint:compile-before~hooked"
+            depends="jshint:jshint"
+            extensionOf="-compile:before~hook" />
 
 </project>
