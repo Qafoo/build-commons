@@ -23,10 +23,21 @@
     <macrodef name="common.enabled.antcall">
         <attribute name="property" />
         <attribute name="target" />
+        <attribute name="inheritAll" default="true" />
+        <attribute name="inheritRefs" default="false" />
+        <element name="params" optional="true" implicit="true" />
         <sequential>
-            <antcall target="-enabled:call-target-if-property-is-enabled">
+            <!--
+                 Further params as well as the antcall properties are
+                 transported into this first antcall indirection, which makes
+                 all of them true for the second one as well.
+            -->
+            <antcall target="-enabled:call-target-if-property-is-enabled"
+                     inheritAll="@{inheritAll}"
+                     inheritRefs="@{inheritRefs}">
                 <param name="in.enabled.target" value="@{target}" />
                 <param name="in.enabled.property.value" value="${@{property}}" />
+                <params />
             </antcall>
         </sequential>
     </macrodef>
