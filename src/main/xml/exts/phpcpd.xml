@@ -9,6 +9,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
     <import file="availability.xml" />
     <import file="pear.xml" />
 
@@ -23,7 +24,8 @@
     <target name="phpcpd:phpcpd"
             depends="availability:php-srcdir-is-available"
             if="availability:php-srcdir-is-available">
-        <antcall target="-phpcpd:phpcpd" />
+        <common.enabled.antcall target="-phpcpd:phpcpd"
+                                property="phpcpd.enabled" />
     </target>
 
     <!--
