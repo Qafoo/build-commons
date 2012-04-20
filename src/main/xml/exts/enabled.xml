@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extension-enabled" basedir=".">
+    <description>
+        Extension which allows for another extension to easily check if it has
+        been enabled or disabled using a certain property
+    </description>
+
+    <!--
+         Maro behaving like a simple antcall, but with the dependency to
+         a cetain property.
+
+         The antcall will only be executed if the given property is set and is
+         enabled.
+
+         A property is considered enabled if it has one of the values true, on,
+         enabled or 1.
+
+         This macro internally uses an antcall execution to do the checking.
+         Therefore in either case an antcall will be issued if using this
+         macro. Be adviced, that all the antcall related restrictions apply if
+         this macro is used.
+    -->
+    <macrodef name="common.enabled.antcall">
+        <attribute name="property" />
+        <attribute name="target" />
+        <sequential>
+            <antcall target="-enabled:call-target-if-property-is-enabled">
+                <param name="in.enabled.target" value="@{target}" />
+                <param name="in.enabled.property.value" value="${@{property}}" />
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <!--
+         Execute an antcall to the target provided while the macro was called,
+         if the property is enabled
+
+        Requires:
+            ${in.enabled.target}
+            ${in.enabled.property.value}
+    -->
+    <target name="-enabled:call-target-if-property-is-enabled"
+            depends="-enabled:check-if-property-is-enabled"
+            if="-enabled:property-is-enabled">
+        <antcall target="${in.enabled.target}" />
+    </target>
+
+    <!--
+        Check of the given property is enabled or not
+        
+        Requires:
+            ${in.enabled.property.value}
+        
+        Defines:
+            ${-enabled:property-is-enabled}
+    -->
+    <target name="-enabled:check-if-property-is-enabled">
+        <condition property="-enabled:property-is-enabled">
+            <or>
+                <equals arg1="${in.enabled.property.value}" arg2="true" trim="true" />
+                <equals arg1="${in.enabled.property.value}" arg2="on" trim="true" />
+                <equals arg1="${in.enabled.property.value}" arg2="enabled" trim="true" />
+                <equals arg1="${in.enabled.property.value}" arg2="1" trim="true" />
+            </or>
+        </condition>
+    </target>
+</project>
