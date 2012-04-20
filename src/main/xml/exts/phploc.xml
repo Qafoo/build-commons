@@ -13,6 +13,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
     <import file="availability.xml" />
     <import file="pear.xml" />
 
@@ -27,7 +28,8 @@
     <target name="phploc:phploc"
             depends="availability:php-srcdir-is-available"
             if="availability:php-srcdir-is-available">
-        <antcall target="-phploc:phploc" />
+        <common.enabled.antcall target="-phploc:phploc" 
+                                property="phploc.enabled"/>
     </target>
 
     <!--
