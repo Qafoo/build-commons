@@ -10,6 +10,7 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
     <import file="availability.xml" />
     <import file="pear.xml" />
 
@@ -24,7 +25,8 @@
     <target name="phpcb:phpcb"
             depends="availability:php-srcdir-is-available"
             if="availability:php-srcdir-is-available">
-        <antcall target="-phpcb:phpcb" />
+        <common.enabled.antcall target="-phpcb:phpcb"
+                                property="phpcb.enabled" />
     </target>
 
     <!--
