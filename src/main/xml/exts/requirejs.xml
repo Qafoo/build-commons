@@ -46,101 +46,12 @@ registration however will be the name it can later on be utilized with:
         </echo>
     </target>
 
-
-    <!--
-         External entrypoint to this module
-    -->
-    <target name="requirejs:requirejs"
-            depends="-requirejs:is-javascript-available"
-            if="out-javascript-is-available">
-        <antcall target="-requirejs:requirejs" />
-    </target>
-
-    <!--
-         Internal entrypoint to the module
-
-         Only executed if the javascript source directory exists
-    -->
-    <target name="-requirejs:requirejs"
-            depends="-requirejs:before~hook,
-                     -requirejs:run,
-                     -requirejs:after~hook"
-            unless="out-javascript-is-available" />
-
-    <!--
-         Check if the javascript src directory is available
-
-         @TODO: Maybe move checks for this and all others sources into the base
-         commons environment?
-
-         @param -requirejs:out-javascript-is-available
-    -->
-    <target name="-requirejs:is-javascript-available">
-        <condition property="out-javascript-is-available">
-            <available file="${commons.srcdir.js}" type="dir" />
-        </condition>
-    </target>
-
-    <!--
-         Build the needed bootstrapping file
-
-         The file contains the requirejs library, all defined loaders as well
-         as an initial request to the application entrypoint file
-    -->
-    <target name="-requirejs:run"
-            depends="-requirejs:create-bootstrap-path,
-                     -requirejs:combine-requirejs-and-loaders,
-                     -requirejs:create-runtime-configuration">
-        <concat destfile="${-requirejs:out-bootstrap-path}">
-            <file file="${-requirejs:out-combined-requirejs-and-loaders}" />
-            <string value="${-requirejs:out-runtime-configuration}" />
-            <string value="require(['/${requirejs.entrypoint}']);" />
-        </concat>
-    </target>
-
-    <target name="-requirejs:create-runtime-configuration">
-        <script language="javascript" setbeans="false"><![CDATA[
-            var entrypointDirectory = new java.io.File(
-                project.getProperty('requirejs.entrypoint')
-            ).getParent();
-
-            var baseUrl = "/";
-            if (entrypointDirectory !== null) {
-                baseUrl = "/" + entrypointDirectory;
-            }
-
-            project.setProperty(
-                '-requirejs:out-runtime-configuration',
-                [
-                    'require.config({baseUrl: "',
-                    baseUrl,
-                    '"});'
-                ].join('')
-            );
-        ]]></script>
-    </target>
-
-    <!--
-         Build a combined version of the requirejs library as well as all defined loaders.
-
-         Dependencies will be resolved and remapped to proper naming,
-         eventhough the loaders may reside at an arbitrary position
-    -->
-    <target name="-requirejs:combine-requirejs-and-loaders"
-            depends="-requirejs:create-build-js">
-        <exec executable="${commons.executable.rhino}"
-               failonerror="true">
-            <arg value="${resourcedir}/extensions/requirejs/r.js" />
-            <arg value="-o" />
-            <arg value="${-requirejs:out-build-js}" />
-        </exec>
-    </target>
-
     <!--
          Construct the pathname of the bootstrap file to be created based on
          the entrypoint property as well as the given bootstrapping prefix
 
-         @param -requirejs:out-bootstrap-path
+         Defines:
+            ${-requirejs:out-bootstrap-path}
     -->
     <target name="-requirejs:create-bootstrap-path">
         <script language="javascript" setbeans="false"><![CDATA[
@@ -155,101 +66,11 @@ registration however will be the name it can later on be utilized with:
                 fullPath, "/", prefix, entrypoint.getName()
             ].join("");
 
-            project.setProperty('-requirejs:out-bootstrap-path', prefixedFullPathname);
+            project.setProperty(
+                '-requirejs:out-bootstrap-path',
+                prefixedFullPathname
+            );
         ]]></script>
     </target>
-
-    <!--
-         Generate the ´include´ and ´paths´ contents for the build
-         configuration file, which is sent to r.js for correct resolvement of
-         loader and requirejs dependencies
-
-         The output is in JSON format
-
-        @param -requirejs:out-build-config-paths
-        @param -requirejs:out-build-config-include
-    -->
-    <target name="-requirejs:create-build-config-paths-and-include">
-        <script language="javascript" setbeans="false"><![CDATA[
-            var paths = {};
-            var includeString = "";
-            var pathsString = "";
-            var i = null;
-
-            paths.requireJS = project.getProperty("resourcedir") + '/extensions/requirejs/require';
-
-            var enumeration = project.getProperties().keys();
-            var propertyNameRegExp = /^(requirejs\.loader\.)([a-zA-Z0-9]+)$/;
-            var propertyValueRegExp = /^(.+?)(\.js)?$/;
-            while(enumeration.hasMoreElements()) {
-                (function(property) {
-                    var nameMatches = propertyNameRegExp.exec(property);
-                    if (nameMatches === null) {
-                        return;
-                    }
-
-                    var propertyValue = project.getProperty(property);
-                    var valueMatches = propertyValueRegExp.exec(propertyValue);
-
-                    paths[nameMatches[2]] = valueMatches[1];
-                })(enumeration.nextElement());
-            }
-
-            includeString = "[";
-            pathsString = "{";
-            for( i in paths ) {
-                (function(name, path) {
-                    var encodedName = '"' + name + '"';
-                    var encodedPath = '"' + path + '"';
-                    includeString += encodedName + ",";
-                    pathsString += encodedName + ':' + encodedPath + ",";
-                })(i, paths[i]);
-            }
-            includeString = includeString.substring(0, includeString.length - 1);
-            includeString += "]";
-            pathsString = pathsString.substring(0, pathsString.length - 1);
-            pathsString += "}";
-
-            project.setProperty('-requirejs:out-build-config-paths', pathsString);
-            project.setProperty('-requirejs:out-build-config-include', includeString);
-        ]]></script>
-    </target>
-
-    <!--
-         Create the necessary build file, which is used by r.js to create the
-         needed bootstrapping file with all dependencies handled properly
-
-         The path of the buildfile as well as the path of the file which will
-         be generated, if the buildfile is executed is returned.
-
-         @param -requirejs:out-build-js
-         @param -requirejs:out-combined-requirejs-and-loaders
-    -->
-    <target name="-requirejs:create-build-js"
-            depends="-requirejs:create-build-config-paths-and-include">
-        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-build-js" prefix="requirejs" deleteonexit="false" />
-        <tempfile destdir="${commons:tmpdir}" property="-requirejs:out-combined-requirejs-and-loaders" prefix="requirejs" deleteonexit="false" />
-        <copy file="${resourcedir}/extensions/requirejs/build.config/bootstrap.build.js"
-               tofile="${-requirejs:out-build-js}" />
-        <replace file="${-requirejs:out-build-js}">
-            <replacefilter token="%build.paths%" value="${-requirejs:out-build-config-paths}" />
-            <replacefilter token="%build.include%" value="${-requirejs:out-build-config-include}" />
-            <replacefilter token="%build.out%" value="${-requirejs:out-combined-requirejs-and-loaders}" />
-        </replace>
-    </target>
-
-    <!--
-         Extension points of the requirejs module
-    -->
-    <extension-point name="-requirejs:before~hook" />
-    <extension-point name="-requirejs:after~hook" />
-
-    <!--
-         Hook this module into the build-process, by executing it after the
-         compile step
-    -->
-    <target name="-requirejs:compile:after~hooked"
-            depends="requirejs:requirejs"
-            extensionOf="-compile:after~hook" />
 
 </project>
