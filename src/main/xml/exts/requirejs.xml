@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-extensions-requirejs" basedir=".">
-
     <!--
         Import default properties for this extension.
     -->
@@ -9,7 +8,44 @@
     <!--
          Shortcut for the extension entrypoint
     -->
-    <target name="requirejs" depends="requirejs:requirejs" />
+    <target name="requirejs" depends="requirejs:help" />
+
+    <!--
+         Show some help on the different aspects of this module
+    -->
+    <target name="requirejs:help">
+        <echo taskname="help" level="info">
+requirejs:bootstrap
+  Create an initial bootstrapping file, which can be loaded inside the browser
+  during development. It will dynamically load all the needed resources using
+  the usual requirejs AMD module pattern.
+&#x00A0;
+requirejs:compile
+  Instead of providing a dynamic bootstrapping file for development create
+  a fully compiled file, which does include the whole application and all its
+  dependencies. r.js will be used in order to realize the dependency tracing.
+&#x00A0;
+All of this does only work if a javascript srcdir does exist. Furthermore the
+following properties must be set and configured properly:
+&#x00A0;
+  - $${requirejs.entrypoint}
+    The entrypoint module in relation to the $${common.sitedir}}. This is the
+    where your application is entered upon execution and dependency
+    resolvement.
+&#x00A0;
+Furthermore any used AMD loader needs to be registered with the
+build-environment in order to allow for seamless development and production
+builds. Loaders are defined using $${requirejs.loader.*} properties set to the
+full path of the loader js. The javascript source does not need to reside
+inside the js srcdir. Its position can be chosen freely. The named used for
+registration however will be the name it can later on be utilized with:
+&#x00A0;
+  - $${requirejs.loader.text} = /some/path/to/text.js
+    The loader found using the given path can later on be referenced and used
+    as 'text' (eg. "text!/some/text/to/load.txt"
+        </echo>
+    </target>
+
 
     <!--
          External entrypoint to this module
