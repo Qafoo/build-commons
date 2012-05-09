@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-requirejs-compile" basedir=".">
+    <!--
+         External entrypoint to this module
+    -->
+    <target name="requirejs:compile">
+        <!--
+            @TODO: Once the availibility extension is merged it should be used
+            here to check wheather a javascript srcdir exists before running
+            this one
+        -->
+        <antcall target="-requirejs:compile" />
+    </target>
+
+    <!--
+         Internal entrypoint to the module
+    -->
+    <target name="-requirejs:compile"
+        depends="-requirejs:initialize,
+                 -requirejs:compile:before~hook,
+                 -requirejs:compile:run,
+                 -requirejs:compile:after~hook" />
+
+    <!--
+         Compile all dependencies into one JavaScript file
+
+         The file contains the requirejs library, all defined loaders as well
+         as dependencies traced using the application entrypoint as a start.
+    -->
+    <target name="-requirejs:compile:run"
+            depends="-requirejs:compile:prepare-build-config,
+                     -requirejs:compile:trace-dependencies" />
+
+    <target name="-requirejs:compile:prepare-build-config"
+            depends="-requirejs:compile:create-build-config-paths-no-append,
+                     -requirejs:compile:create-build-config-paths-append,
+                     -requirejs:compile:create-build-config-includes,
+                     -requirejs:compile:create-build-config-entrypoint">
+        <!-- Create temporary properties file used as template variables, for
+             the build config template -->
+        <tempfile destdir="${commons:tmpdir}" 
+                  property="-requirejs:compile:build-js-property-tokens" 
+                  prefix="requirejs" 
+                  deleteonexit="false" />
+        <echoproperties destfile="${-requirejs:compile:build-js-property-tokens}"
+                        regex="commons\.srcdir.*|commons\.testdir.*|commons:builddir.*|requirejs\..*" />
+
+        <!-- Apply the template variables to the build-config and create it in
+             a temporary position for processing -->
+        <tempfile destdir="${commons:tmpdir}" 
+                  property="-requirejs:compile:build-js" 
+                  prefix="requirejs" 
+                  deleteonexit="false" />
+        <copy file="${requirejs.compile.config}"
+              tofile="${-requirejs:compile:build-js}">
+            <filterset>
+                <filtersfile file="${-requirejs:compile:build-js-property-tokens}" />
+                <filter token="DynamicBuildPaths" value="${-requirejs:compile:build-config-paths}" />
+                <filter token="EnforcedIncludes" value="${-requirejs:compile:build-config-includes}" />
+                <filter token="DynamicEntrypoint" value="${-requirejs:compile:build-config-entrypoint}" />
+            </filterset>
+        </copy>
+    </target>
+    
+    <target name="-requirejs:compile:trace-dependencies">
+        <exec executable="${commons.executable.rhino}"
+              failonerror="true">
+            <arg value="${commons:resourcedir}/extensions/requirejs/r.js" />
+            <arg value="-o" />
+            <arg value="${-requirejs:compile:build-js}" />
+        </exec>
+    </target>
+
+
+    <!--
+         Sub tasks to create all different kinds of needed values to be
+         inserted into the build config file template.
+    -->
+
+    <target name="-requirejs:compile:create-build-config-paths-no-append"
+            unless="-requirejs:build-config-loader-paths">
+        <property name="-requirejs:compile:build-config-paths"
+                  value="&quot;requireJS&quot;: &quot;${-requirejs.library.module}&quot;" />
+    </target>
+
+    <target name="-requirejs:compile:create-build-config-paths-append"
+            if="-requirejs:build-config-loader-paths">
+        <property name="-requirejs:compile:build-config-paths"
+                  value="&quot;requireJS&quot;: &quot;${-requirejs.library.module}&quot;,${-requirejs:build-config-loader-paths}" />
+    </target>
+    
+    <target name="-requirejs:compile:create-build-config-includes">
+        <property name="-requirejs:compile:build-config-includes"
+                  value="&quot;requireJS&quot;" />
+    </target>
+
+    <target name="-requirejs:compile:create-build-config-entrypoint">
+        <pathconvert property="-requirejs:compile:build-config-entrypoint">
+            <path path="${commons.sitedir}/${requirejs.entrypoint}" />
+            <mapper type="glob" from="${commons.srcdir.js}/*.js" to="*" />
+        </pathconvert> 
+    </target>
+
+    <!--
+         Extension points of the requirejs:compile module
+    -->
+    <extension-point name="-requirejs:compile:before~hook" />
+    <extension-point name="-requirejs:compile:after~hook" />
+
+    <!--
+         Hook this module into the build-process, by executing it during packaging
+    -->
+    <target name="-requirejs:compile:package:main~hooked"
+            depends="requirejs:compile"
+            extensionOf="-package:main~hook" />
+
+</project>
