@@ -47,6 +47,83 @@ registration however will be the name it can later on be utilized with:
     </target>
 
     <!--
+         Initialize general requirejs relevant data
+
+         This target should be called before any other requirejs subtarget is
+         executed
+    -->
+    <target name="-requirejs:initialize"
+            depends="-requirejs:create-modulenames,
+                     -requirejs:create-build-config-loader-paths" />
+
+    <!--
+         Requirejs needs modulenames instead of filepaths at some positions
+
+         Modulenames are actually the paths without the .js extension. All
+         those module name slicing and cutting is done here
+    -->
+    <target name="-requirejs:create-modulenames">
+        <pathconvert property="-requirejs.library.module">
+            <path path="${requirejs.library}" />
+            <mapper type="glob" from="*.js" to="*" />
+        </pathconvert> 
+    </target>
+
+    <!--
+         Create a comma seperated list of key/value pairs containing all the
+         defined loader paths in a way to be used for a build-config-template.
+
+         Furthermore a comma seperated list of defined loaders will be
+         generated, which may be used to forcefully include them. (eg. for
+         bootstrapping)
+
+         Defines:
+            ${-requirejs:build-config-loader-paths}
+            ${-requirejs:build-config-loader-includes}
+    -->
+    <target name="-requirejs:create-build-config-loader-paths">
+        <script language="javascript" setbeans="false"><![CDATA[
+            var paths = "";
+            var includes = "";
+
+            var enumeration = project.getProperties().keys();
+            var propertyNameRegExp = /^(requirejs\.loader\.)([a-zA-Z0-9]+)$/;
+            var propertyValueRegExp = /^(.+?)(\.js)?$/;
+            while(enumeration.hasMoreElements()) {
+                (function(property) {
+                    var nameMatches = propertyNameRegExp.exec(property);
+                    if (nameMatches === null) {
+                        return;
+                    }
+
+                    var propertyValue = project.getProperty(property);
+                    var valueMatches = propertyValueRegExp.exec(propertyValue);
+
+                    var encodedName = '"' + nameMatches[2] + '"';
+                    var encodedPath = '"' + valueMatches[1] + '"';
+                    includes += encodedName + ",";
+                    paths += encodedName + ':' + encodedPath + ",";
+                    
+                })(enumeration.nextElement());
+            }
+
+            if (paths !== "") {
+                project.setProperty(
+                    '-requirejs:build-config-loader-paths', 
+                    paths.substring(0, paths.length - 1)
+                );
+            }
+
+            if (includes !== "") {
+                project.setProperty(
+                    '-requirejs:build-config-loader-includes', 
+                    includes.substring(0, includes.length - 1)
+                );
+            }
+        ]]></script>
+    </target>
+
+    <!--
          Construct the pathname of the bootstrap file to be created based on
          the entrypoint property as well as the given bootstrapping prefix
 

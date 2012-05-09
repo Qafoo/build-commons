@@ -16,7 +16,8 @@
          Internal entrypoint to the module
     -->
     <target name="-requirejs:bootstrap"
-            depends="-requirejs:bootstrap:before~hook,
+            depends="-requirejs:initialize,
+                     -requirejs:bootstrap:before~hook,
                      -requirejs:bootstrap:run,
                      -requirejs:bootstrap:after~hook" />
 
@@ -85,50 +86,26 @@
          The output is in JSON format
 
         @param -requirejs:bootstrap:out-build-config-paths
-        @param -requirejs:bootstrap:out-build-config-include
+        @param -requirejs:bootstrap:out-build-config-includes
     -->
-    <target name="-requirejs:bootstrap:create-build-config-paths-and-include">
-        <script language="javascript" setbeans="false"><![CDATA[
-            var paths = {};
-            var includeString = "";
-            var pathsString = "";
-            var i = null;
+    <target name="-requirejs:bootstrap:create-build-config-paths-and-include"
+            depends="-requirejs:bootstrap:create-bootstrap-config-paths-and-include-append,
+                     -requirejs:bootstrap:create-bootstrap-config-paths-and-include-no-append" />
 
-            paths.requireJS = project.getProperty("resourcedir") + '/extensions/requirejs/require';
+    <target name="-requirejs:bootstrap:create-bootstrap-config-paths-and-include-append"
+            if="-requirejs:build-config-loader-includes">
+        <property name="-requirejs:bootstrap:out-build-config-paths"
+                  value="&quot;requireJS&quot;: &quot;${-requirejs.library.module}&quot;,${-requirejs:build-config-loader-paths}" />
+        <property name="-requirejs:bootstrap:out-build-config-includes"
+                value="&quot;requireJS&quot;,${-requirejs:build-config-loader-includes}" />
+    </target>
 
-            var enumeration = project.getProperties().keys();
-            var propertyNameRegExp = /^(requirejs\.loader\.)([a-zA-Z0-9]+)$/;
-            var propertyValueRegExp = /^(.+?)(\.js)?$/;
-            while(enumeration.hasMoreElements()) {
-                (function(property) {
-                    var nameMatches = propertyNameRegExp.exec(property);
-                    if (nameMatches === null) {
-                        return;
-                    }
-
-                    var propertyValue = project.getProperty(property);
-                    var valueMatches = propertyValueRegExp.exec(propertyValue);
-
-                    paths[nameMatches[2]] = valueMatches[1];
-                })(enumeration.nextElement());
-            }
-
-            includeString = "";
-            pathsString = "";
-            for( i in paths ) {
-                (function(name, path) {
-                    var encodedName = '"' + name + '"';
-                    var encodedPath = '"' + path + '"';
-                    includeString += encodedName + ",";
-                    pathsString += encodedName + ':' + encodedPath + ",";
-                })(i, paths[i]);
-            }
-            includeString = includeString.substring(0, includeString.length - 1);
-            pathsString = pathsString.substring(0, pathsString.length - 1);
-
-            project.setProperty('-requirejs:bootstrap:out-build-config-paths', pathsString);
-            project.setProperty('-requirejs:bootstrap:out-build-config-include', includeString);
-        ]]></script>
+    <target name="-requirejs:bootstrap:create-bootstrap-config-paths-and-include-no-append"
+            unless="-requirejs:build-config-loader-includes">
+        <property name="-requirejs:bootstrap:out-build-config-paths"
+                  value="&quot;requireJS&quot;:&quot;${-requirejs.library.module}&quot;" />
+        <property name="-requirejs:bootstrap:out-build-config-includes"
+                  value="&quot;requireJS&quot;" />
     </target>
 
     <!--
@@ -149,7 +126,7 @@
             tofile="${-requirejs:bootstrap:out-build-js}">
             <filterset>
                 <filter token="DynamicBuildPaths" value="${-requirejs:bootstrap:out-build-config-paths}" />
-                <filter token="EnforcedIncludes" value="${-requirejs:bootstrap:out-build-config-include}" />
+                <filter token="EnforcedIncludes" value="${-requirejs:bootstrap:out-build-config-includes}" />
                 <filter token="DynamicOutputPath" value="${-requirejs:bootstrap:out-combined-requirejs-and-loaders}" />
             </filterset>
         </copy>
