@@ -59,7 +59,7 @@ archive:help
         <property name="output.dir" value="${-archive:builddir}/${build.file}" />
 
         <copy todir="${output.dir}/source">
-            <fileset dir="${commons.srcdir}" />
+            <fileset dir="${bundle:commons.srcdir}" />
             <filterchain>
                 <replacestring from="@package_version@" to="${build.version.release}" />
             </filterchain>
