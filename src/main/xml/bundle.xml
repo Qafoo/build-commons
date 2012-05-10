@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ant-build-commons-optimize">
+<project name="ant-build-commons-bundle">
     <description>
         This build steps provides all different kinds of bundling operations,
         before it is packaged. This may include javascript compile and/or
@@ -40,9 +40,28 @@
             <fileset dir="${commons.srcdir}" />
         </copy>
 
-        <pathconvert property="bundle:commons.srcdir.php">
-            <path path="${commons.srcdir.php}" />
-            <mapper type="glob" from="${commons.srcdir}"  />
+        <pathconvert property="bundle:commons.srcdir.php"
+                     setonempty="false">
+            <path location="${commons.srcdir.php}" />
+            <mapper type="glob" 
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
+        </pathconvert>
+
+        <pathconvert property="bundle:commons.srcdir.js"
+                     setonempty="false">
+            <path location="${commons.srcdir.js}" />
+            <mapper type="glob" 
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
+        </pathconvert>
+
+        <pathconvert property="bundle:commons.srcdir.htdocs"
+                     setonempty="false">
+            <path location="${commons.srcdir.htdocs}" />
+            <mapper type="glob" 
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
         </pathconvert>
     </target>
 
