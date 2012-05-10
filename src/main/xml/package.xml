@@ -9,7 +9,7 @@
     <!--
         Import the parent target file.
     -->
-    <import file="test.xml" />
+    <import file="optimize.xml" />
 
     <!--
         Import default settings for this build step.
@@ -27,7 +27,7 @@
         Creates different binaries of the current project.
     -->
     <target name="package:package"
-            depends="test:test,
+            depends="optimize:optimize,
                      -package:before~hook,
                      -package:main~hook,
                      package:phar,
