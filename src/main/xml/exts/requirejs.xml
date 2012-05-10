@@ -137,7 +137,7 @@ registration however will be the name it can later on be utilized with:
                 + '/'
                 + project.getProperty('requirejs.entrypoint')
             );
-            var prefix = project.getProperty('requirejs.compiler.prefix');
+            var prefix = project.getProperty('requirejs.bootstrap.prefix');
             var fullPath = entrypoint.getParent();
             var prefixedFullPathname = [
                 fullPath, "/", prefix, entrypoint.getName()
