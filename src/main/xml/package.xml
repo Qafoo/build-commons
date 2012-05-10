@@ -9,7 +9,7 @@
     <!--
         Import the parent target file.
     -->
-    <import file="test.xml" />
+    <import file="bundle.xml" />
 
     <!--
         Import default settings for this build step.
@@ -27,7 +27,7 @@
         Creates different binaries of the current project.
     -->
     <target name="package:package"
-            depends="test:test,
+            depends="bundle:bundle,
                      -package:before~hook,
                      -package:main~hook,
                      package:phar,
@@ -88,7 +88,7 @@
     -->
     <target name="-package:phar:prepare-files">
         <copy todir="${-package:phar:builddir}">
-            <fileset dir="${commons.srcdir.php}" />
+            <fileset dir="${bundle:commons.srcdir.php}" />
             <filterchain>
                 <replacestring from="@package_version@" to="${build.version.release}" />
             </filterchain>
@@ -182,7 +182,7 @@
     -->
     <target name="-package:pear:prepare-files">
         <copy todir="${package.pear.builddir}">
-            <fileset dir="${commons.srcdir.php}"/>
+            <fileset dir="${bundle:commons.srcdir.php}"/>
         </copy>
 
         <antcall target="-package:bin-dir-copy-if-exists">
