@@ -88,7 +88,7 @@
     -->
     <target name="-package:phar:prepare-files">
         <copy todir="${-package:phar:builddir}">
-            <fileset dir="${commons.srcdir.php}" />
+            <fileset dir="${bundle:commons.srcdir.php}" />
             <filterchain>
                 <replacestring from="@package_version@" to="${build.version.release}" />
             </filterchain>
@@ -182,7 +182,7 @@
     -->
     <target name="-package:pear:prepare-files">
         <copy todir="${package.pear.builddir}">
-            <fileset dir="${commons.srcdir.php}"/>
+            <fileset dir="${bundle:commons.srcdir.php}"/>
         </copy>
 
         <antcall target="-package:bin-dir-copy-if-exists">
