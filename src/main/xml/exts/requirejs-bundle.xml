@@ -72,6 +72,44 @@
         </exec>
     </target>
 
+    <!--
+         Replace all javascript files within the bundle js srcdir with the
+         fully compiled one. It needs to be placed and named like the bootstrap
+         file in order to ensure everything is still working as it should.
+    -->
+    <target name="-requirejs:bundle:replace-javascript"
+            depends="requirejs:bundle,
+                     -requirejs:create-bootstrap-path">
+        <!-- Remove all javascript files in the bundle js srcdir -->
+        <delete>
+            <fileset dir="${bundle:commons.srcdir.js}"
+                     includes="**/*.js" />
+        </delete>
+        
+        <!-- Copy the fully compiled output file to the place inside the bundle
+             directory, where usually the bootstrap file would have been
+             placed. -->
+        <pathconvert property="-requirejs:bundle:bootstrap-path">
+            <path location="${-requirejs:out-bootstrap-path}" />
+            <mapper type="glob"
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
+        </pathconvert>
+        <copy file="${requirejs.bundle.output}"
+              tofile="${-requirejs:bundle:bootstrap-path}" />
+
+        <!-- Remove all empty directories still residing inside the
+             processed js srcdir. -->
+        <delete includeemptydirs="true">
+            <fileset dir="${bundle:commons.srcdir.js}">
+                <and>
+                    <type type="dir" />
+                    <size value="0" />
+                </and>
+            </fileset>
+        </delete>
+    </target>
+
 
     <!--
          Sub tasks to create all different kinds of needed values to be
@@ -120,7 +158,7 @@
          Hook this module into the build-process, by executing it during bundling
     -->
     <target name="-requirejs:bundle:bundle:main~hooked"
-            depends="requirejs:bundle"
+            depends="-requirejs:bundle:replace-javascript"
             extensionOf="-bundle:main~hook" />
 
 </project>
