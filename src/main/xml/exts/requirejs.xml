@@ -29,8 +29,8 @@ All of this does only work if a javascript srcdir does exist. Furthermore the
 following properties must be set and configured properly:
 &#x00A0;
   - $${requirejs.entrypoint}
-    The entrypoint module in relation to the $${common.sitedir}}. This is the
-    where your application is entered upon execution and dependency
+    The entrypoint module in relation to the $${common.srcdir.htdocs}}. This is
+    the where your application is entered upon execution and dependency
     resolvement.
 &#x00A0;
 Furthermore any used AMD loader needs to be registered with the
@@ -133,7 +133,7 @@ registration however will be the name it can later on be utilized with:
     <target name="-requirejs:create-bootstrap-path">
         <script language="javascript" setbeans="false"><![CDATA[
             var entrypoint = new java.io.File(
-                project.getProperty('commons.sitedir')
+                project.getProperty('commons.srcdir.htdocs')
                 + '/'
                 + project.getProperty('requirejs.entrypoint')
             );
