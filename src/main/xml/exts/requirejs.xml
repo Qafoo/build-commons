@@ -20,13 +20,14 @@ requirejs:bootstrap
   during development. It will dynamically load all the needed resources using
   the usual requirejs AMD module pattern.
 &#x00A0;
-requirejs:compile
+requirejs:bundle
   Instead of providing a dynamic bootstrapping file for development create
-  a fully compiled file, which does include the whole application and all its
+  a fully bundled file, which does include the whole application and all its
   dependencies. r.js will be used in order to realize the dependency tracing.
 &#x00A0;
-All of this does only work if a javascript srcdir does exist. Furthermore the
-following properties must be set and configured properly:
+All of this does only work if a javascript srcdir does exist and lies within
+the common.srcdir.htdocs. Furthermore the following properties must be set and
+configured properly:
 &#x00A0;
   - $${requirejs.entrypoint}
     The entrypoint module in relation to the $${common.srcdir.htdocs}}. This is
