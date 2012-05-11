@@ -19,6 +19,7 @@
         depends="-requirejs:initialize,
                  -requirejs:compile:before~hook,
                  -requirejs:compile:run,
+                 -requirejs:compile:replace,
                  -requirejs:compile:after~hook" />
 
     <!--
@@ -96,9 +97,17 @@
 
     <target name="-requirejs:compile:create-build-config-entrypoint">
         <pathconvert property="-requirejs:compile:build-config-entrypoint">
-            <path path="${commons.sitedir}/${requirejs.entrypoint}" />
+            <path path="${commons.srcdir.htdocs}/${requirejs.entrypoint}" />
             <mapper type="glob" from="${commons.srcdir.js}/*.js" to="*" />
         </pathconvert> 
+    </target>
+
+    <!--
+         Replace all javascript files in the bundles js srcdir with the traced
+         javascript file.
+    -->
+    <target name="-requirejs:compile:replace">
+        
     </target>
 
     <!--
@@ -108,10 +117,10 @@
     <extension-point name="-requirejs:compile:after~hook" />
 
     <!--
-         Hook this module into the build-process, by executing it during packaging
+         Hook this module into the build-process, by executing it during bundling
     -->
-    <target name="-requirejs:compile:package:main~hooked"
+    <target name="-requirejs:compile:bundle:main~hooked"
             depends="requirejs:compile"
-            extensionOf="-package:main~hook" />
+            extensionOf="-bundle:main~hook" />
 
 </project>
