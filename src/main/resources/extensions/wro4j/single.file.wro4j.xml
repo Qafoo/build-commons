@@ -1,0 +1,5 @@
+<groups xmlns="http://www.isdc.ro/wro">
+    <group name="@output.file@">
+        <@input.type@>@input.file@</@input.type@>
+    </group>
+</groups>
