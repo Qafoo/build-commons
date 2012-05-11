@@ -90,9 +90,12 @@
         </pathconvert>
         <pathconvert property="-wro4j:single-file-input-file">
             <path location="${in.input.file}" />
+            <!-- The path used as input is relative to the context-dir, but it
+                 needs a slash at the beginning. This is somewhat strange, but
+                 it doesn't work otherwise. -->
             <mapper type="regexp"
                     from="^.*?/([^/]+)$$"
-                    to="\1" />
+                    to="/\1" />
         </pathconvert>
 
         <pathconvert property="-wro4j:single-file-output-dir">
@@ -103,9 +106,15 @@
         </pathconvert>
         <pathconvert property="-wro4j:single-file-output-file">
             <path location="${in.output.file}" />
-            <mapper type="regexp"
-                    from="^.*?/([^/]+)$$"
-                    to="\1" />
+            <chainedmapper>
+                <mapper type="regexp"
+                        from="^.*?/([^/]+)$$"
+                        to="\1" />
+                <!-- Remove a suffix it is the same as the type -->
+                <mapper type="glob"
+                        from="*.${in.input.type}"
+                        to="*" />
+            </chainedmapper>
         </pathconvert>
 
         <copy file="${wro4j.single.file.template}"
@@ -130,7 +139,6 @@
     <target name="-wro4j:execute-for-single-file-with-compress"
             depends="-wro4j:is-compression-enabled"
             if="-wro4j:compression-is-enabled">
-        <echo message='processor="${in.processor}", file="${-wro4j:single-file-configuration}", context-dir="${-wro4j:single-file-context-dir}", output-dir="${-wro4j:single-file-output-dir}"' />
         <wro4j.execute processor="${in.processor}"
                        file="${-wro4j:single-file-configuration}"
                        context-dir="${-wro4j:single-file-context-dir}"
@@ -156,12 +164,4 @@
             </or>
         </condition>
     </target>
-
-    <target name="wro4j:test">
-        <wro4j.execute.single processor="jsMin"
-                              file="${commons.srcdir.js}/a.js"
-                              target="${commons:builddir}/minimized.test.js"
-                              compress="true" />
-    </target>
-
 </project>
