@@ -211,7 +211,22 @@
     </target>
 
     <target name="-wro4j:finish-multiple-file-execute">
-        
+        <!-- Undo all the escaping we needed to apply because of the stupid
+             wro4j handling -->
+        <move todir="${in.output.dir}">
+            <fileset dir="${in.output.dir}">
+                <include name="*/**" />
+            </fileset>
+            <chainedmapper>
+                <filtermapper>
+                    <replacestring from="-" to="/" />
+                    <replacestring from="//" to="-" />
+                </filtermapper>
+                <mapper type="regexp"
+                        from="^(.*?)\.[^.]*$$"
+                        to="\1" />
+            </chainedmapper>
+        </move>
     </target>
 
     <target name="-wro4j:execute-without-compress"
