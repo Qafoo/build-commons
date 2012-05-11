@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-wro4j" basedir=".">
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/wro4j/wro4j.properties" />
+
+    <!--
+         Macro to execute the wro4j commandline runner easily and painlessly
+    -->
+    <macrodef name="wro4j.execute">
+        <attribute name="processor"/>
+        <attribute name="file" default="wro.xml"/>
+        <attribute name="context-dir"
+                   default="/" />
+        <attribute name="output-dir"
+                   default="${-wro4j:builddir}" />
+        <element name="furtherArguments"
+                 optional="true"
+                 implicit="yes" />
+        <sequential>
+                <java jar="${wro4j.jar}"
+                      fork="true"
+                      failonerror="true">
+                    <arg value="--wroFile"/>
+                    <arg value="@{file}"/>
+                    <arg value="--contextFolder"/>
+                    <arg value="@{context-dir}"/>
+                    <arg value="--destinationFolder"/>
+                    <arg value="@{output-dir}"/>
+                    <arg value="-c"/>
+                    <arg value="@{processor}"/>
+                    <furtherArguments />
+                </java>
+        </sequential>
+    </macrodef>
+
+    <!--
+         Macro to easily process a certain file with wro4j (without compression
+         enabled)
+    -->
+    <macrodef name="wro4j.execute.single">
+        <attribute name="processor" />
+        <attribute name="file" />
+        <attribute name="target" />
+        <attribute name="type"
+                   default="js" />
+        <attribute name="compress"
+                   default="true" />
+        <sequential>
+            <antcall target="-wro4j:execute-for-single-file">
+                <param name="in.processor" value="@{processor}" />
+                <param name="in.input.file" value="@{file}" />
+                <param name="in.output.file" value="@{target}" />
+                <param name="in.input.type" value="@{type}" />
+                <param name="in.compress" value="@{compress}" />
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <!--
+         Antcall target to execute wro4j for a single input file of a certain
+         type.
+
+         Properties:
+            ${in.processor} The wro4j processor to use
+            ${in.input.file} The input file to process (full path)
+            ${in.input.type} The type of the input file (js, css, ...)
+            ${in.output.file} The full path of the output file
+            ${in.compress} Option if compression should be used or not
+                           (true,on,1/false,off,0)
+    -->
+    <target name="-wro4j:execute-for-single-file"
+            depends="-wro4j:execute-for-single-file-prepare,
+                     -wro4j:execute-for-single-file-with-compress,
+                     -wro4j:execute-for-single-file-without-compress" />
+
+    <target name="-wro4j:execute-for-single-file-prepare">
+        <tempfile property="-wro4j:single-file-configuration"
+                  destdir="${commons:tmpdir}"
+                  prefix="wro4j"
+                  suffix=".xml"
+                  deleteonexit="false" />
+
+        <pathconvert property="-wro4j:single-file-context-dir">
+            <path location="${in.input.file}" />
+            <mapper type="regexp"
+                    from="^(.*?)/[^/]+$$"
+                    to="\1" />
+        </pathconvert>
+        <pathconvert property="-wro4j:single-file-input-file">
+            <path location="${in.input.file}" />
+            <mapper type="regexp"
+                    from="^.*?/([^/]+)$$"
+                    to="\1" />
+        </pathconvert>
+
+        <pathconvert property="-wro4j:single-file-output-dir">
+            <path location="${in.output.file}" />
+            <mapper type="regexp"
+                    from="^(.*?)/[^/]+$$"
+                    to="\1" />
+        </pathconvert>
+        <pathconvert property="-wro4j:single-file-output-file">
+            <path location="${in.output.file}" />
+            <mapper type="regexp"
+                    from="^.*?/([^/]+)$$"
+                    to="\1" />
+        </pathconvert>
+
+        <copy file="${wro4j.single.file.template}"
+              tofile="${-wro4j:single-file-configuration}">
+            <filterset>
+                <filter token="output.file" value="${-wro4j:single-file-output-file}" />
+                <filter token="input.file" value="${-wro4j:single-file-input-file}" />
+                <filter token="input.type" value="${in.input.type}" />
+            </filterset>
+        </copy>
+    </target>
+
+    <target name="-wro4j:execute-for-single-file-without-compress"
+            depends="-wro4j:is-compression-enabled"
+            unless="-wro4j:compression-is-enabled">
+        <wro4j.execute processor="${in.processor}"
+                       file="${-wro4j:single-file-configuration}"
+                       context-dir="${-wro4j:single-file-context-dir}"
+                       output-dir="${-wro4j:single-file-output-dir}" />
+    </target>
+
+    <target name="-wro4j:execute-for-single-file-with-compress"
+            depends="-wro4j:is-compression-enabled"
+            if="-wro4j:compression-is-enabled">
+        <echo message='processor="${in.processor}", file="${-wro4j:single-file-configuration}", context-dir="${-wro4j:single-file-context-dir}", output-dir="${-wro4j:single-file-output-dir}"' />
+        <wro4j.execute processor="${in.processor}"
+                       file="${-wro4j:single-file-configuration}"
+                       context-dir="${-wro4j:single-file-context-dir}"
+                       output-dir="${-wro4j:single-file-output-dir}">
+            <arg value="--minimize" />
+        </wro4j.execute>
+    </target>
+
+    <target name="-wro4j:is-compression-enabled">
+        <condition property="-wro4j:compression-is-enabled">
+            <or>
+                <equals arg1="${in.compress}"
+                        arg2="true"
+                        trim="true"
+                        casesensitive="false" />
+                <equals arg1="${in.compress}"
+                        arg2="on"
+                        trim="true"
+                        casesensitive="false" />
+                <equals arg1="${in.compress}"
+                        arg2="1"
+                        trim="true" />
+            </or>
+        </condition>
+    </target>
+
+    <target name="wro4j:test">
+        <wro4j.execute.single processor="jsMin"
+                              file="${commons.srcdir.js}/a.js"
+                              target="${commons:builddir}/minimized.test.js"
+                              compress="true" />
+    </target>
+
+</project>
