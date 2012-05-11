@@ -132,23 +132,12 @@ registration however will be the name it can later on be utilized with:
             ${-requirejs:out-bootstrap-path}
     -->
     <target name="-requirejs:create-bootstrap-path">
-        <script language="javascript" setbeans="false"><![CDATA[
-            var entrypoint = new java.io.File(
-                project.getProperty('commons.srcdir.htdocs')
-                + '/'
-                + project.getProperty('requirejs.entrypoint')
-            );
-            var prefix = project.getProperty('requirejs.bootstrap.prefix');
-            var fullPath = entrypoint.getParent();
-            var prefixedFullPathname = [
-                fullPath, "/", prefix, entrypoint.getName()
-            ].join("");
-
-            project.setProperty(
-                '-requirejs:out-bootstrap-path',
-                prefixedFullPathname
-            );
-        ]]></script>
+        <pathconvert property="-requirejs:out-bootstrap-path">
+            <path location="${commons.srcdir.htdocs}/${requirejs.entrypoint}" />
+            <mapper type="regexp" 
+                    from="^(.*?)/([^/]+$$)"
+                    to="\1/${requirejs.bootstrap.prefix}\2" />
+        </pathconvert>
     </target>
 
 </project>
