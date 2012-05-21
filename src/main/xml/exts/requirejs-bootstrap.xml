@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-extensions-requirejs-bootstrap" basedir=".">
     <!--
+        Import utilized extensions
+    -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
+
+    <!--
          External entrypoint to this module
     -->
-    <target name="requirejs:bootstrap">
-        <!--
-            @TODO: Once the availibility extension is merged it should be used
-            here to check wheather a javascript srcdir exists before running
-            this one
-        -->
-        <antcall target="-requirejs:bootstrap" />
+    <target name="requirejs:bootstrap"
+            depends="availability:js-srcdir-is-available"
+            if="availability:js-srcdir-is-available">
+        <common.enabled.antcall target="-requirejs:bootstrap"
+                                property="requirejs.bootstrap.enabled" />
     </target>
 
     <!--
