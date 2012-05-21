@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ant-build-commons-bundle">
+    <description>
+        This build steps provides all different kinds of bundling operations,
+        before it is packaged. This may include javascript compile and/or
+        minifying, css minification, image optimization, changelog/releasenote
+        generation and such.
+    </description>
+
+    <!--
+        Import the parent target file.
+    -->
+    <import file="test.xml" />
+
+    <!--
+        Shortcut for target "bundle:bundle"
+    -->
+    <target name="bundle"
+            depends="bundle:bundle" />
+
+    <!--
+        Public entrypoint for this buildstep
+    -->
+    <target name="bundle:bundle"
+            depends="test:test,
+                     -bundle:before~hook,
+                     -bundle:initialize,
+                     -bundle:main~hook,
+                     -bundle:after~hook" />
+
+    <!--
+         Initialize the bundle step by copying over the source directory tree
+         to the bundledir and assigning all the proper directory names.
+    -->
+    <target name="-bundle:initialize">
+        <property name="bundle:commons.srcdir"
+                  location="${commons:bundledir}/source" />
+
+        <copy todir="${bundle:commons.srcdir}">
+            <fileset dir="${commons.srcdir}" />
+        </copy>
+
+        <pathconvert property="bundle:commons.srcdir.php"
+                     setonempty="false">
+            <path location="${commons.srcdir.php}" />
+            <mapper type="glob" 
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
+        </pathconvert>
+
+        <pathconvert property="bundle:commons.srcdir.js"
+                     setonempty="false">
+            <path location="${commons.srcdir.js}" />
+            <mapper type="glob" 
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
+        </pathconvert>
+
+        <pathconvert property="bundle:commons.srcdir.htdocs"
+                     setonempty="false">
+            <path location="${commons.srcdir.htdocs}" />
+            <mapper type="glob" 
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
+        </pathconvert>
+    </target>
+
+    <!--
+        Extension points provided by this module
+    -->
+
+    <!--
+        This extension point will be called right before the bundling is
+        started.
+        
+        The bundle dir will already have been created, but it will not have
+        been filled with a copy of the srcdir
+    -->
+    <extension-point name="-bundle:before~hook" />
+
+    <!--
+        This extension point allows to register any operation to be executed on
+        the source dir copy.
+        
+        This extension point will usually be used to register different bundle
+        steps.
+    -->
+    <extension-point name="-bundle:main~hook" />
+
+    <!--
+         This extension point will be executed after all bundle sub tasks have
+         been finished.
+    -->
+    <extension-point name="-bundle:after~hook" />
+
+</project>
