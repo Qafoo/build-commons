@@ -48,10 +48,11 @@
     <!--
         Some common settings for all project.
     -->
-    <property name="commons:builddir" location="${commons.basedir}/${commons.builddir.name}" />
-    <property name="commons:distdir"  location="${commons:builddir}/${commons.distdir.name}" />
-    <property name="commons:logsdir"  location="${commons:builddir}/${commons.logsdir.name}" />
-    <property name="commons:tmpdir"   location="${commons:builddir}/${commons.tempdir.name}" />
+    <property name="commons:builddir"  location="${commons.basedir}/${commons.builddir.name}" />
+    <property name="commons:distdir"   location="${commons:builddir}/${commons.distdir.name}" />
+    <property name="commons:logsdir"   location="${commons:builddir}/${commons.logsdir.name}" />
+    <property name="commons:bundledir" location="${commons:builddir}/${commons.bundledir.name}" />
+    <property name="commons:tmpdir"    location="${commons:builddir}/${commons.tempdir.name}" />
 
     <import file="clean.xml" />
     <import file="deploy.xml" />
