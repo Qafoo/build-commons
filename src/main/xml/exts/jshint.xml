@@ -11,6 +11,8 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
     <import file="npm.xml" />
 
     <!--
@@ -19,9 +21,20 @@
     <target name="jshint" depends="jshint:jshint" />
 
     <!--
-        Runs the jshint cli tool against the project source code.
+         Execute the jshint task only, if a javascript source directory is
+         available
     -->
     <target name="jshint:jshint"
+            depends="availability:js-srcdir-is-available"
+            if="availability:js-srcdir-is-available">
+        <common.enabled.antcall target="-jshint:jshint"
+                                property="jshint.enabled" />
+    </target>
+
+    <!--
+        Runs the jshint cli tool against the project source code.
+    -->
+    <target name="-jshint:jshint"
             depends="-jshint:before~hook,
                      -jshint:run,
                      -jshint:after~hook" />
@@ -35,7 +48,6 @@
         <apply executable="${commons.executable.node}"
             dir="${-jshint:builddir}"
                failonerror="${jshint.fail.on.violation}"
-               outputproperty="commons:out-error"
                append="true"
                parallel="true"
                output="${jshint.logfile}">
@@ -75,5 +87,12 @@
 
     <extension-point name="-jshint:before~hook" />
     <extension-point name="-jshint:after~hook" />
+
+    <!--
+         Hook into the compile step to call jshint before compiling stuff
+    -->
+    <target name="-jshint:compile-before~hooked"
+            depends="jshint:jshint"
+            extensionOf="-compile:before~hook" />
 
 </project>

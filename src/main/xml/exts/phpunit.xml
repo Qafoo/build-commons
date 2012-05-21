@@ -13,6 +13,8 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
     <import file="pear.xml" />
 
     <!--
@@ -32,12 +34,15 @@
             $in.phpunit.group}         Optional test group that should be used
                                        to filter the executed tests.
     -->
-    <target name="phpunit:phpunit" depends="php:is-php-project" if="php:is-php-project">
-        <antcall target="-phpunit:run">
+    <target name="phpunit:phpunit"
+            depends="availability:php-testdir-is-available"
+            if="availability:php-testdir-is-available">
+        <common.enabled.antcall target="-phpunit:run" 
+                                property="phpunit.enabled">
             <param name="in.phpunit.group"        value="${in.phpunit.group}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
-        </antcall>
+        </common.enabled.antcall>
     </target>
 
     <!--
@@ -51,12 +56,15 @@
             ${in.phpunit.coverage}     Optional boolean flag that enables the
                                        collection of code coverage data.
     -->
-    <target name="phpunit:unit" depends="php:is-php-project" if="php:is-php-project">
-        <antcall target="-phpunit:run">
+    <target name="phpunit:unit"
+            depends="availability:php-testdir-is-available"
+            if="availability:php-testdir-is-available">
+        <common.enabled.antcall target="-phpunit:run" 
+                                property="phpunit.enabled">
             <param name="in.phpunit.group"        value="${test.type.unit}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
-        </antcall>
+        </common.enabled.antcall>
     </target>
 
     <!--
@@ -70,12 +78,15 @@
             ${in.phpunit.coverage}     Optional boolean flag that enables the
                                        collection of code coverage data.
     -->
-    <target name="phpunit:integration" depends="php:is-php-project" if="php:is-php-project">
-        <antcall target="-phpunit:run">
+    <target name="phpunit:integration"
+            depends="availability:php-testdir-is-available"
+            if="availability:php-testdir-is-available">
+        <common.enabled.antcall target="-phpunit:run" 
+                                property="phpunit.enabled">
             <param name="in.phpunit.group"        value="${test.type.integration}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
-        </antcall>
+        </common.enabled.antcall>
     </target>
 
     <!--
@@ -89,12 +100,15 @@
             ${in.phpunit.coverage}     Optional boolean flag that enables the
                                        collection of code coverage data.
     -->
-    <target name="phpunit:regression" depends="php:is-php-project" if="php:is-php-project">
-        <antcall target="-phpunit:run">
+    <target name="phpunit:regression"
+            depends="availability:php-testdir-is-available"
+            if="availability:php-testdir-is-available">
+        <common.enabled.antcall target="-phpunit:run" 
+                                property="phpunit.enabled">
             <param name="in.phpunit.group"        value="${test.type.regression}" />
             <param name="in.phpunit.coverage"     value="${in.phpunit.coverage}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
-        </antcall>
+        </common.enabled.antcall>
     </target>
 
     <!--
@@ -108,12 +122,15 @@
             $in.phpunit.group}         Optional test group that should be used
                                        to filter the executed tests.
     -->
-    <target name="phpunit:coverage" depends="php:is-php-project" if="php:is-php-project">
-        <antcall target="-phpunit:run">
+    <target name="phpunit:coverage"
+            depends="availability:php-testdir-is-available"
+            if="availability:php-testdir-is-available">
+        <common.enabled.antcall target="-phpunit:run" 
+                                property="phpunit.enabled">
             <param name="in.phpunit.coverage"     value="true" />
             <param name="in.phpunit.group"        value="${in.phpunit.group}" />
             <param name="in.phpunit.include.path" value="${in.phpunit.include.path}" />
-        </antcall>
+        </common.enabled.antcall>
     </target>
 
     <!--

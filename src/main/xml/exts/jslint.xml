@@ -7,14 +7,31 @@
     <property file="${resourcedir}/extensions/jslint/jslint.properties" />
 
     <!--
+        Import utilized extensions
+    -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
+
+    <!--
         Shortcut for the "jslint:jslint" target
     -->
     <target name="jslint" depends="jslint:jslint" />
 
     <!--
-        Runs the jslint cli tool against the project source code.
+         Execute the jslint task only, if a javascript source directory is
+         available
     -->
     <target name="jslint:jslint"
+            depends="availability:js-srcdir-is-available"
+            if="availability:js-srcdir-is-available">
+        <common.enabled.antcall target="-jslint:jslint"
+                                property="jslint.enabled" />
+    </target>
+
+    <!--
+        Runs the jslint cli tool against the project source code.
+    -->
+    <target name="-jslint:jslint"
             depends="-jslint:before~hook,
                      -jslint:run,
                      -jslint:after~hook" />
@@ -51,5 +68,13 @@
 
     <extension-point name="-jslint:before~hook" />
     <extension-point name="-jslint:after~hook" />
+
+    <!--
+         Hook jslint into the compile step to be executed before compilation if
+         enabled
+    -->
+    <target name="-jslint:compile-before~hooked"
+            depends="jslint:jslint"
+            extensionOf="-compile:before~hook" />
 
 </project>
