@@ -13,6 +13,8 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
     <import file="pear.xml" />
 
     <!--
@@ -21,9 +23,19 @@
     <target name="phploc" depends="phploc:phploc" />
 
     <!--
-        Runs the phploc cli tool against the project source code.
+         Execute the phploc task only, if a php source directory is available
     -->
     <target name="phploc:phploc"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <common.enabled.antcall target="-phploc:phploc" 
+                                property="phploc.enabled"/>
+    </target>
+
+    <!--
+        Runs the phploc cli tool against the project source code.
+    -->
+    <target name="-phploc:phploc"
             depends="-phploc:before~hook,
                      -phploc:run,
                      -phploc:after~hook" />
