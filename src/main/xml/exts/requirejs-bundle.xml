@@ -23,7 +23,7 @@
         depends="-requirejs:initialize,
                  -requirejs:bundle:before~hook,
                  -requirejs:bundle:run,
-                 -requirejs:bundle:replace,
+                 -requirejs:bundle:replace-javascript,
                  -requirejs:bundle:after~hook" />
 
     <!--
@@ -82,8 +82,7 @@
          file in order to ensure everything is still working as it should.
     -->
     <target name="-requirejs:bundle:replace-javascript"
-            depends="requirejs:bundle,
-                     -requirejs:create-bootstrap-path">
+            depends="-requirejs:create-bootstrap-path">
         <!-- Remove all javascript files in the bundle js srcdir -->
         <delete>
             <fileset dir="${bundle:commons.srcdir.js}"
@@ -145,14 +144,6 @@
     </target>
 
     <!--
-         Replace all javascript files in the bundles js srcdir with the traced
-         javascript file.
-    -->
-    <target name="-requirejs:bundle:replace">
-        
-    </target>
-
-    <!--
          Extension points of the requirejs:bundle module
     -->
     <extension-point name="-requirejs:bundle:before~hook" />
@@ -162,7 +153,7 @@
          Hook this module into the build-process, by executing it during bundling
     -->
     <target name="-requirejs:bundle:bundle:main~hooked"
-            depends="-requirejs:bundle:replace-javascript"
+            depends="requirejs:bundle"
             extensionOf="-bundle:main~hook" />
 
 </project>
