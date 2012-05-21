@@ -46,9 +46,9 @@
 
         <antcall target="-wro4j:execute-for-multiple-files">
             <param name="in.processor" value="${wro4j.minifier.processor}" />
-            <param name="in.input.file.list" value="${-wro4j:minifier:file.list}" />
+            <param name="in.input.file.list" value="${-wro4j:minifier:file-list}" />
             <param name="in.context.dir" value="${bundle:commons.srcdir.js}" />
-            <param name="in.output.path" value="${-wro4j:minifier:output-directory}" />
+            <param name="in.output.dir" value="${-wro4j:minifier:output-directory}" />
             <param name="in.compress" value="true" />
         </antcall>
     </target>
