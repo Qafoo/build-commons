@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-requirejs-bundle" basedir=".">
+    <!--
+         External entrypoint to this module
+    -->
+    <target name="requirejs:bundle">
+        <!--
+            @TODO: Once the availibility extension is merged it should be used
+            here to check wheather a javascript srcdir exists before running
+            this one
+        -->
+        <antcall target="-requirejs:bundle" />
+    </target>
+
+    <!--
+         Internal entrypoint to the module
+    -->
+    <target name="-requirejs:bundle"
+        depends="-requirejs:initialize,
+                 -requirejs:bundle:before~hook,
+                 -requirejs:bundle:run,
+                 -requirejs:bundle:replace,
+                 -requirejs:bundle:after~hook" />
+
+    <!--
+         Compile all dependencies into one JavaScript file
+
+         The file contains the requirejs library, all defined loaders as well
+         as dependencies traced using the application entrypoint as a start.
+    -->
+    <target name="-requirejs:bundle:run"
+            depends="-requirejs:bundle:prepare-build-config,
+                     -requirejs:bundle:trace-dependencies" />
+
+    <target name="-requirejs:bundle:prepare-build-config"
+            depends="-requirejs:bundle:create-build-config-paths-no-append,
+                     -requirejs:bundle:create-build-config-paths-append,
+                     -requirejs:bundle:create-build-config-includes,
+                     -requirejs:bundle:create-build-config-entrypoint">
+        <!-- Create temporary properties file used as template variables, for
+             the build config template -->
+        <tempfile destdir="${commons:tmpdir}" 
+                  property="-requirejs:bundle:build-js-property-tokens" 
+                  prefix="requirejs" 
+                  deleteonexit="false" />
+        <echoproperties destfile="${-requirejs:bundle:build-js-property-tokens}"
+                        regex="commons\.srcdir.*|commons\.testdir.*|commons:builddir.*|requirejs\..*" />
+
+        <!-- Apply the template variables to the build-config and create it in
+             a temporary position for processing -->
+        <tempfile destdir="${commons:tmpdir}" 
+                  property="-requirejs:bundle:build-js" 
+                  prefix="requirejs" 
+                  deleteonexit="false" />
+        <copy file="${requirejs.bundle.config}"
+              tofile="${-requirejs:bundle:build-js}">
+            <filterset>
+                <filtersfile file="${-requirejs:bundle:build-js-property-tokens}" />
+                <filter token="DynamicBuildPaths" value="${-requirejs:bundle:build-config-paths}" />
+                <filter token="EnforcedIncludes" value="${-requirejs:bundle:build-config-includes}" />
+                <filter token="DynamicEntrypoint" value="${-requirejs:bundle:build-config-entrypoint}" />
+            </filterset>
+        </copy>
+    </target>
+    
+    <target name="-requirejs:bundle:trace-dependencies">
+        <exec executable="${commons.executable.rhino}"
+              failonerror="true">
+            <arg value="${commons:resourcedir}/extensions/requirejs/r.js" />
+            <arg value="-o" />
+            <arg value="${-requirejs:bundle:build-js}" />
+        </exec>
+    </target>
+
+    <!--
+         Replace all javascript files within the bundle js srcdir with the
+         fully compiled one. It needs to be placed and named like the bootstrap
+         file in order to ensure everything is still working as it should.
+    -->
+    <target name="-requirejs:bundle:replace-javascript"
+            depends="requirejs:bundle,
+                     -requirejs:create-bootstrap-path">
+        <!-- Remove all javascript files in the bundle js srcdir -->
+        <delete>
+            <fileset dir="${bundle:commons.srcdir.js}"
+                     includes="**/*.js" />
+        </delete>
+        
+        <!-- Copy the fully compiled output file to the place inside the bundle
+             directory, where usually the bootstrap file would have been
+             placed. -->
+        <pathconvert property="-requirejs:bundle:bootstrap-path">
+            <path location="${-requirejs:out-bootstrap-path}" />
+            <mapper type="glob"
+                    from="${commons.srcdir}/*"
+                    to="${bundle:commons.srcdir}/*" />
+        </pathconvert>
+        <copy file="${requirejs.bundle.output}"
+              tofile="${-requirejs:bundle:bootstrap-path}" />
+
+        <!-- Remove all empty directories still residing inside the
+             processed js srcdir. -->
+        <delete includeemptydirs="true">
+            <fileset dir="${bundle:commons.srcdir.js}">
+                <and>
+                    <type type="dir" />
+                    <size value="0" />
+                </and>
+            </fileset>
+        </delete>
+    </target>
+
+
+    <!--
+         Sub tasks to create all different kinds of needed values to be
+         inserted into the build config file template.
+    -->
+
+    <target name="-requirejs:bundle:create-build-config-paths-no-append"
+            unless="-requirejs:build-config-loader-paths">
+        <property name="-requirejs:bundle:build-config-paths"
+                  value="&quot;requireJS&quot;: &quot;${-requirejs.library.module}&quot;" />
+    </target>
+
+    <target name="-requirejs:bundle:create-build-config-paths-append"
+            if="-requirejs:build-config-loader-paths">
+        <property name="-requirejs:bundle:build-config-paths"
+                  value="&quot;requireJS&quot;: &quot;${-requirejs.library.module}&quot;,${-requirejs:build-config-loader-paths}" />
+    </target>
+    
+    <target name="-requirejs:bundle:create-build-config-includes">
+        <property name="-requirejs:bundle:build-config-includes"
+                  value="&quot;requireJS&quot;" />
+    </target>
+
+    <target name="-requirejs:bundle:create-build-config-entrypoint">
+        <pathconvert property="-requirejs:bundle:build-config-entrypoint">
+            <path path="${commons.srcdir.htdocs}/${requirejs.entrypoint}" />
+            <mapper type="glob" from="${commons.srcdir.js}/*.js" to="*" />
+        </pathconvert> 
+    </target>
+
+    <!--
+         Replace all javascript files in the bundles js srcdir with the traced
+         javascript file.
+    -->
+    <target name="-requirejs:bundle:replace">
+        
+    </target>
+
+    <!--
+         Extension points of the requirejs:bundle module
+    -->
+    <extension-point name="-requirejs:bundle:before~hook" />
+    <extension-point name="-requirejs:bundle:after~hook" />
+
+    <!--
+         Hook this module into the build-process, by executing it during bundling
+    -->
+    <target name="-requirejs:bundle:bundle:main~hooked"
+            depends="-requirejs:bundle:replace-javascript"
+            extensionOf="-bundle:main~hook" />
+
+</project>

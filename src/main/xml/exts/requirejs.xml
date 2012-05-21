@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-requirejs" basedir=".">
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/requirejs/requirejs.properties" />
+
+    <!--
+         Shortcut for the extension entrypoint
+    -->
+    <target name="requirejs" depends="requirejs:help" />
+
+    <!--
+         Show some help on the different aspects of this module
+    -->
+    <target name="requirejs:help">
+        <echo taskname="help" level="info">
+requirejs:bootstrap
+  Create an initial bootstrapping file, which can be loaded inside the browser
+  during development. It will dynamically load all the needed resources using
+  the usual requirejs AMD module pattern.
+&#x00A0;
+requirejs:bundle
+  Instead of providing a dynamic bootstrapping file for development create
+  a fully bundled file, which does include the whole application and all its
+  dependencies. r.js will be used in order to realize the dependency tracing.
+&#x00A0;
+All of this does only work if a javascript srcdir does exist and lies within
+the common.srcdir.htdocs. Furthermore the following properties must be set and
+configured properly:
+&#x00A0;
+  - $${requirejs.entrypoint}
+    The entrypoint module in relation to the $${common.srcdir.htdocs}}. This is
+    the where your application is entered upon execution and dependency
+    resolvement.
+&#x00A0;
+Furthermore any used AMD loader needs to be registered with the
+build-environment in order to allow for seamless development and production
+builds. Loaders are defined using $${requirejs.loader.*} properties set to the
+full path of the loader js. The javascript source does not need to reside
+inside the js srcdir. Its position can be chosen freely. The named used for
+registration however will be the name it can later on be utilized with:
+&#x00A0;
+  - $${requirejs.loader.text} = /some/path/to/text.js
+    The loader found using the given path can later on be referenced and used
+    as 'text' (eg. "text!/some/text/to/load.txt"
+        </echo>
+    </target>
+
+    <!--
+         Initialize general requirejs relevant data
+
+         This target should be called before any other requirejs subtarget is
+         executed
+    -->
+    <target name="-requirejs:initialize"
+            depends="-requirejs:create-modulenames,
+                     -requirejs:create-build-config-loader-paths" />
+
+    <!--
+         Requirejs needs modulenames instead of filepaths at some positions
+
+         Modulenames are actually the paths without the .js extension. All
+         those module name slicing and cutting is done here
+    -->
+    <target name="-requirejs:create-modulenames">
+        <pathconvert property="-requirejs.library.module">
+            <path path="${requirejs.library}" />
+            <mapper type="glob" from="*.js" to="*" />
+        </pathconvert> 
+    </target>
+
+    <!--
+         Create a comma seperated list of key/value pairs containing all the
+         defined loader paths in a way to be used for a build-config-template.
+
+         Furthermore a comma seperated list of defined loaders will be
+         generated, which may be used to forcefully include them. (eg. for
+         bootstrapping)
+
+         Defines:
+            ${-requirejs:build-config-loader-paths}
+            ${-requirejs:build-config-loader-includes}
+    -->
+    <target name="-requirejs:create-build-config-loader-paths">
+        <script language="javascript" setbeans="false"><![CDATA[
+            var paths = "";
+            var includes = "";
+
+            var enumeration = project.getProperties().keys();
+            var propertyNameRegExp = /^(requirejs\.loader\.)([a-zA-Z0-9]+)$/;
+            var propertyValueRegExp = /^(.+?)(\.js)?$/;
+            while(enumeration.hasMoreElements()) {
+                (function(property) {
+                    var nameMatches = propertyNameRegExp.exec(property);
+                    if (nameMatches === null) {
+                        return;
+                    }
+
+                    var propertyValue = project.getProperty(property);
+                    var valueMatches = propertyValueRegExp.exec(propertyValue);
+
+                    var encodedName = '"' + nameMatches[2] + '"';
+                    var encodedPath = '"' + valueMatches[1] + '"';
+                    includes += encodedName + ",";
+                    paths += encodedName + ':' + encodedPath + ",";
+                    
+                })(enumeration.nextElement());
+            }
+
+            if (paths !== "") {
+                project.setProperty(
+                    '-requirejs:build-config-loader-paths', 
+                    paths.substring(0, paths.length - 1)
+                );
+            }
+
+            if (includes !== "") {
+                project.setProperty(
+                    '-requirejs:build-config-loader-includes', 
+                    includes.substring(0, includes.length - 1)
+                );
+            }
+        ]]></script>
+    </target>
+
+    <!--
+         Construct the pathname of the bootstrap file to be created based on
+         the entrypoint property as well as the given bootstrapping prefix
+
+         Defines:
+            ${-requirejs:out-bootstrap-path}
+    -->
+    <target name="-requirejs:create-bootstrap-path">
+        <pathconvert property="-requirejs:out-bootstrap-path">
+            <path location="${commons.srcdir.htdocs}/${requirejs.entrypoint}" />
+            <mapper type="regexp" 
+                    from="^(.*?)/([^/]+$$)"
+                    to="\1/${requirejs.bootstrap.prefix}\2" />
+        </pathconvert>
+    </target>
+
+</project>
