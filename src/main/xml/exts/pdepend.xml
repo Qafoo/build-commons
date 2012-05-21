@@ -9,6 +9,8 @@
     <!--
         Import utilized extensions
     -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
     <import file="pear.xml" />
 
     <!--
@@ -17,9 +19,19 @@
     <target name="pdepend" depends="pdepend:pdepend" />
 
     <!--
-        Runs the pdepend cli tool against the project source code.
+         Execute the pdepend task only, if a php source directory is available
     -->
     <target name="pdepend:pdepend"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <common.enabled.antcall target="-pdepend:pdepend"
+                                property="pdepend.enabled" />
+    </target>
+
+    <!--
+        Runs the pdepend cli tool against the project source code.
+    -->
+    <target name="-pdepend:pdepend"
             depends="-pdepend:before~hook,
                      -pdepend:run,
                      -pdepend:after~hook" />
