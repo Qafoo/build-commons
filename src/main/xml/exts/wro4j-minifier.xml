@@ -51,6 +51,14 @@
             <param name="in.output.dir" value="${-wro4j:minifier:output-directory}" />
             <param name="in.compress" value="true" />
         </antcall>
+        
+        <!-- Move the processed files and overwrite the original ones (only
+             inside the bundle dir of course) -->
+        <move todir="${bundle:commons.srcdir.js}">
+            <fileset dir="${-wro4j:minifier:output-directory}">
+                <include name="*/**" />
+            </fileset>
+        </move>
     </target>
 
     <!--
