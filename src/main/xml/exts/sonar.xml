@@ -4,7 +4,12 @@
     <description>
         This extension provides an integration with the code analysis tool
         Sonar.
-    </description>
+	</description>
+
+    <!--
+       Import default settings
+    -->
+    <property file="${commons:resourcedir}/extensions/sonar/sonar.properties" />
 
     <!--
         Classpath with the sonar ant archive.
