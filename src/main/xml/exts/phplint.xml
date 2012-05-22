@@ -32,15 +32,22 @@
     <target name="-phplint:phplint"
             depends="-phplint:before~hook,
                      -phplint:run,
+                     -phplint:delete-cache-on-error-and-bail-out,
                      -phplint:after~hook" />
 
     <!--
         Compiles all source and test source files of the current project.
     -->
     <target name="-phplint:run">
+        <delete file="${phplint.logfile}" />
+
         <apply executable="${commons.executable.php}"
-               failonerror="true"
-               output="${commons:logsdir}/phplint.log">
+               failonerror="false"
+               parallel="false"
+               output="${phplint.logfile}"
+               error="${phplint.logfile}"
+               errorproperty="-phplint:error-output"
+               append="true">
             <arg value="-l" />
             <fileset dir="${commons.srcdir.php}" erroronmissingdir="false">
                 <include name="**/*.php" />
@@ -56,11 +63,41 @@
                 <exclude name="**/_fixture/**" />
                 <exclude name="**/_fixtures/**" />
                 <modified>
-                    <param name="cache.cachefile" value="${compile.cachefile}" />
+                    <param name="cache.cachefile" value="${phplint.cachefile}" />
                 </modified>
             </fileset>
         </apply>
     </target>
+
+    <!--
+         Check whether an error during linting execution occured or not.
+         Setting ${-phplint:execution-error-has-occured} if something went
+         wrong
+    -->
+    <target name="-phplint:has-execution-error-occured">
+        <condition property="-phplint:execution-error-has-occured">
+            <not>
+                <equals arg1="${-phplint:error-output}"
+                        arg2=""
+                        trim="true" />
+            </not>
+        </condition>
+    </target>
+
+    <!--
+         Check whether the linting failed or not and delete the metadata cache
+         if it did. Otherwise a newly started linting run wouldn't yield any
+         error anymore.
+
+         Furthermore this targets fails the build if an error occurred.
+    -->
+    <target name="-phplint:delete-cache-on-error-and-bail-out"
+            depends="-phplint:has-execution-error-occured"
+            if="-phplint:execution-error-has-occured">
+        <delete file="${phplint.cachefile}" />
+        <fail message="${-phplint:error-output}" />
+    </target>
+
 
     <!--
          Extension points of this module
