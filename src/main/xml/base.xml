@@ -172,6 +172,39 @@ Currently the following command line switches are available:
         </condition>
     </target>
 
+
+    <!--
+        Execute all dependencies attached to a certain extension point in
+        parallel.  The execution order is not deterministic. All
+        registered extensions will be executed in their own ant
+        environment.
+
+        This macro is a proof of concept and maybe should be refactored
+        into a Java module in the future
+    -->
+    <scriptdef name="commons.parallel.extension-point"
+               language="javascript">
+        <attribute name="target" />
+        <![CDATA[
+            var targets = project.getTargets();
+            var dependencies = targets.get(
+                attributes.get("target")
+            ).getDependencies();
+
+            var parallel = project.createTask("parallel");
+            while(dependencies.hasMoreElements()) {
+                (function(dependency) {
+                    var target = targets.get(dependency);
+                    var task = project.createTask("antcall");
+                    task.setTarget(target);
+                    parallel.addTask(task);
+                })(dependencies.nextElement());
+
+                parallel.perform();
+            }
+        ]]>
+    </scriptdef>
+
     <!--
         EXTENSION POINTS UTILIZED BY THE BASE MODULE
     -->
