@@ -30,22 +30,17 @@
     -->
     <target name="-verify"
             depends="-verify:before~hook,
-                     -verify:verify,
+                     -verify:main~hook:execute,
                      -verify:after~hook" />
 
     <!--
-        This target calls several quality tools parallel and generates the
-        different reports.
+        This target calls all hooked verify targets in parallel.
     -->
-    <target name="-verify:verify">
+    <target name="-verify:main~hook:execute">
         <parallel>
-            <antcall target="phpunit:coverage" />
-            <antcall target="codesniffer:codesniffer" />
-            <antcall target="phpcpd:phpcpd" />
-            <antcall target="phploc:phploc" />
+            <commons.parallel.extension-point target="-verify:main~parallel~hook" />
             <sequential>
-                <antcall target="pdepend:pdepend" />
-                <antcall target="phpmd:phpmd" />
+                <antcall target="-verify:main~hook" />
             </sequential>
         </parallel>
     </target>
@@ -57,6 +52,20 @@
     <extension-point name="-verify:before~hook" />
 
     <!--
+         Main extension point for this module. Every verfiy extension should
+         register itself to this hook. The extensions registered at this hook
+         will be executed in parallel.
+    -->
+    <extension-point name="-verify:main~parallel~hook" />
+
+    <!--
+         Sequential main extension point for this module. Verify tasks, which
+         know they are quite resource intensive, should be registered here
+         instead of the parallel hook.
+    -->
+    <extension-point name="-verify:main~hook" />
+
+    <!--
         Hook target that will be called after the main verification phase
         of the project's source has finished.
     -->
@@ -66,6 +75,6 @@
         Backdoor that allows execution of the verify step without the complete
         build pipeline.
     -->
-    <target name="verify:backdoor" depends="-verify:verify" />
+    <target name="verify:backdoor" depends="-verify:main~hook:execute" />
 
 </project>
