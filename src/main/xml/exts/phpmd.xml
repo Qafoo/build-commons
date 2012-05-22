@@ -80,4 +80,15 @@
     <extension-point name="-phpmd:before~hook" />
     <extension-point name="-phpmd:after~hook" />
 
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This target will hook the the "phpmd:phpmd" target into the
+        main VERIFY build-step
+    -->
+    <target name="-phpmd:verify:main~hooked"
+            depends="phpmd:phpmd"
+            extensionOf="-verify:main~hook" />
 </project>
