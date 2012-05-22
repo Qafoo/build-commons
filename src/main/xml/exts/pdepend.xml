@@ -99,4 +99,15 @@
     <extension-point name="-pdepend:before~hook" />
     <extension-point name="-pdepend:after~hook" />
 
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This target will hook the the "pdepend:pdepend" target into the
+        main VERIFY build-step
+    -->
+    <target name="-pdepend:verify:main~hooked"
+            depends="pdepend:pdepend"
+            extensionOf="-verify:main~hook" />
 </project>
