@@ -81,4 +81,17 @@
 
     <extension-point name="-phploc:before~hook" />
     <extension-point name="-phploc:after~hook" />
+
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This target will hook the the "phploc:phploc" target into the
+        main VERIFY build-step
+    -->
+    <target name="-phploc:verify:main~parallel~hooked"
+            depends="phploc:phploc"
+            extensionOf="-verify:main~parallel~hook" />
+
 </project>
