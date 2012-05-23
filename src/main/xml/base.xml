@@ -183,7 +183,7 @@ Currently the following command line switches are available:
         <element name="configuration" implicit="true" optional="true" />
         <text name="sourcecode" />
         <sequential>
-            <script language="@language"
+            <script language="@{language}"
                     manager="bsf"
                     setbeans="@{setbeans}">
                 <classpath>
