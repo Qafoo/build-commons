@@ -47,6 +47,26 @@
     </macrodef>
 
     <!--
+         Execute the rhino javascript interpreter, which is distributed with
+         build-commons.
+
+         This macro is just a convenience wrapper to not depend on the systems
+         rhino installation.
+    -->
+    <macrodef name="commons.rhino">
+        <attribute name="failonerror" default="false" />
+        <element name="configuration" implicit="yes" />
+        <sequential>
+            <java jar="${commons:basedir}/main/resources/rhino/rhino/js.jar"
+                  fork="true"
+                  failonerror="@{failonerror}"
+                  taskname="rhino">
+                <configuration />
+            </java>
+        </sequential>
+    </macrodef>
+
+    <!--
         Execute all dependencies attached to a certain extension point in
         parallel.  The execution order is not deterministic. All
         registered extensions will be executed in their own ant
