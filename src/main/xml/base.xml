@@ -227,8 +227,8 @@ Currently the following command line switches are available:
         This macro is a proof of concept and maybe should be refactored
         into a Java module in the future
     -->
-    <scriptdef name="commons.parallel.extension-point"
-               language="javascript">
+    <commons.scriptdef name="commons.parallel.extension-point"
+                       language="javascript">
         <attribute name="target" />
         <![CDATA[
             var targets = project.getTargets();
@@ -248,7 +248,7 @@ Currently the following command line switches are available:
                 parallel.perform();
             }
         ]]>
-    </scriptdef>
+    </commons.scriptdef>
 
     <!--
         EXTENSION POINTS UTILIZED BY THE BASE MODULE
