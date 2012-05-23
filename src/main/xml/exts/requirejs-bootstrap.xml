@@ -74,12 +74,11 @@
     -->
     <target name="-requirejs:bootstrap:combine-requirejs-and-loaders"
             depends="-requirejs:bootstrap:create-build-js">
-        <exec executable="${commons.executable.rhino}"
-              failonerror="true">
+        <commons.rhino failonerror="true">
             <arg value="${resourcedir}/extensions/requirejs/r.js" />
             <arg value="-o" />
             <arg value="${-requirejs:bootstrap:out-build-js}" />
-        </exec>
+        </commons.rhino>
     </target>
 
     <!--

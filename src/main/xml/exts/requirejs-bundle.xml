@@ -68,12 +68,11 @@
     </target>
     
     <target name="-requirejs:bundle:trace-dependencies">
-        <exec executable="${commons.executable.rhino}"
-              failonerror="true">
+        <commons.rhino failonerror="true">
             <arg value="${commons:resourcedir}/extensions/requirejs/r.js" />
             <arg value="-o" />
             <arg value="${-requirejs:bundle:build-js}" />
-        </exec>
+        </commons.rhino>
     </target>
 
     <!--
