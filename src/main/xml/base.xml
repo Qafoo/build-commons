@@ -172,6 +172,34 @@ Currently the following command line switches are available:
         </condition>
     </target>
 
+    <!--
+         Provide an easy way of executing Script using the engines provided by
+         build commons.
+    -->
+    <macrodef name="commons.script">
+        <attribute name="language" />
+        <attribute name="src" default="" />
+        <attribute name="setbeans" default="true" />
+        <element name="configuration" implicit="true" optional="true" />
+        <text name="sourcecode" />
+        <sequential>
+            <script language="@language"
+                    manager="bsf"
+                    setbeans="@{setbeans}">
+                <classpath>
+                    <fileset dir="${commons:basedir}/main/resources/rhino">
+                        <include name="**/*.jar" />
+                    </fileset>
+                </classpath><configuration /><![CDATA[@{sourcecode}]]>
+            </script>
+        </sequential>
+    </macrodef>
+
+                </classpath><configuration /><![CDATA[
+                @{sourcecode}]]>
+            </script>
+        </sequential>
+    </macrodef>
 
     <!--
         Execute all dependencies attached to a certain extension point in
