@@ -35,8 +35,22 @@
                      -phpab:run,
                      -phpab:after~hook" />
 
+    <!--
+         Remove old generted phpab autoload files
+
+         May be called as a static entry point for cleanup
+    -->
+    <target name="phpab:clean">
+        <delete file="${phpab.output.src}" />
+        <delete file="${phpab.output.test}" />
+    </target>
+
+    <!--
+         Run phpab on the php src as well as testdir
+    -->
     <target name="-phpab:run"
-            depends="-phpab:run-src,
+            depends="phpab:clean,
+                     -phpab:run-src,
                      -phpab:run-test" />
 
     <!--
