@@ -83,7 +83,7 @@ registration however will be the name it can later on be utilized with:
             ${-requirejs:build-config-loader-includes}
     -->
     <target name="-requirejs:create-build-config-loader-paths">
-        <script language="javascript" setbeans="false"><![CDATA[
+        <commons.script language="javascript" setbeans="false"><![CDATA[
             var paths = "";
             var includes = "";
 
@@ -121,7 +121,7 @@ registration however will be the name it can later on be utilized with:
                     includes.substring(0, includes.length - 1)
                 );
             }
-        ]]></script>
+        ]]></commons.script>
     </target>
 
     <!--

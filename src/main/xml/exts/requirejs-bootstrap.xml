@@ -48,7 +48,7 @@
         the baseUrl, which is extracted from the given entrypoint.
     -->
     <target name="-requirejs:bootstrap:create-runtime-configuration">
-        <script language="javascript" setbeans="false"><![CDATA[
+        <commons.script language="javascript" setbeans="false"><![CDATA[
             var entrypointDirectory = new java.io.File(
                 project.getProperty('requirejs.entrypoint')
             ).getParent();
@@ -62,7 +62,7 @@
                 '-requirejs:bootstrap:out-runtime-configuration',
                 'require.config({baseUrl: "' + baseUrl + '"});'
             );
-        ]]></script>
+        ]]></commons.script>
     </target>
 
     <!--
