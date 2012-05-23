@@ -195,9 +195,26 @@ Currently the following command line switches are available:
         </sequential>
     </macrodef>
 
+    <!--
+         Provide an easy way of defining script tasks based on the distributed
+         scripting engines.
+    -->
+    <macrodef name="commons.scriptdef">
+        <attribute name="name" />
+        <attribute name="language" />
+        <element name="configuration" implicit="true" optional="true" />
+        <text name="sourcecode" />
+        <sequential>
+            <scriptdef name="@{name}"
+                       language="@{language}" 
+                       manager="bsf">
+                <classpath>
+                    <fileset dir="${commons:basedir}/main/resources/rhino">
+                        <include name="**/*.jar" />
+                    </fileset>
                 </classpath><configuration /><![CDATA[
                 @{sourcecode}]]>
-            </script>
+            </scriptdef>
         </sequential>
     </macrodef>
 
