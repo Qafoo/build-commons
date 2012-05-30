@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-wro4j-minifier" basedir=".">
+    <!--
+        Import utilized extensions
+    -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
+
+    <!--
+         External entrypoint to this module
+    -->
+    <target name="wro4j:minifier"
+            depends="availability:js-srcdir-is-available"
+            if="availability:js-srcdir-is-available">
+        <common.enabled.antcall target="-wro4j:minifier"
+                                property="wro4j.minifier.enabled" />
+    </target>
+
+    <!--
+         Private extension entrypoint
+    -->
+    <target name="-wro4j:minifier"
+          depends="-wro4j:minifier:before~hook,
+                   -wro4j:minifier:main~hook,
+                   -wro4j:minifier:run,
+                   -wro4j:minifier:after~hook" />
+
+    <!--
+         Take all js files within the bundle srcdir.js and minify them.
+         Replacing their original versions with the minified ones.
+    -->
+    <target name="-wro4j:minifier:run">
+        <wro4j.create.file.list property="-wro4j:minifier:file-list"
+                                type="js"
+                                context-dir="${bundle:commons.srcdir.js}">
+            <fileset dir="${bundle:commons.srcdir.js}">
+                <include name="**/*.js" />
+            </fileset>
+        </wro4j.create.file.list>
+
+        <tempfile property="-wro4j:minifier:output-directory"
+                  destdir="${commons:tmpdir}"
+                  prefix="wro4j"
+                  deleteonexit="false" />
+        <mkdir dir="${-wro4j:minifier:output-directory}" />
+
+        <antcall target="-wro4j:execute-for-multiple-files">
+            <param name="in.processor" value="${wro4j.minifier.processor}" />
+            <param name="in.input.file.list" value="${-wro4j:minifier:file-list}" />
+            <param name="in.context.dir" value="${bundle:commons.srcdir.js}" />
+            <param name="in.output.dir" value="${-wro4j:minifier:output-directory}" />
+            <param name="in.compress" value="true" />
+        </antcall>
+        
+        <!-- Move the processed files and overwrite the original ones (only
+             inside the bundle dir of course) -->
+        <move todir="${bundle:commons.srcdir.js}">
+            <fileset dir="${-wro4j:minifier:output-directory}">
+                <include name="*/**" />
+            </fileset>
+        </move>
+    </target>
+
+    <!--
+        Extension points provided by this module
+    -->
+
+    <!--
+        This extension point will be called right before the minifying is
+        started.
+    -->
+    <extension-point name="-wro4j:minifier:before~hook" />
+
+    <!--
+        This extension point allows to enter the main minification processing step.
+        
+        This extension point will usually be used to register different
+        minifications (js, css, ...).
+    -->
+    <extension-point name="-wro4j:minifier:main~hook" />
+
+    <!--
+         This extension point will be executed after all the minification has
+         taken place.
+    -->
+    <extension-point name="-wro4j:minifier:after~hook" />
+
+
+    <!--
+         Hook into the bundle~after extension point. In order to run minifying
+         on all the different resources lying there.
+    -->
+    <target name="-wro4j:minifier:bundle:after~hooked"
+            depends="wro4j:minifier"
+            extensionOf="-bundle:after~hook" />
+
+</project>
