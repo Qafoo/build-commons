@@ -376,4 +376,12 @@
             depends="phpunit:unit"
             extensionOf="-test:main~hook" />
 
+    <!--
+        This target will hook the the "phpunit:coverage" target into the main verify
+        build-step
+    -->
+    <target name="-phpunit:verify:main~parallel~hooked"
+            depends="phpunit:coverage"
+            extensionOf="-verify:main~parallel~hook" />
+
 </project>

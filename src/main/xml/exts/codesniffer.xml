@@ -223,4 +223,16 @@
     -->
     <extension-point name="-codesniffer:after~hook" />
 
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This target will hook the the "codesniffer:codesniffer" target into the
+        main VERIFY build-step
+    -->
+    <target name="-codesniffer:verify:main~parallel~hooked"
+            depends="codesniffer:codesniffer"
+            extensionOf="-verify:main~parallel~hook" />
+
 </project>
