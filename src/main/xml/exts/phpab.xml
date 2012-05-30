@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-phpab" basedir=".">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/phpab/phpab.properties" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
+    <import file="pear.xml" />
+
+    <!--
+        Shortcut for the "phpab:phpab" target
+    -->
+    <target name="phpab" depends="phpab:phpab" />
+
+    <!--
+         Execute the phpab task only, if a php source directory is available
+    -->
+    <target name="phpab:phpab">
+        <common.enabled.antcall target="-phpab:phpab"
+                                property="phpab.enabled" />
+    </target>
+
+    <!--
+        Runs the phpab cli tool against the project source code.
+    -->
+    <target name="-phpab:phpab"
+            depends="-phpab:install-or-upgrade,
+                     -phpab:before~hook,
+                     -phpab:run,
+                     -phpab:after~hook" />
+
+    <!--
+         Remove old generted phpab autoload files
+
+         May be called as a static entry point for cleanup
+    -->
+    <target name="phpab:clean">
+        <delete file="${phpab.output.src}" />
+        <delete file="${phpab.output.test}" />
+    </target>
+
+    <!--
+         Run phpab on the php src as well as testdir
+    -->
+    <target name="-phpab:run"
+            depends="phpab:clean,
+                     -phpab:run-src,
+                     -phpab:run-test" />
+
+    <!--
+        This target runs phpab against the project's source code and generates
+        the requested autoload file.
+    -->
+    <target name="-phpab:run-src"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <exec executable="${commons.executable.php}"
+              failonerror="true"
+              taskname="phpab" >
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.local.bindir}/phpab" />
+            <arg value="--output" />
+            <arg value="${phpab.output.src}" />
+            <arg value="${commons.srcdir.php}" />
+        </exec>
+    </target>
+
+    <!--
+        This target runs phpab against the project's test code and generates
+        the requested autoload file.
+    -->
+    <target name="-phpab:run-test"
+            depends="availability:php-testdir-is-available"
+            if="availability:php-testdir-is-available">
+        <exec executable="${commons.executable.php}"
+              failonerror="true"
+              taskname="phpab" >
+            <arg value="-d" />
+            <arg value="include_path=${pear.local.include.path}" />
+            <arg value="${pear.local.bindir}/phpab" />
+            <arg value="--output" />
+            <arg value="${phpab.output.test}" />
+            <arg value="${commons.testdir.php}" />
+        </exec>
+    </target>
+
+    <!--
+        This target tries to a) install phpab if it isn't already installed
+        in the project's local pear installation or b) upgrade a previous
+        installed version of phpab.
+    -->
+    <target name="-phpab:install-or-upgrade">
+        <antcall target="-pear:package-install-or-upgrade">
+            <param name="in.pear.package.file" value="phpab" />
+            <param name="in.pear.package.name" value="Autoload" />
+            <param name="in.pear.package.channel" value="pear.netpirates.net" />
+        </antcall>
+    </target>
+
+    <!--
+        Extension point that can be used by a build file to add additional build
+        steps right before the build environment starts the phpab cli script.
+    -->
+    <extension-point name="-phpab:before~hook" />
+
+    <!--
+        Extension point that can be used by a build file to add additional build
+        steps after the build environment has complete the phpab creation.
+    -->
+    <extension-point name="-phpab:after~hook" />
+
+    <!--
+         Hook phpab into the build process. It should be executed right after
+         the compile step.
+    -->
+    <target name="-phpab:compile:after~hooked"
+            extensionOf="-compile:after~hook"
+            depends="phpab:phpab" />
+
+</project>
