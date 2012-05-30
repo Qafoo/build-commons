@@ -54,6 +54,14 @@
     <property name="commons:bundledir" location="${commons:builddir}/${commons.bundledir.name}" />
     <property name="commons:tmpdir"    location="${commons:builddir}/${commons.tempdir.name}" />
 
+    <!--
+         Load all commons base macros
+    -->
+    <import file="macros.xml" />
+
+    <!--
+         Load other build steps
+    -->
     <import file="clean.xml" />
     <import file="deploy.xml" />
     <import file="profile.xml" />

@@ -114,4 +114,17 @@
         steps after the build environment has complete the PHPCPD analysis.
     -->
     <extension-point name="-phpcpd:after~hook" />
+
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This target will hook the the "phpcpd:phpcpd" target into the
+        main VERIFY build-step
+    -->
+    <target name="-phpcpd:verify:main~parallel~hooked"
+            depends="phpcpd:phpcpd"
+            extensionOf="-verify:main~parallel~hook" />
+
 </project>
