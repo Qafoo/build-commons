@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-phplint" basedir=".">
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/phplint/phplint.properties" />
+
+    <!--
+        Import utilized extensions
+    -->
+    <import file="enabled.xml" />
+    <import file="availability.xml" />
+
+    <!--
+        Shortcut for the "phplint:phplint" target
+    -->
+    <target name="phplint" depends="phplint:phplint" />
+
+    <!--
+         External entrypoint
+    -->
+    <target name="phplint:phplint"
+            depends="availability:php-srcdir-is-available"
+            if="availability:php-srcdir-is-available">
+        <common.enabled.antcall target="-phplint:phplint"
+                                property="phplint.enabled" />
+    </target>
+
+    <!--
+        Runs the linter check of php against the project source code.
+    -->
+    <target name="-phplint:phplint"
+            depends="-phplint:before~hook,
+                     -phplint:run,
+                     -phplint:delete-cache-on-error-and-bail-out,
+                     -phplint:after~hook" />
+
+    <!--
+        Compiles all source and test source files of the current project.
+    -->
+    <target name="-phplint:run">
+        <delete file="${phplint.logfile}" />
+
+        <apply executable="${commons.executable.php}"
+               failonerror="false"
+               parallel="false"
+               output="${phplint.logfile}"
+               error="${phplint.logfile}"
+               errorproperty="-phplint:error-output"
+               append="true">
+            <arg value="-l" />
+            <fileset dir="${commons.srcdir.php}" erroronmissingdir="false">
+                <include name="**/*.php" />
+                <modified>
+                    <param name="cache.cachefile" value="${phplint.cachefile}" />
+                </modified>
+            </fileset>
+            <fileset dir="${commons.testdir.php}" erroronmissingdir="false">
+                <include name="**/*.php" />
+                <exclude name="**/_source/**" />
+                <exclude name="**/_files/**" />
+                <exclude name="**/_code/**" />
+                <exclude name="**/_fixture/**" />
+                <exclude name="**/_fixtures/**" />
+                <modified>
+                    <param name="cache.cachefile" value="${phplint.cachefile}" />
+                </modified>
+            </fileset>
+        </apply>
+    </target>
+
+    <!--
+         Check whether an error during linting execution occured or not.
+         Setting ${-phplint:execution-error-has-occured} if something went
+         wrong
+    -->
+    <target name="-phplint:has-execution-error-occured">
+        <condition property="-phplint:execution-error-has-occured">
+            <not>
+                <equals arg1="${-phplint:error-output}"
+                        arg2=""
+                        trim="true" />
+            </not>
+        </condition>
+    </target>
+
+    <!--
+         Check whether the linting failed or not and delete the metadata cache
+         if it did. Otherwise a newly started linting run wouldn't yield any
+         error anymore.
+
+         Furthermore this targets fails the build if an error occurred.
+    -->
+    <target name="-phplint:delete-cache-on-error-and-bail-out"
+            depends="-phplint:has-execution-error-occured"
+            if="-phplint:execution-error-has-occured">
+        <delete file="${phplint.cachefile}" />
+        <fail message="${-phplint:error-output}" />
+    </target>
+
+
+    <!--
+         Extension points of this module
+    -->
+    <extension-point name="-phplint:before~hook" />
+    <extension-point name="-phplint:after~hook" />
+
+    <!--
+         Hook this extension into the compile step
+    -->
+    <target name="-phplint:compile:main~hooked"
+            extensionOf="-compile:main~hook"
+            depends="phplint:phplint" />
+</project>
