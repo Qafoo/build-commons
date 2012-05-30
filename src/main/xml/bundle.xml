@@ -37,7 +37,26 @@
                   location="${commons:bundledir}/source" />
 
         <copy todir="${bundle:commons.srcdir}">
-            <fileset dir="${commons.srcdir}" />
+            <fileset dir="${commons.srcdir}">
+                <!--
+                     Exclude all kinds of SCM and build related directories
+                     This list has been shamelessly taken from the source of
+                     the ack project: http://betterthangrep.com/ 
+                -->
+                <exclude name="**/.bzr/**" /> <!-- Bazaar -->
+                <exclude name="**/.cdv/**" /> <!-- Codeville -->
+                <exclude name="**/.git/**" /> <!-- Git -->
+                <exclude name="**/.hg/**" /> <!-- Mercurial -->
+                <exclude name="**/.pc/**" /> <!-- quilt -->
+                <exclude name="**/.svn/**" /> <!-- Subversion -->
+                <exclude name="**/_MTN/**" /> <!-- Monotone -->
+                <exclude name="**/CVS/**" /> <!-- CVS -->
+                <exclude name="**/RCS/**" /> <!-- RCS -->
+                <exclude name="**/SCCS/**" /> <!-- SCCS -->
+                <exclude name="**/_darcs/**" /> <!-- darcs -->
+                <exclude name="**/_sgbak/**" /> <!-- Vault/Fortress -->
+                <exclude name="**/autom4te.cache/**" /> <!-- autoconf -->
+            </fileset>
         </copy>
 
         <pathconvert property="bundle:commons.srcdir.php"
