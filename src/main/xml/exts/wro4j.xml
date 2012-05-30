@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-wro4j" basedir=".">
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/wro4j/wro4j.properties" />
+
+    <!--
+         Macro to execute the wro4j commandline runner easily and painlessly
+    -->
+    <macrodef name="wro4j.execute">
+        <attribute name="processor"/>
+        <attribute name="file" default="wro.xml"/>
+        <attribute name="context-dir"
+                   default="/" />
+        <attribute name="output-dir"
+                   default="${-wro4j:builddir}" />
+        <element name="furtherArguments"
+                 optional="true"
+                 implicit="yes" />
+        <sequential>
+                <java jar="${wro4j.jar}"
+                      fork="true"
+                      failonerror="true">
+                    <arg value="--wroFile"/>
+                    <arg value="@{file}"/>
+                    <arg value="--contextFolder"/>
+                    <arg value="@{context-dir}"/>
+                    <arg value="--destinationFolder"/>
+                    <arg value="@{output-dir}"/>
+                    <arg value="-c"/>
+                    <arg value="@{processor}"/>
+                    <furtherArguments />
+                </java>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="wro4j.create.file.list">
+        <attribute name="property" />
+        <attribute name="type" />
+        <attribute name="context-dir" />
+        <element name="list" implicit="true" />
+        <sequential>
+            <pathconvert property="@{property}"
+                         pathsep="">
+                <!-- Empty files are not handles gracefully by wro4j. Therefore
+                     they are filtered out -->
+                <restrict>
+                    <list />
+                    <not>
+                        <size size="0" />
+                    </not>
+                </restrict>
+                <chainedmapper>
+                    <!-- Remove the context-dir -->
+                    <mapper type="glob" from="@{context-dir}/*" to="*" />
+                    <!-- Split up into group name and filepath -->
+                    <compositemapper>
+                        <!-- Build group name -->
+                        <chainedmapper>
+                            <!-- Escape paths -->
+                            <filtermapper>
+                                <replacestring from="-" to="--" />
+                                <replacestring from="/" to="-" />
+                            </filtermapper>
+                            <mapper type="glob"
+                                    from='*'
+                                    to='&lt;group name="*' />
+                            <mapper type="glob"
+                                    from='*'
+                                    to='*"&gt;' />
+                        </chainedmapper>
+                        <!-- Build asset name -->
+                        <chainedmapper>
+                            <!-- Add prefix slash -->
+                            <mapper type="glob" from="*" to="/*" />
+                            <!-- Add type -->
+                            <mapper type="glob"
+                                    from='*'
+                                    to='&lt;@{type}&gt;*' />
+                            <mapper type="glob"
+                                    from='*'
+                                    to='*&lt;/@{type}&gt;' />
+                            <!-- Add closing group tag -->
+                            <mapper type="glob"
+                                    from='*'
+                                    to='*&lt;/group&gt;' />
+                        </chainedmapper>
+                    </compositemapper>
+                </chainedmapper>
+            </pathconvert>
+        </sequential>
+    </macrodef>
+
+    <!--
+         Antcall target to execute wro4j for a single input file of a certain
+         type.
+
+         Properties:
+            ${in.processor} The wro4j processor to use
+            ${in.input.file} The input file to process (full path)
+            ${in.input.type} The type of the input file (js, css, ...)
+            ${in.output.file} The full path of the output file
+            ${in.compress} Option if compression should be used or not
+                           (true,on,1/false,off,0)
+    -->
+    <target name="-wro4j:execute-for-single-file"
+            depends="-wro4j:prepare-for-single-file-execute,
+                     -wro4j:execute-with-compress,
+                     -wro4j:execute-without-compress" />
+
+    <target name="-wro4j:prepare-for-single-file-execute">
+        <tempfile property="-wro4j:configuration-file"
+                  destdir="${commons:tmpdir}"
+                  prefix="wro4j"
+                  suffix=".xml"
+                  deleteonexit="false" />
+
+        <pathconvert property="-wro4j:context-dir">
+            <path location="${in.input.file}" />
+            <mapper type="regexp"
+                    from="^(.*?)/[^/]+$$"
+                    to="\1" />
+        </pathconvert>
+        <pathconvert property="-wro4j:input-file">
+            <path location="${in.input.file}" />
+            <!-- The path used as input is relative to the context-dir, but it
+                 needs a slash at the beginning. This is somewhat strange, but
+                 it doesn't work otherwise. -->
+            <mapper type="regexp"
+                    from="^.*?/([^/]+)$$"
+                    to="/\1" />
+        </pathconvert>
+
+        <pathconvert property="-wro4j:output-dir">
+            <path location="${in.output.file}" />
+            <mapper type="regexp"
+                    from="^(.*?)/[^/]+$$"
+                    to="\1" />
+        </pathconvert>
+        <pathconvert property="-wro4j:output-file">
+            <path location="${in.output.file}" />
+            <chainedmapper>
+                <mapper type="regexp"
+                        from="^.*?/([^/]+)$$"
+                        to="\1" />
+                <!-- Remove a suffix it is the same as the type -->
+                <mapper type="glob"
+                        from="*.${in.input.type}"
+                        to="*" />
+            </chainedmapper>
+        </pathconvert>
+
+        <copy file="${wro4j.single.file.template}"
+              tofile="${-wro4j:configuration-file}">
+            <filterset>
+                <filter token="output.file" value="${-wro4j:output-file}" />
+                <filter token="input.file" value="${-wro4j:input-file}" />
+                <filter token="input.type" value="${in.input.type}" />
+            </filterset>
+        </copy>
+    </target>
+
+    <!--
+         Antcall target to execute wro4j for multiple input files of a certain
+         type.
+
+         The wro4j.create.file.list macro should be utilized in most situations
+         to create the needed XML list of multiple input files.
+
+         Properties:
+            ${in.processor} The wro4j processor to use
+            ${in.input.file.list} The input file list to process in correct XML
+                syntax. The escaping has a certain set of special rules use the
+                wro4j.create.file.list macro to easily create such lists from
+                filesets.
+            ${in.context.dir} Full path to the directory all the given files
+                are relative to.
+            ${in.output.path} The full path of the output directory to store
+                the target files to. The directory structure created there will
+                be equal to the input files position relative to the
+                context-dir
+            ${in.compress} Option if compression should be used or not
+                           (true,on,1/false,off,0)
+    -->
+    <target name="-wro4j:execute-for-multiple-files"
+            depends="-wro4j:prepare-for-multiple-file-execute,
+                     -wro4j:execute-with-compress,
+                     -wro4j:execute-without-compress,
+                     -wro4j:finish-multiple-file-execute" />
+
+    <target name="-wro4j:prepare-for-multiple-file-execute">
+        <tempfile property="-wro4j:configuration-file"
+                  destdir="${commons:tmpdir}"
+                  prefix="wro4j"
+                  suffix=".xml"
+                  deleteonexit="false" />
+
+        <property name="-wro4j:context-dir"
+                  value="${in.context.dir}" />
+        
+        <property name="-wro4j:output-dir"
+                  value="${in.output.dir}" />
+
+        <copy file="${wro4j.multiple.file.template}"
+              tofile="${-wro4j:configuration-file}">
+            <filterset>
+                <filter token="file.list" value="${in.input.file.list}" />
+            </filterset>
+        </copy>
+    </target>
+
+    <target name="-wro4j:finish-multiple-file-execute">
+        <!-- Undo all the escaping we needed to apply because of the stupid
+             wro4j handling -->
+        <move todir="${in.output.dir}">
+            <fileset dir="${in.output.dir}">
+                <include name="*/**" />
+            </fileset>
+            <chainedmapper>
+                <filtermapper>
+                    <replacestring from="-" to="/" />
+                    <replacestring from="//" to="-" />
+                </filtermapper>
+                <mapper type="regexp"
+                        from="^(.*?)\.[^.]*$$"
+                        to="\1" />
+            </chainedmapper>
+        </move>
+    </target>
+
+    <target name="-wro4j:execute-without-compress"
+            depends="-wro4j:is-compression-enabled"
+            unless="-wro4j:compression-is-enabled">
+        <wro4j.execute processor="${in.processor}"
+                       file="${-wro4j:configuration-file}"
+                       context-dir="${-wro4j:context-dir}"
+                       output-dir="${-wro4j:output-dir}" />
+    </target>
+
+    <target name="-wro4j:execute-with-compress"
+            depends="-wro4j:is-compression-enabled"
+            if="-wro4j:compression-is-enabled">
+        <wro4j.execute processor="${in.processor}"
+                       file="${-wro4j:configuration-file}"
+                       context-dir="${-wro4j:context-dir}"
+                       output-dir="${-wro4j:output-dir}">
+            <arg value="--minimize" />
+        </wro4j.execute>
+    </target>
+
+    <target name="-wro4j:is-compression-enabled">
+        <condition property="-wro4j:compression-is-enabled">
+            <or>
+                <equals arg1="${in.compress}"
+                        arg2="true"
+                        trim="true"
+                        casesensitive="false" />
+                <equals arg1="${in.compress}"
+                        arg2="on"
+                        trim="true"
+                        casesensitive="false" />
+                <equals arg1="${in.compress}"
+                        arg2="1"
+                        trim="true" />
+            </or>
+        </condition>
+    </target>
+</project>
