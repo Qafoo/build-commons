@@ -167,16 +167,24 @@
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
-        <condition property="phpunit.conf0" value="--configuration '${basedir}/phpunit.xml'" else="">
+        <condition property="phpunit.conf.file" value="${basedir}/phpunit.xml">
             <available file="${basedir}/phpunit.xml" />
         </condition>
 
-        <condition property="phpunit.conf1" value="--configuration '${basedir}/phpunit.xml.dist'" else="">
+        <condition property="phpunit.conf.file" value="${commons.testdir.php}/phpunit.xml">
+            <available file="${commons.testdir.php}/phpunit.xml" />
+        </condition>
+
+        <condition property="phpunit.conf.file" value="${basedir}/phpunit.xml.dist">
             <available file="${basedir}/phpunit.xml.dist" />
         </condition>
 
-        <condition property="phpunit.conf" value="${phpunit.conf0}" else="${phpunit.conf1}">
-            <equals arg1="${phpunit.conf1}" arg2="" trim="true" />
+        <condition property="phpunit.conf.file" value="${commons.testdir.php}/phpunit.xml.dist">
+            <available file="${commons.testdir.php}/phpunit.xml.dist" />
+        </condition>
+
+        <condition property="phpunit.conf" value="--configuration '${phpunit.conf.file}'" else="">
+            <available file="${phpunit.conf.file}" />
         </condition>
 
         <exec executable="${commons.executable.php}"
@@ -237,20 +245,33 @@
             <equals arg1="${in.phpunit.coverage}" arg2="$${in.phpunit.coverage}" trim="true" />
         </condition>
 
-        <condition property="phpunit.conf0" value="--configuration '${basedir}/phpunit.xml'" else="">
+        <condition property="phpunit.conf.file" value="${basedir}/phpunit.xml">
             <available file="${basedir}/phpunit.xml" />
         </condition>
 
-        <condition property="phpunit.conf1" value="--configuration '${basedir}/phpunit.xml.dist'" else="">
+        <condition property="phpunit.conf.file" value="${commons.testdir.php}/phpunit.xml">
+            <available file="${commons.testdir.php}/phpunit.xml" />
+        </condition>
+
+        <condition property="phpunit.conf.file" value="${basedir}/phpunit.xml.dist">
             <available file="${basedir}/phpunit.xml.dist" />
         </condition>
 
-        <condition property="phpunit.conf" value="${phpunit.conf0}" else="${phpunit.conf1}">
-            <equals arg1="${phpunit.conf1}" arg2="" trim="true" />
+        <condition property="phpunit.conf.file" value="${commons.testdir.php}/phpunit.xml.dist">
+            <available file="${commons.testdir.php}/phpunit.xml.dist" />
         </condition>
 
-        <condition property="phpunit.dir" value="" else="${commons.testdir.php}">
-            <equals arg1="${phpunit.conf}" arg2="" trim="true" />
+        <condition property="phpunit.conf" value="--configuration '${phpunit.conf.file}'" else="">
+            <available file="${phpunit.conf.file}" />
+        </condition>
+
+        <condition property="phpunit.dir" value="${commons.testdir.php}" else="">
+            <or>
+                <equals arg1="${phpunit.conf}" arg2="" trim="true" />
+                <not>
+                    <resourcecontains resource="${phpunit.conf.file}" substring="&lt;testsuites&gt;" />
+                </not>
+            </or>
         </condition>
 
         <exec executable="${commons.executable.php}"
