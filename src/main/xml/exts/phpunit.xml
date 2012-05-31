@@ -249,6 +249,10 @@
             <equals arg1="${phpunit.conf1}" arg2="" trim="true" />
         </condition>
 
+        <condition property="phpunit.dir" value="" else="${commons.testdir.php}">
+            <equals arg1="${phpunit.conf}" arg2="" trim="true" />
+        </condition>
+
         <exec executable="${commons.executable.php}"
               failonerror="true"
               dir="${commons.testdir.php}">
@@ -265,7 +269,7 @@
             <arg line="${phpunit.html}" />
             <arg line="${phpunit.clover}" />
             <arg line="${phpunit.conf}" />
-            <arg value="${commons.testdir.php}" />
+            <arg line="${phpunit.dir}" />
         </exec>
 
         <copy todir="${commons:builddir}/coverage">
