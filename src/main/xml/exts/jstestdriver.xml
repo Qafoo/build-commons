@@ -99,19 +99,28 @@
     <target name="-jstestdriver:run-testconfig-full"
             unless="-jstestdriver:server-running">
 
+        <exec executable="${resourcedir}/extensions/jstestdriver/jstestdriver-headless.sh">
+            <arg value="${jstestdriver.runtime}" />
+            <arg value="${commons:logsdir}" />
+            <arg value="${jstestdriver.port}" />
+            <arg value="${jstestdriver.browser}" />
+            <arg value="${jstestdriver.config}" />
+        </exec>
+        <!--
         <java
             jar="${jstestdriver.runtime}"
             fork="true"
             failonerror="true">
-            <arg value="--port" />
+            <arg value="- -port" />
             <arg value="${jstestdriver.port}" />
-            <arg value="--browser" />
+            <arg value="- -browser" />
             <arg value="${jstestdriver.browser}" />
-            <arg value="--config" />
+            <arg value="- -config" />
             <arg value="${jstestdriver.config}" />
-            <arg value="--tests" />
+            <arg value="- -tests" />
             <arg value="all" />
         </java>
+        -->
     </target>
 
     <target name="-jstestdriver:check-server">
