@@ -107,13 +107,13 @@
         <java jar="${jstestdriver.runtime}"
               fork="true"
               failonerror="true">
-            <arg value="- -port" />
+            <arg value="--port" />
             <arg value="${jstestdriver.port}" />
-            <arg value="- -browser" />
+            <arg value="--browser" />
             <arg value="${jstestdriver.browser}" />
-            <arg value="- -config" />
+            <arg value="--config" />
             <arg value="${jstestdriver.config}" />
-            <arg value="- -tests" />
+            <arg value="--tests" />
             <arg value="all" />
         </java>
     </target>
