@@ -140,4 +140,15 @@ registration however will be the name it can later on be utilized with:
         </pathconvert>
     </target>
 
+    <!--
+        Cleanup temporary files created by this extension.
+    -->
+    <target name="-requirejs:clean~hooked"
+            extensionOf="-clean:after~hook"
+            depends="-requirejs:create-bootstrap-path">
+
+        <delete dir="${-requirejs:out-bootstrap-path}" />
+        <delete file="${-requirejs:out-bootstrap-path}" />
+    </target>
+
 </project>
