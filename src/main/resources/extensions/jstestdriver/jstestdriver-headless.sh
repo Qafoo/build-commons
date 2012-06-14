@@ -18,7 +18,7 @@ PID_XVFB="$!"      # take the process ID
 export DISPLAY=:99 # set display to use that of the xvfb
 
 # run the tests
-DISPLAY=:99 java -jar "${JSTD_JAR}" --config "${JSTD_CONFIG}" --port "${JSTD_PORT}" --browser "${JSTD_BROWSER}" --tests all --testOutput "${OUTPUT_DIR}"
+java -jar "${JSTD_JAR}" --config "${JSTD_CONFIG}" --port "${JSTD_PORT}" --browser "${JSTD_BROWSER}" --tests all --testOutput "${OUTPUT_DIR}" --runnerMode DEBUG
 
 kill $PID_XVFB     # shut down xvfb (firefox will shut down cleanly by JsTestDriver)
 echo "Done."
