@@ -99,18 +99,14 @@
     <target name="-jstestdriver:run-testconfig-full"
             unless="-jstestdriver:server-running">
 
-        <exec executable="${resourcedir}/extensions/jstestdriver/jstestdriver-headless.sh">
-            <arg value="${jstestdriver.runtime}" />
-            <arg value="${commons:logsdir}" />
-            <arg value="${jstestdriver.port}" />
-            <arg value="${jstestdriver.browser}" />
-            <arg value="${jstestdriver.config}" />
-        </exec>
-        <!--
-        <java
-            jar="${jstestdriver.runtime}"
-            fork="true"
-            failonerror="true">
+        <antcall target="-jstestdriver:run-testconfig-full-fork" inheritAll="true" />
+        <antcall target="-jstestdriver:run-testconfig-full-headless" inheritAll="true" />
+    </target>
+
+    <target name="-jstestdriver:run-testconfig-full-fork" unless="headless">
+        <java jar="${jstestdriver.runtime}"
+              fork="true"
+              failonerror="true">
             <arg value="- -port" />
             <arg value="${jstestdriver.port}" />
             <arg value="- -browser" />
@@ -120,7 +116,16 @@
             <arg value="- -tests" />
             <arg value="all" />
         </java>
-        -->
+    </target>
+
+    <target name="-jstestdriver:run-testconfig-full-headless" if="headless">
+        <exec executable="${resourcedir}/extensions/jstestdriver/jstestdriver-headless.sh">
+            <arg value="${jstestdriver.runtime}" />
+            <arg value="${commons:logsdir}" />
+            <arg value="${jstestdriver.port}" />
+            <arg value="${jstestdriver.browser}" />
+            <arg value="${jstestdriver.config}" />
+        </exec>
     </target>
 
     <target name="-jstestdriver:check-server">
