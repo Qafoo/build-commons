@@ -27,9 +27,9 @@ An oveview of common use cases for ABC and their common configurations:
 - `PHP application`__
 - `JavaScript frontend application`__
 
-__ usecase/php_library.rst
-__ usecase/php_app.rst
-__ usecase/webapp.rst
+__ usecase/php_library.html
+__ usecase/php_app.html
+__ usecase/webapp.html
 
 Configuration
 =============
@@ -38,7 +38,7 @@ There is a set of base configuration options:
 
 - `Base configuration options`__
 
-__ configuration.rst
+__ configuration.html
 
 And each extension has its own set of extension options:
 
