@@ -54,7 +54,7 @@ foreach ( $exts as $ext )
 $overview .= "\n";
 foreach ( $exts as $ext )
 {
-    $overview .= "__ extensions/$ext.rst\n";
+    $overview .= "__ extensions/$ext.html\n";
 }
 file_put_contents( __DIR__ . '/../site/rst/extensions.rst', $overview );
 
