@@ -1,1 +1,349 @@
-Dummy
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Ant Build Commons &mdash; Ant Build Commons 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/build-commons.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Ant Build Commons 0.2.1 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="#">Ant Build Commons 0.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="ant-build-commons">
+<h1>Ant Build Commons<a class="headerlink" href="#ant-build-commons" title="Permalink to this headline">¶</a></h1>
+<p>ABC (Ant Build Commons) aims to provide standard build tasks for web based
+projects. It started by supporting various different PHP related tools, but by
+now also support JavaScript and CSS related tools. This involves tools for
+verification, testing, static analysis, packaging, deployment and more.</p>
+<p>ABC by default follows the <a class="reference external" href="https://maven.apache.org/">Maven</a> directory layout and the standard build
+chain. ABC is designed to be pluggable and extensible at any point. Every build
+extension can be en- and disabled. There are a lot of different extension
+points to hook your tasks into.</p>
+<p>This documentation will cover common use-cases, where you would want to use
+ABC. Additionally it intends to document all extensions and their configuration
+options.</p>
+<div class="section" id="setting-up-your-project">
+<h2>Setting Up Your Project<a class="headerlink" href="#setting-up-your-project" title="Permalink to this headline">¶</a></h2>
+<p>There are some general steps involved in setting up ABC for your project. After
+that there may be custom configurations, depending on your concrete use case.
+They are described below.</p>
+<div class="section" id="initialization">
+<h3>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h3>
+<p>First you need make ABC available in your project. Every one checking out your
+project should also easily be able to integrate your project using ABC.
+Therefore we suggest to use git submodules, <tt class="docutils literal"><span class="pre">svn:externals</span></tt> or whatever your
+Version Control System supports here.</p>
+<div class="section" id="git">
+<h4>Git<a class="headerlink" href="#git" title="Permalink to this headline">¶</a></h4>
+<p>To make ABC available in the folder <tt class="docutils literal"><span class="pre">setup</span></tt> execute this in the root of your
+repository:</p>
+<div class="highlight-python"><pre>git submodule init git://github.com/Qafoo/build-commons.git setup</pre>
+</div>
+<p>After this ABC will be available and you can proceed to the next step</p>
+</div>
+<div class="section" id="subversion">
+<h4>Subversion<a class="headerlink" href="#subversion" title="Permalink to this headline">¶</a></h4>
+<p>To make ABC available in the folder <tt class="docutils literal"><span class="pre">setup</span></tt> execute this in the root of your
+repository:</p>
+<div class="highlight-python"><pre>svn propset svn:externals 'setup git://github.com/Qafoo/build-commons.git' .
+svn update</pre>
+</div>
+<p>If you already have externals configured better use <tt class="docutils literal"><span class="pre">propedit</span></tt> instead of
+<tt class="docutils literal"><span class="pre">propset</span></tt> and just add the line <tt class="docutils literal"><span class="pre">setup</span>
+<span class="pre">git://github.com/Qafoo/build-commons.git</span></tt> using your editor of choice. After
+this ABC will be available and you can proceed to the next step</p>
+</div>
+</div>
+<div class="section" id="basic-configuration">
+<h3>Basic Configuration<a class="headerlink" href="#basic-configuration" title="Permalink to this headline">¶</a></h3>
+<p>You need two files to configure and build using ABC. You usually would create
+them in your project root directory. First create a file named <tt class="docutils literal"><span class="pre">build.xml</span></tt>
+with the following contents:</p>
+<div class="highlight-python"><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project name="myProject" default="verify" basedir="."&gt;
+    &lt;!-- Import project specific settings --&gt;
+    &lt;property file="build.properties" /&gt;
+
+    &lt;!-- Import the build commons framework --&gt;
+    &lt;import file="setup/src/main/xml/base.xml" /&gt;
+&lt;/project&gt;</pre>
+</div>
+<p>This file is pretty simple, but let&#8217;s just explain the details. The
+<tt class="docutils literal"><span class="pre">build.xml</span></tt> file is the build configuration file used by ant by default. It
+configures how your project is build. This file can get really complex, but ABC
+is here to help.</p>
+<p>First, you set the project name here using the <tt class="docutils literal"><span class="pre">name</span></tt> attribute in the
+<tt class="docutils literal"><span class="pre">project</span></tt> tag. The same tag also defines the default target and the base
+directory. The settings you see here should usually be fine.</p>
+<p>The next is including your custom project configuration, which we will cover in
+a second. Just copy this line.</p>
+<p>The third step includes ABC itself. All the magic is in this line. Just copy
+it.</p>
+<p>You can just create an empty file called <tt class="docutils literal"><span class="pre">build.properties</span></tt> and you are fine.
+All the settings available are described below in the <a class="reference internal" href="#configuration">Configuration</a> and
+<a class="reference internal" href="#extensions">Extensions</a> sections. The following use cases will show common project
+configurations.</p>
+</div>
+<div class="section" id="use-cases">
+<h3>Use Cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h3>
+<p>An oveview of common use cases for ABC and their common configurations:</p>
+<ul class="simple">
+<li><a class="reference external" href="usecase/php_library.html">PHP library</a></li>
+<li><a class="reference external" href="usecase/php_app.html">PHP application</a></li>
+<li><a class="reference external" href="usecase/webapp.html">JavaScript frontend application</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="standard-build-chain">
+<h2>Standard Build Chain<a class="headerlink" href="#standard-build-chain" title="Permalink to this headline">¶</a></h2>
+<img alt="Standard Build Chain" class="align-right" src="_static/build-chain.png" />
+<p>The standard build lifecycle or chain consists of defined set of steps, which
+originate from the <a class="reference external" href="https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#Lifecycle_Reference">Ant Maven</a> project. Not all steps might be relevant to
+your project, but every step has its meaning and extensions can hook into each
+of those steps. Usually one extension will hook into one single step, where it
+makes the most sense.</p>
+<div class="section" id="clean">
+<h3>clean<a class="headerlink" href="#clean" title="Permalink to this headline">¶</a></h3>
+<p>This steps is supposed to clean up. It usually clears out the build directory,
+so that nothing from the last run remains.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-clean:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-clean:after~hook</span></tt></p>
+</div>
+<div class="section" id="validate">
+<h3>validate<a class="headerlink" href="#validate" title="Permalink to this headline">¶</a></h3>
+<p>Validates the project configuration.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-validate:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-validate:main~hook</span></tt>, <tt class="docutils literal"><span class="pre">-validate:after~hook</span></tt></p>
+</div>
+<div class="section" id="initialize">
+<h3>initialize<a class="headerlink" href="#initialize" title="Permalink to this headline">¶</a></h3>
+<p>Initializes the project configuration.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-initialize:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-initialize:after~hook</span></tt></p>
+</div>
+<div class="section" id="compile">
+<h3>compile<a class="headerlink" href="#compile" title="Permalink to this headline">¶</a></h3>
+<p>Compiles the project source code. For PHP this means, that a lint check will be
+run on the source files. For other languages this might be more complex.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-compile:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-compile:main~hook</span></tt>, <tt class="docutils literal"><span class="pre">-compile:after~hook</span></tt></p>
+</div>
+<div class="section" id="test">
+<h3>test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h3>
+<p>Runs the project test suite. Should mostly run only the unit tests of a
+project. The integration tests are supposed to run in the <tt class="docutils literal"><span class="pre">integration-test</span></tt>
+step against the packaged source.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-test:main~hook</span></tt>, <tt class="docutils literal"><span class="pre">-test:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-test:after~hook</span></tt></p>
+</div>
+<div class="section" id="bundle">
+<h3>bundle<a class="headerlink" href="#bundle" title="Permalink to this headline">¶</a></h3>
+<p>This build steps provides all different kinds of bundling operations, before it
+is packaged. This may include JavaScript compile and/or minifying, CSS
+minification, image optimization, changelog/releasenote generation and such.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-bundle:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-bundle:main~hook</span></tt>, <tt class="docutils literal"><span class="pre">-bundle:after~hook</span></tt></p>
+</div>
+<div class="section" id="package">
+<h3>package<a class="headerlink" href="#package" title="Permalink to this headline">¶</a></h3>
+<p>This is ant file contains targets for different package/distribution formats
+used to deliver php application.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-package:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-package:main~hook</span></tt>, <tt class="docutils literal"><span class="pre">-package:after~hook</span></tt></p>
+</div>
+<div class="section" id="integration-test">
+<h3>integration-test<a class="headerlink" href="#integration-test" title="Permalink to this headline">¶</a></h3>
+<p>This ant build file contains targets that are used to perform integration tests
+against the project&#8217;s source code.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-integration-test:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-integration-test:after~hook</span></tt></p>
+</div>
+<div class="section" id="verify">
+<h3>verify<a class="headerlink" href="#verify" title="Permalink to this headline">¶</a></h3>
+<p>This is ant file contains targets for different static analysis and quality
+checks used for the project source.</p>
+<p>These targets are typically run in parallel because the verify analysis can
+consume quite some time and it makes sense to use all available cores for that.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-verify:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-verify:main~parallel~hook</span></tt>,
+<tt class="docutils literal"><span class="pre">-verify:main~hook</span></tt>, <tt class="docutils literal"><span class="pre">-verify:after~hook</span></tt></p>
+</div>
+<div class="section" id="install">
+<h3>install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h3>
+<p>This build file contains targets related to local installation of the current
+project.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-install:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-install:after~hook</span></tt></p>
+</div>
+<div class="section" id="deploy">
+<h3>deploy<a class="headerlink" href="#deploy" title="Permalink to this headline">¶</a></h3>
+<p>This build file contains all those targets that are related to the project&#8217;s
+deploy process.</p>
+<p>Hooks: <tt class="docutils literal"><span class="pre">-deploy:before~hook</span></tt>, <tt class="docutils literal"><span class="pre">-deploy:main~hook</span></tt>, <tt class="docutils literal"><span class="pre">-deploy:after~hook</span></tt></p>
+</div>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>There is a set of base configuration options you might want to configure in your
+<tt class="docutils literal"><span class="pre">build.properties</span></tt> file.</p>
+<div class="section" id="project-properties">
+<h3>Project properties<a class="headerlink" href="#project-properties" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><pre>project.uri       = example.com
+project.dir       = ${basedir}
+project.name      = ${ant.project.name}
+project.version   = 0.0.0
+project.stability = alpha</pre>
+</div>
+<p>This set of options describe the very basic general options of your project,
+like name, version and the project URL. As you can see by default the name and
+base directory will be used from you <tt class="docutils literal"><span class="pre">build.xml</span></tt> file.</p>
+<div class="highlight-python"><pre>project.root = ${basedir}/src</pre>
+</div>
+<p>This option is especially important for packaging and bundling of the project.
+All sources below this path will be packaged.</p>
+</div>
+<div class="section" id="common-properties">
+<h3>Common properties<a class="headerlink" href="#common-properties" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">commons</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">development</span>
+</pre></div>
+</div>
+<p>The current environment of your project. You might want to reuse this property
+in your application to determine the current debug-level.</p>
+<div class="highlight-python"><pre>commons.basedir = ${basedir}/..</pre>
+</div>
+<p>The directory where the <tt class="docutils literal"><span class="pre">build</span></tt> directory will be created. By default it is
+one level above your <tt class="docutils literal"><span class="pre">build.xml</span></tt> file (or whatever <tt class="docutils literal"><span class="pre">basedir</span></tt> you configured
+in there). You might want to set it to <tt class="docutils literal"><span class="pre">commons.basedir</span> <span class="pre">=</span> <span class="pre">${basedir}</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">commons</span><span class="o">.</span><span class="n">builddir</span><span class="o">.</span><span class="n">name</span>  <span class="o">=</span> <span class="n">build</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">distdir</span><span class="o">.</span><span class="n">name</span>   <span class="o">=</span> <span class="n">dist</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">logsdir</span><span class="o">.</span><span class="n">name</span>   <span class="o">=</span> <span class="n">logs</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">bundledir</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">bundle</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span>   <span class="o">=</span> <span class="n">tmp</span>
+</pre></div>
+</div>
+<p>Names of the directories in the build directory, which are created and used
+during the build process.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">commons</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">php</span> <span class="o">=</span> <span class="n">php</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">git</span> <span class="o">=</span> <span class="n">git</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">make</span> <span class="o">=</span> <span class="n">make</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span>
+<span class="n">commons</span><span class="o">.</span><span class="n">executable</span><span class="o">.</span><span class="n">rhino</span> <span class="o">=</span> <span class="n">rhino</span>
+</pre></div>
+</div>
+<p>Build commons requires some executables to execute various programs during the
+build process. The paths to those executables can be overwritten, if they are
+named differently on your system.</p>
+<div class="highlight-python"><pre>commons.srcdir  = ${project.root}/main
+commons.testdir = ${project.root}/test
+commons.sitedir = ${project.root}/site
+
+# Base directories with PHP source and test files
+commons.srcdir.php  = ${commons.srcdir}/php
+commons.testdir.php = ${commons.testdir}/php
+
+# Base directory for htdocs/site of the project.
+commons.srcdir.htdocs = ${commons.srcdir}/htdocs
+
+# Base directories with JavaScript source and test files
+commons.srcdir.js    = ${commons.srcdir}/js
+commons.testdir.js   = ${commons.testdir}/js
+commons.vendordir.js = vendor
+
+# Base directories with resource files
+commons.srcdir.resource  = ${commons.srcdir}/resources
+commons.testdir.resource = ${commons.testdir}/resources
+commons.sitedir.resource = ${commons.sitedir}/resources</pre>
+</div>
+<p>If your project does not follow the Maven directory layout you can change the
+paths where the source files are located using this set of configuration
+options.</p>
+<div class="highlight-python"><pre>commons.metadata.dir       = ${basedir}/.abc
+commons.metadata.cache.dir = ${commons.metadata.dir}</pre>
+</div>
+<p>ABC itself wants to cache some files to make the build process faster. By
+default those files are stored in the folder <tt class="docutils literal"><span class="pre">.abc</span></tt>. You can change this
+using the two options above.</p>
+</div>
+<div class="section" id="extensions">
+<h3>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h3>
+<p>There is a bunch of available extensions, and each can have its own extension
+points and configuration parameters:</p>
+<ul class="simple">
+<li><a class="reference external" href="extensions/ant-test.html">Ant-test</a></li>
+<li><a class="reference external" href="extensions/archive.html">Archive</a></li>
+<li><a class="reference external" href="extensions/availability.html">Availability</a></li>
+<li><a class="reference external" href="extensions/changes.html">Changes</a></li>
+<li><a class="reference external" href="extensions/codesniffer.html">Codesniffer</a></li>
+<li><a class="reference external" href="extensions/db-mysql.html">Db-mysql</a></li>
+<li><a class="reference external" href="extensions/db.html">Db</a></li>
+<li><a class="reference external" href="extensions/dbdeploy.html">Dbdeploy</a></li>
+<li><a class="reference external" href="extensions/docbook.html">Docbook</a></li>
+<li><a class="reference external" href="extensions/enabled.html">Enabled</a></li>
+<li><a class="reference external" href="extensions/jshint.html">Jshint</a></li>
+<li><a class="reference external" href="extensions/jslint.html">Jslint</a></li>
+<li><a class="reference external" href="extensions/jstestdriver.html">Jstestdriver</a></li>
+<li><a class="reference external" href="extensions/npm.html">Npm</a></li>
+<li><a class="reference external" href="extensions/pdepend.html">Pdepend</a></li>
+<li><a class="reference external" href="extensions/pear.html">Pear</a></li>
+<li><a class="reference external" href="extensions/phar.html">Phar</a></li>
+<li><a class="reference external" href="extensions/phpab.html">Phpab</a></li>
+<li><a class="reference external" href="extensions/phpcb.html">Phpcb</a></li>
+<li><a class="reference external" href="extensions/phpcpd.html">Phpcpd</a></li>
+<li><a class="reference external" href="extensions/phplint.html">Phplint</a></li>
+<li><a class="reference external" href="extensions/phploc.html">Phploc</a></li>
+<li><a class="reference external" href="extensions/phpmd.html">Phpmd</a></li>
+<li><a class="reference external" href="extensions/phpunit.html">Phpunit</a></li>
+<li><a class="reference external" href="extensions/pirum.html">Pirum</a></li>
+<li><a class="reference external" href="extensions/remote.html">Remote</a></li>
+<li><a class="reference external" href="extensions/requirejs-bootstrap.html">Requirejs-bootstrap</a></li>
+<li><a class="reference external" href="extensions/requirejs-bundle.html">Requirejs-bundle</a></li>
+<li><a class="reference external" href="extensions/requirejs.html">Requirejs</a></li>
+<li><a class="reference external" href="extensions/scm-ext.html">Scm-ext</a></li>
+<li><a class="reference external" href="extensions/scm-git.html">Scm-git</a></li>
+<li><a class="reference external" href="extensions/scm-svn.html">Scm-svn</a></li>
+<li><a class="reference external" href="extensions/scm.html">Scm</a></li>
+<li><a class="reference external" href="extensions/sonar-php.html">Sonar-php</a></li>
+<li><a class="reference external" href="extensions/sonar.html">Sonar</a></li>
+<li><a class="reference external" href="extensions/version.html">Version</a></li>
+<li><a class="reference external" href="extensions/wro4j-minifier.html">Wro4j-minifier</a></li>
+<li><a class="reference external" href="extensions/wro4j.html">Wro4j</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="#">Ant Build Commons 0.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

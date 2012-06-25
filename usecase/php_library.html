@@ -1,0 +1,134 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Use Case: PHP Library &mdash; Ant Build Commons 0.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/build-commons.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Ant Build Commons 0.2.1 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../index.html">Ant Build Commons 0.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="use-case-php-library">
+<h1>Use Case: PHP Library<a class="headerlink" href="#use-case-php-library" title="Permalink to this headline">¶</a></h1>
+<p>Lets take a look at the build configuration of a custom PHP library not
+following the standard Maven directory structure. As an example we pick the
+<a class="reference external" href="http://zetacomponents.org/documentation/trunk/Graph/tutorial.html">Zeta Components Graph component</a>.</p>
+<p>The source code of the components (including the build setup) is available at:
+<a class="reference external" href="https://github.com/zetacomponents/Graph">https://github.com/zetacomponents/Graph</a></p>
+<p>The <tt class="docutils literal"><span class="pre">build.properties</span></tt> file looks like this:</p>
+<div class="highlight-python"><pre>project.name = Zeta Components Graph component
+project.version = 1.6.0
+project.stability = stable
+
+# The commons based directory will be used to calculate several build related
+# paths and directories. Therefore we will keep it separated and independent for
+# each component in the component's basedir.
+commons.basedir = ${basedir}
+
+# Base directories with PHP source and test files
+commons.srcdir = ${basedir}/src
+commons.srcdir.php = ${basedir}/src
+commons.testdir.php = ${basedir}
+
+codesniffer.standard = Ezc
+codesniffer.standard.package.name = PHP_CodeSniffer_Standards_EZC
+codesniffer.standard.package.channel = pear.xplib.de</pre>
+</div>
+<p>The first three settings define the project name, version and stability level.
+These properties are most important during packaging / releases. This is not
+yet automated using ABC in this project, but might be in the future.</p>
+<p>By the default the build directory resides one directory level above the
+<tt class="docutils literal"><span class="pre">build.xml</span></tt> file (respectively the configured basedir). But since components
+might have different dependencies this project decided to keep the build
+directory in the components directory. Thus the build will create a <tt class="docutils literal"><span class="pre">build</span></tt>
+directory in the directory where the <tt class="docutils literal"><span class="pre">build.xml</span></tt> is.</p>
+<p>The next three settings are probably the most important settings. They define
+where the project source and the project tests can be found. By default the
+Apache Maven directory layout is used, but this is quite uncommon for PHP
+projects. In this case we define that the source sits under <tt class="docutils literal"><span class="pre">src/</span></tt> &#8211; this is
+everything we want to release and everything which should go through static
+source code analysis, and so on. In this project the <tt class="docutils literal"><span class="pre">phpunit.xml</span></tt> is in the
+project root, so we also set the <tt class="docutils literal"><span class="pre">commons.testdir.php</span></tt> to the root directory.
+Doing this ABC will find the tests and analyze the correct source code.</p>
+<p>The last set of configuration options configures PHP_CodeSniffer. Since the
+PHP Community did not really agree on a general Coding Style you always will
+ahve to configure this extension to make it work. We set the name of the coding
+standard, the name of the pear package and the pear channel server name, from
+which the package can be installed.</p>
+<div class="section" id="executing-the-build">
+<h2>Executing The Build<a class="headerlink" href="#executing-the-build" title="Permalink to this headline">¶</a></h2>
+<p>If we call <tt class="docutils literal"><span class="pre">ant</span></tt> now, it will use the local <tt class="docutils literal"><span class="pre">build.xml</span></tt> and the
+<tt class="docutils literal"><span class="pre">build.properties</span></tt> we just defined. Always execute ant in the directory where
+the <tt class="docutils literal"><span class="pre">build.xml</span></tt> resides. But what happens now?</p>
+<p>If this is the first run, ABC will first install all required tools for the
+build locally. This means installing packages like PEAR, PHPUnit, PHPMD,
+PDepend, PHPCPD and some more. This might take a bit.</p>
+<p>Also in the first run already, and in every consecutive run ant will execute
+your default build target, which usually is <tt class="docutils literal"><span class="pre">verify</span></tt>. This way it will verify
+your project using tools like, PHPUnit, PHPMD, PDepend, PHPCPD, PHP_Codesniffer
+and more. This might look something like this:</p>
+<div class="highlight-python"><pre>$ ant verify
+Buildfile: /path/to/build.xml
+
+-clean:clean:
+   [delete] Deleting directory /path/to/build
+
+[... a lot of output ...]
+
+BUILD SUCCESSFUL
+Total time: 5 seconds</pre>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">BUILD</span> <span class="pre">SUCCESSFUL</span></tt> part is the important. Ant itself will produce quite
+some output, which is stripped down here. It helps a bit to use the following
+alias definition: <tt class="docutils literal"><span class="pre">alias</span> <span class="pre">ant='ant</span> <span class="pre">-logger</span> <span class="pre">org.apache.tools.ant.NoBannerLogger'</span></tt>.</p>
+<p>If the build failed you can check <tt class="docutils literal"><span class="pre">build/logs</span></tt> for all build results. There
+are also the build results / artifacts you&#8217;d publish in tools like Jenkins.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="../index.html">Ant Build Commons 0.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
