@@ -30,7 +30,7 @@ Initialization
 
 First you need make ABC available in your project. Every one checking out your
 project should also easily be able to integrate your project using ABC.
-Therefore we suggest to use git submodules, svn:externals or whatever your
+Therefore we suggest to use git submodules, ``svn:externals`` or whatever your
 Version Control System supports here.
 
 Git
@@ -61,7 +61,7 @@ Basic Configuration
 -------------------
 
 You need two files to configure and build using ABC. You usually would create
-them in your project root directoy. First create a file named ``build.xml``
+them in your project root directory. First create a file named ``build.xml``
 with the following contents::
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -164,7 +164,7 @@ bundle
 ------
 
 This build steps provides all different kinds of bundling operations, before it
-is packaged. This may include javascript compile and/or     minifying, css
+is packaged. This may include JavaScript compile and/or minifying, CSS
 minification, image optimization, changelog/releasenote generation and such.
 
 Hooks: ``-bundle:before~hook``, ``-bundle:main~hook``, ``-bundle:after~hook``
@@ -172,7 +172,7 @@ Hooks: ``-bundle:before~hook``, ``-bundle:main~hook``, ``-bundle:after~hook``
 package
 -------
 
-This is ant file contains targets for different package/distributio formats
+This is ant file contains targets for different package/distribution formats
 used to deliver php application.
 
 Hooks: ``-package:before~hook``, ``-package:main~hook``, ``-package:after~hook``
@@ -191,8 +191,8 @@ verify
 This is ant file contains targets for different static analysis and quality
 checks used for the project source.
 
-These targets are typically run in parallel because the varify analysis can
-consume quite some time and it makes sense to use all avialable cores for that.
+These targets are typically run in parallel because the verify analysis can
+consume quite some time and it makes sense to use all available cores for that.
 
 Hooks: ``-verify:before~hook``, ``-verify:main~parallel~hook``,
 ``-verify:main~hook``, ``-verify:after~hook``
@@ -216,7 +216,7 @@ Hooks: ``-deploy:before~hook``, ``-deploy:main~hook``, ``-deploy:after~hook``
 Configuration
 =============
 
-There is a set of base configuration options you mght want to configure in your
+There is a set of base configuration options you might want to configure in your
 ``build.properties`` file.
 
 Project properties
@@ -248,7 +248,7 @@ Common properties
 
     commons.env = development
 
-The vurrent environment of your project. You might want to reuse this properpty
+The current environment of your project. You might want to reuse this property
 in your application to determine the current debug-level.
 
 ::
@@ -256,7 +256,7 @@ in your application to determine the current debug-level.
     commons.basedir = ${basedir}/..
 
 The directory where the ``build`` directory will be created. By default it is
-one level above your ``build.xml`` file (or whatever ``basedor`` you configured
+one level above your ``build.xml`` file (or whatever ``basedir`` you configured
 in there). You might want to set it to ``commons.basedir = ${basedir}``.
 
 ::
@@ -280,7 +280,7 @@ during the build process.
 
 Build commons requires some executables to execute various programs during the
 build process. The paths to those executables can be overwritten, if they are
-named differently ony your system.
+named differently on your system.
 
 ::
 
