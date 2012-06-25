@@ -1,3 +1,0 @@
-[submodule "src/site/html"]
-	path = src/site/html
-	url = git@github.com:Qafoo/build-commons.git
