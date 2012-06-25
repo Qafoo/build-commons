@@ -18,8 +18,83 @@ options.
 
 __ https://maven.apache.org/
 
-Use cases
-=========
+Setting Up Your Project
+=======================
+
+There are some general steps involved in setting up ABC for your project. After
+that there may be custom configurations, depending on your concrete use case.
+They are described below.
+
+Initialization
+--------------
+
+First you need make ABC available in your project. Every one checking out your
+project should also easily be able to integrate your project using ABC.
+Therefore we suggest to use git submodules, svn:externals or whatever your
+Version Control System supports here.
+
+Git
+^^^
+
+To make ABC available in the folder ``setup`` execute this in the root of your
+repository::
+
+    git submodule init git://github.com/Qafoo/build-commons.git setup
+ 
+After this ABC will be available and you can proceed to the next step
+
+Subversion
+^^^^^^^^^^
+
+To make ABC available in the folder ``setup`` execute this in the root of your
+repository::
+
+    svn propset svn:externals 'setup git://github.com/Qafoo/build-commons.git' .
+    svn update
+ 
+If you already have externals configured better use ``propedit`` instead of
+``propset`` and just add the line ``setup
+git://github.com/Qafoo/build-commons.git`` using your editor of choice. After
+this ABC will be available and you can proceed to the next step
+
+Basic Configuration
+-------------------
+
+You need two files to configure and build using ABC. You usually would create
+them in your project root directoy. First create a file named ``build.xml``
+with the following contents::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project name="myProject" default="verify" basedir=".">
+        <!-- Import project specific settings -->
+        <property file="build.properties" />
+
+        <!-- Import the build commons framework -->
+        <import file="setup/src/main/xml/base.xml" />
+    </project>
+
+This file is pretty simple, but let's just explain the details. The
+``build.xml`` file is the build configuration file used by ant by default. It
+configures how your project is build. This file can get really complex, but ABC
+is here to help.
+
+First, you set the project name here using the ``name`` attribute in the
+``project`` tag. The same tag also defines the default target and the base
+directory. The settings you see here should usually be fine.
+
+The next is including your custom project configuration, which we will cover in
+a second. Just copy this line.
+
+The third step includes ABC itself. All the magic is in this line. Just copy
+it.
+
+You can just create an empty file called ``build.properties`` and you are fine.
+All the settings available are described below in the Configuration_ and
+Extensions_ sections. The following use cases will show common project
+configurations.
+
+Use Cases
+---------
 
 An oveview of common use cases for ABC and their common configurations:
 
