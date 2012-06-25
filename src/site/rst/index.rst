@@ -141,11 +141,107 @@ Hooks: ``-deploy:before~hook``, ``-deploy:main~hook``, ``-deploy:after~hook``
 Configuration
 =============
 
-There is a set of base configuration options:
+There is a set of base configuration options you mght want to configure in your
+``build.properties`` file.
 
-- `Base configuration options`__
+Project properties
+------------------
 
-__ configuration.html
+::
+
+    project.uri       = example.com
+    project.dir       = ${basedir}
+    project.name      = ${ant.project.name}
+    project.version   = 0.0.0
+    project.stability = alpha
+
+This set of options describe the very basic general options of your project,
+like name, version and the project URL. As you can see by default the name and
+base directory will be used from you ``build.xml`` file.
+
+::
+
+    project.root = ${basedir}/src
+
+This option is especially important for packaging and bundling of the project.
+All sources below this path will be packaged.
+
+Common properties
+-----------------
+
+::
+
+    commons.env = development
+
+The vurrent environment of your project. You might want to reuse this properpty
+in your application to determine the current debug-level.
+
+::
+
+    commons.basedir = ${basedir}/..
+
+The directory where the ``build`` directory will be created. By default it is
+one level above your ``build.xml`` file (or whatever ``basedor`` you configured
+in there). You might want to set it to ``commons.basedir = ${basedir}``.
+
+::
+
+    commons.builddir.name  = build
+    commons.distdir.name   = dist
+    commons.logsdir.name   = logs
+    commons.bundledir.name = bundle
+    commons.tempdir.name   = tmp
+
+Names of the directories in the build directory, which are created and used
+during the build process.
+
+::
+
+    commons.executable.php = php
+    commons.executable.git = git
+    commons.executable.make = make
+    commons.executable.node = node
+    commons.executable.rhino = rhino
+
+Build commons requires some executables to execute various programs during the
+build process. The paths to those executables can be overwritten, if they are
+named differently ony your system.
+
+::
+
+    commons.srcdir  = ${project.root}/main
+    commons.testdir = ${project.root}/test
+    commons.sitedir = ${project.root}/site
+
+    # Base directories with PHP source and test files
+    commons.srcdir.php  = ${commons.srcdir}/php
+    commons.testdir.php = ${commons.testdir}/php
+
+    # Base directory for htdocs/site of the project.
+    commons.srcdir.htdocs = ${commons.srcdir}/htdocs
+
+    # Base directories with JavaScript source and test files
+    commons.srcdir.js    = ${commons.srcdir}/js
+    commons.testdir.js   = ${commons.testdir}/js
+    commons.vendordir.js = vendor
+
+    # Base directories with resource files
+    commons.srcdir.resource  = ${commons.srcdir}/resources
+    commons.testdir.resource = ${commons.testdir}/resources
+    commons.sitedir.resource = ${commons.sitedir}/resources
+
+If your project does not follow the Maven directory layout you can change the
+paths where the source files are located using this set of configuration
+options.
+
+::
+
+    commons.metadata.dir       = ${basedir}/.abc
+    commons.metadata.cache.dir = ${commons.metadata.dir}
+
+ABC itself wants to cache some files to make the build process faster. By
+default those files are stored in the folder ``.abc``. You can change this
+using the two options above.
 
 Extensions
 ----------
