@@ -1,0 +1,60 @@
+#!/usr/bin/env php
+<?php
+
+$exts = array();
+foreach ( glob( __DIR__ . '/../main/xml/exts/*.xml' ) as $ext )
+{
+    $name = pathinfo( $ext, PATHINFO_FILENAME );
+    $target = __DIR__ . '/../site/rst/extensions/' . $name . '.rst';
+
+    echo " - $name: ";
+    $exts[] = $name;
+
+    if ( file_exists( $target ) )
+    {
+        echo "Skip", PHP_EOL;
+        continue;
+    }
+
+    $extDoc = new \DOMDocument();
+    $extDoc->load( $ext );
+
+    $xPath = new \DOMXPath( $extDoc );
+
+    $properties = array();
+    foreach ( $xPath->query( '//property[@file]' ) as $property )
+    {
+        $propertyFile = str_replace(
+            '${resourcedir}',
+            __DIR__ . '/../main/resources/',
+            $property->getAttribute( 'file' )
+        );
+        $properties = array_merge( $properties, @parse_ini_file( $propertyFile ) ?: array() );
+    }
+
+    $extensions = array();
+    foreach ( $xPath->query( '//extension-point' ) as $extensionPoint )
+    {
+        $extensions[] = $extensionPoint->getAttribute( 'name' );
+    }
+
+    ob_start();
+    include __DIR__ . '/generateExtDocStubs-template.rst';
+
+    file_put_contents( $target, ob_get_clean() );
+    echo "Generated", PHP_EOL;
+}
+
+$overview = '';
+foreach ( $exts as $ext )
+{
+    $name = ucfirst( $ext );
+    $overview .= "* `$name`__\n";
+}
+$overview .= "\n";
+foreach ( $exts as $ext )
+{
+    $overview .= "__ extensions/$ext.html\n";
+}
+file_put_contents( __DIR__ . '/../site/rst/extensions.rst', $overview );
+
