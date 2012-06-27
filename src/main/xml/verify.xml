@@ -43,6 +43,12 @@
                 <antcall target="-verify:main~hook" />
             </sequential>
         </parallel>
+        
+        <fail message="At least one build step in verify:verify has failed.">
+            <condition>
+                <istrue value="${commons.scriptdef.failed}" />
+            </condition>
+        </fail>
     </target>
 
     <!--

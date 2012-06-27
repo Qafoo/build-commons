@@ -83,7 +83,7 @@
             var dependencies = targets.get(
                 attributes.get("target")
             ).getDependencies();
-
+            
             var parallel = project.createTask("parallel");
             while(dependencies.hasMoreElements()) {
                 (function(dependency) {
@@ -92,8 +92,18 @@
                     task.setTarget(target);
                     parallel.addTask(task);
                 })(dependencies.nextElement());
+                
+                // Reset fail indicator
+                self.project.setProperty( 'commons.scriptdef.failed', false );
 
-                parallel.perform();
+                try 
+                {
+                    parallel.perform();
+                } 
+                catch ( e )
+                {
+                    self.project.setProperty( 'commons.scriptdef.failed', true );
+                }
             }
         ]]>
     </commons.scriptdef>
