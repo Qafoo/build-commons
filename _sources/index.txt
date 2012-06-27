@@ -49,7 +49,7 @@ Subversion
 To make ABC available in the folder ``setup`` execute this in the root of your
 repository::
 
-    svn propset svn:externals 'setup git://github.com/Qafoo/build-commons.git' .
+    svn propset svn:externals 'setup http://svn.github.com/Qafoo/build-commons.git' .
     svn update
  
 If you already have externals configured better use ``propedit`` instead of

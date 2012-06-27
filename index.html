@@ -74,7 +74,7 @@ repository:</p>
 <h4>Subversion<a class="headerlink" href="#subversion" title="Permalink to this headline">¶</a></h4>
 <p>To make ABC available in the folder <tt class="docutils literal"><span class="pre">setup</span></tt> execute this in the root of your
 repository:</p>
-<div class="highlight-python"><pre>svn propset svn:externals 'setup git://github.com/Qafoo/build-commons.git' .
+<div class="highlight-python"><pre>svn propset svn:externals 'setup http://svn.github.com/Qafoo/build-commons.git' .
 svn update</pre>
 </div>
 <p>If you already have externals configured better use <tt class="docutils literal"><span class="pre">propedit</span></tt> instead of
