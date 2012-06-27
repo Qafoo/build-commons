@@ -11,4 +11,11 @@
     -->
     <import file="src/main/xml/base.xml" />
 
+    <target name="site-html">
+        <exec executable="sphinx-build">
+            <arg value="${basedir}/src/site/rst/"/>
+            <arg value="${basedir}/src/site/html/"/>
+        </exec>
+    </target>
+
 </project>
