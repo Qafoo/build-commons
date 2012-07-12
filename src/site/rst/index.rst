@@ -39,7 +39,7 @@ Git
 To make ABC available in the folder ``setup`` execute this in the root of your
 repository::
 
-    git submodule init git://github.com/Qafoo/build-commons.git setup
+    git submodule add git://github.com/Qafoo/build-commons.git setup
  
 After this ABC will be available and you can proceed to the next step
 
