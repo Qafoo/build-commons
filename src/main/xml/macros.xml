@@ -55,10 +55,12 @@
     -->
     <macrodef name="commons.rhino">
         <attribute name="failonerror" default="false" />
+        <attribute name="output" default="false" />
         <element name="configuration" implicit="yes" />
         <sequential>
             <java jar="${commons:basedir}/main/resources/rhino/rhino/js.jar"
                   fork="true"
+                  output="@{output}"
                   failonerror="@{failonerror}"
                   taskname="rhino">
                 <configuration />
