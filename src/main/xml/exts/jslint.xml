@@ -43,7 +43,7 @@
         </fileset>
         <property name="jslint:files-to-scan" refid="jslint:files-to-scan-fileset" />
 
-        <script language="javascript">
+        <commons.script language="javascript">
             var before = project.getProperty( "jslint:files-to-scan" ),
                 base = project.getProperty( "commons.srcdir.js" ),
                 files = before.split( ";" );
@@ -55,10 +55,7 @@
                     return '"' + base + '/' + value + '"';
                 } ).join( " " )
             );
-        </script>
-
-
-        <echo>${jslint:files-to-scan-clean}</echo>
+        </commons.script>
 
         <commons.rhino
             failonerror="${jslint.fail.on.violation}"
