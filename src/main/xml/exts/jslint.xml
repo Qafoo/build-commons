@@ -37,18 +37,37 @@
                      -jslint:after~hook" />
 
     <target name="-jslint:run" depends="-jslint:install-or-upgrade">
-        <apply executable="${jslint.js.executable}"
-               failonerror="${jslint.fail.on.violation}"
-               output="${jslint.logfile}"
-               parallel="true">
+        <fileset dir="${commons.srcdir.js}" erroronmissingdir="true" id="jslint:files-to-scan-fileset">
+            <include name="**/*.js" />
+            <exclude name="${commons.vendordir.js}/**" />
+        </fileset>
+        <property name="jslint:files-to-scan" refid="jslint:files-to-scan-fileset" />
+
+        <script language="javascript">
+            var before = project.getProperty( "jslint:files-to-scan" ),
+                base = project.getProperty( "commons.srcdir.js" ),
+                files = before.split( ";" );
+
+            
+            project.setProperty(
+                "jslint:files-to-scan-clean",
+                files.map( function( value ) {
+                    return '"' + base + '/' + value + '"';
+                } ).join( " " )
+            );
+        </script>
+
+
+        <echo>${jslint:files-to-scan-clean}</echo>
+
+        <commons.rhino
+            failonerror="${jslint.fail.on.violation}"
+            output="${jslint.logfile}">
             <arg line="-f ${jslint.jslint.js}" />
             <arg line="-f ${jslint.options}" />
             <arg line="${jslint.runner}" />
-            <fileset dir="${commons.srcdir.js}" erroronmissingdir="true">
-                <include name="**/*.js" />
-                <exclude name="${commons.vendordir.js}/**" />
-            </fileset>
-        </apply>
+            <arg line="${jslint:files-to-scan-clean}" />
+        </commons.rhino>
     </target>
 
     <target name="-jslint:install-or-upgrade"
