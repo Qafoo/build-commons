@@ -68,10 +68,14 @@
             depends="composer:phar-exists"
             unless="-composer:phar.exists">
 
-        <get src="${composer.download.uri}" dest="${basedir}/installer" />
+        <tempfile property="-temp:composer:installer"
+                  destdir="${basedir}"
+                  deleteonexit="true" />
+
+        <get src="${composer.download.uri}" dest="${-temp:composer:installer}" />
 
         <exec executable="${commons.executable.php}" failonerror="true">
-            <arg value="${basedir}/installer" />
+            <arg value="${-temp:composer:installer}" />
         </exec>
     </target>
 
