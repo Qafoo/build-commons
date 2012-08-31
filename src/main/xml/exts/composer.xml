@@ -15,10 +15,7 @@
             depends="composer:dependencies-lock-exists"
             if="composer:dependencies.lock.exists">
 
-        <exec executable="${commons.executable.php}" failonerror="true">
-            <arg value="${composer.executable}" />
-            <arg value="install" />
-        </exec>
+        <antcall target="-composer:dependencies-install" />
     </target>
 
     <target name="composer:dependencies-update"
@@ -37,6 +34,23 @@
         </condition>
     </target>
 
+    <target name="-composer:dependencies-install"
+            depends="-composer:dependencies-lock-up2date"
+            unless="-composer:dependencies.lock.up2date">
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${composer.executable}" />
+            <arg value="install" />
+        </exec>
+
+        <touch file="${composer.up2date.file}" />
+    </target>
+
+    <target name="-composer:dependencies-lock-up2date">
+        <uptodate property="-composer:dependencies.lock.up2date"
+                  srcfile="${composer.dependency.lock}"
+                  targetfile="${composer.up2date.file}" />
+    </target>
 
     <target name="composer:is-enabled"
             depends="-commons:is-offline-mode">
