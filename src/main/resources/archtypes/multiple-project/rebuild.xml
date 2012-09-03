@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant-build-commons-archtype-multi-project-rebuild" basedir="." default="rebuild">
+<project name="ant-build-commons-archtype-multiple-project-rebuild" basedir="." default="rebuild">
 
     <target name="rebuild">
 
