@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant-build-commons-archtype-multi-project-rebuild" basedir="." default="rebuild">
+<project name="ant-build-commons-archtype-multiple-project-rebuild" basedir="." default="rebuild">
 
     <target name="rebuild">
 
@@ -8,7 +8,9 @@
     <target name="archtype:merge-build-files">
 
         <concat destfile="foo.xml" overwrite="true" fixlastline="true">
-            <fileset dir="${basedir}/../../../xml/" includes="**/*.xml" />
+            <fileset dir="${basedir}/../../../xml/" includes="**/*.xml">
+                <exclude name="archtypes/*.xml" />
+            </fileset>
             <filterchain>
                 <linecontains negate="true">
                     <contains value="&lt;?xml"/>
@@ -24,7 +26,7 @@
     <target name="archtype:generate-build-file"
             depends="archtype:merge-build-files">
 
-        <xslt in="foo.xml" out="foo.txt" style="rebuild.xsl">
+        <xslt in="foo.xml" out="${basedir}/../../../xml/archtypes/multiple-project.xml" style="rebuild.xsl">
             
         </xslt>
     </target>

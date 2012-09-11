@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-vagrant">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/vagrant/vagrant.properties" />
+
+    <target name="vagrant:help">
+        <echo taskname="help">
+The Vagrant extension provides targets to interact with a Virtual Machine
+managed with Vagrant.
+&#x00A0;
+vagrant:halt
+  Stops a running Virtual Machine instance.
+&#x00A0;
+vagrant:up
+  Starts a new Virtual Machine instance.
+&#x00A0;
+vagrant:restart
+  Restarts a new Virtual Machine instance.
+&#x00A0;
+vagrant:exec
+  Executes a user specified command on a running Virtual Machine.
+  &#x00A0;
+    ~ $ ant vagrant:exec -Dcommand="ls /var/www/"
+&#x00A0;
+vagrant:exec
+  Executes an Ant-Build-Commons build step on a running Virtual Machine.
+  &#x00A0;
+    ~ $ ant vagrant:abc -Dtarget="clean verify"
+&#x00A0;
+        </echo>
+    </target>
+
+    <target name="vagrant:halt">
+        <exec executable="${vagrant.executable}"
+              dir="${vagrant.basedir}"
+              taskname="vagrant:halt"
+              failonerror="true">
+            <arg value="halt" />
+        </exec>
+    </target>
+
+    <target name="vagrant:up">
+        <exec executable="${vagrant.executable}"
+              dir="${vagrant.basedir}"
+              taskname="vagrant:up"
+              failonerror="true">
+
+            <arg value="up"/>
+        </exec>
+    </target>
+
+    <target name="vagrant:provision">
+        <exec executable="${vagrant.executable}"
+              dir="${vagrant.basedir}"
+              taskname="vagrant:provision"
+              failonerror="true">
+            <arg value="provision" />
+        </exec>
+    </target>
+
+    <target name="vagrant:restart" depends="vagrant:halt, vagrant:up" />
+
+    <target name="vagrant:exec">
+        <property name="vagrant.taskname" value="exec" />
+        <exec executable="${vagrant.executable}"
+              dir="${vagrant.basedir}"
+              taskname="vagrant:${vagrant.taskname}"
+              failonerror="true">
+            <arg value="ssh" />
+            <arg value="-c" />
+            <arg value="${command}" />
+        </exec>
+    </target>
+
+    <!--
+        Parameters:
+            - ${target} An ABC Ant target name.
+
+        TODO: Pass current environment and other properties to vm Ant run
+    -->
+    <target name="vagrant:abc">
+        <antcall target="vagrant:exec">
+            <param name="vagrant.taskname" value="abc" />
+            <param name="command"
+                   value="cd '${vagrant.vm.basedir}' &amp;&amp; ant ${target}" />
+        </antcall>
+    </target>
+
+</project>

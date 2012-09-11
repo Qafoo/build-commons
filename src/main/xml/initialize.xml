@@ -29,6 +29,7 @@
     <target name="initialize:initialize"
             depends="validate:validate,
                      -initialize:before~hook,
+                     -initialize:main~hook,
                      -initialize:initialize,
                      -initialize:after~hook" />
 
@@ -122,13 +123,19 @@
     </target>
 
     <!--
-        Hook target that will be called before the initialization phase in the
+        Hook target that will be called before the initialization phase if the
         build process starts.
     -->
     <extension-point name="-initialize:before~hook" />
 
     <!--
-        Hook target that will be called after the initialization phase in the
+        Hook target that will be called as main initialization phase in the
+        build process.
+    -->
+    <extension-point name="-initialize:main~hook" />
+
+    <!--
+        Hook target that will be called after the initialization phase if the
         build process has finished.
     -->
     <extension-point name="-initialize:after~hook" />

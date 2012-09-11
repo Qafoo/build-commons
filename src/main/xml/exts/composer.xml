@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant-build-commons-extensions-composer">
+
+    <!--
+        Import default properties for this extension.
+    -->
+    <property file="${resourcedir}/extensions/composer/composer.properties" />
+
+    <target name="composer:dependencies-install-or-update"
+            depends="composer:phar-install-or-update,
+                     composer:dependencies-install,
+                     composer:dependencies-update" />
+
+    <target name="composer:dependencies-install"
+            depends="composer:dependencies-lock-exists"
+            if="composer:dependencies.lock.exists">
+
+        <antcall target="-composer:dependencies-install" />
+    </target>
+
+    <target name="composer:dependencies-update"
+            depends="composer:dependencies-lock-exists"
+            unless="composer:dependencies.lock.exists">
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${composer.executable}" />
+            <arg value="update" />
+        </exec>
+    </target>
+
+    <target name="composer:dependencies-lock-exists">
+        <condition property="composer:dependencies.lock.exists">
+            <available file="${composer.dependency.lock}" />
+        </condition>
+    </target>
+
+    <target name="-composer:dependencies-install"
+            depends="-composer:dependencies-lock-up2date"
+            unless="-composer:dependencies.lock.up2date">
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${composer.executable}" />
+            <arg value="install" />
+        </exec>
+
+        <touch file="${composer.up2date.file}" />
+    </target>
+
+    <target name="-composer:dependencies-lock-up2date">
+        <uptodate property="-composer:dependencies.lock.up2date"
+                  srcfile="${composer.dependency.lock}"
+                  targetfile="${composer.up2date.file}" />
+    </target>
+
+    <target name="composer:is-enabled"
+            depends="-commons:is-offline-mode">
+
+        <condition property="-composer:is.enabled">
+            <and>
+                <istrue value="${composer.enabled}" />
+                <available file="${composer.dependency.file}" />
+                <not>
+                    <isset property="commons:run-offline" />
+                </not>
+            </and>
+        </condition>
+    </target>
+
+    <!--
+        This target will install composer if it not exists or perform a
+        selfupdate on an existing composer.phar
+    -->
+    <target name="composer:phar-install-or-update"
+            depends="composer:phar-exists,
+                     composer:phar-install,
+                     composer:phar-update" />
+
+    <!--
+        Installs the composer.phar from http://getcomposer.org
+    -->
+    <target name="composer:phar-install"
+            depends="composer:phar-exists"
+            unless="-composer:phar.exists">
+
+        <tempfile property="-temp:composer:installer"
+                  destdir="${basedir}"
+                  deleteonexit="true" />
+
+        <get src="${composer.download.uri}" dest="${-temp:composer:installer}" />
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${-temp:composer:installer}" />
+        </exec>
+    </target>
+
+    <target name="composer:phar-update"
+            depends="composer:phar-exists"
+            if="-composer:phar.exists">
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${composer.executable}" />
+            <arg value="selfupdate" />
+        </exec>
+    </target>
+
+    <target name="composer:phar-exists">
+        <condition property="-composer:phar.exists">
+            <available file="${composer.executable}" />
+        </condition>
+
+    </target>
+
+    <!--
+        EXTENSION POINTS UTILIZED BY THIS MODULE
+    -->
+
+    <!--
+        This target will hook the "composer:dependencies-install-or-update"
+        target into the main INITIALIZE build-step
+    -->
+    <target name="-composer:initialize:main~hooked"
+            depends="composer:is-enabled"
+            if="-composer:is.enabled"
+            extensionOf="-initialize:main~hook">
+
+        <antcall target="composer:dependencies-install-or-update"
+                 inheritAll="true"
+                 inheritRefs="true" />
+    </target>
+</project>

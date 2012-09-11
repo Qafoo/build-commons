@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-macros" basedir=".">
     <!--
+        Calculates a relative path from a given ${absolute} and ${basepath}.
+
+        <commons.relativepath absolute="/path/to/foo/bar"
+                              basepath="/path/to"
+                              property="foo.bar.relativepath" />
+    -->
+    <macrodef name="commons.relativepath">
+        <attribute name="absolute" default="${basedir}" />
+        <attribute name="basepath" />
+        <attribute name="property" />
+
+        <sequential>
+            <property name="commons.relativepath.@{basepath}" location="@{basepath}"/>
+            <pathconvert property="@{property}">
+                <path location="@{absolute}" />
+                <map from="${commons.relativepath.@{basepath}}/" to="" />
+            </pathconvert>
+        </sequential>
+    </macrodef>
+
+    <!--
          Provide an easy way of executing Script using the engines provided by
          build commons.
     -->
@@ -55,10 +76,12 @@
     -->
     <macrodef name="commons.rhino">
         <attribute name="failonerror" default="false" />
+        <attribute name="output" default="false" />
         <element name="configuration" implicit="yes" />
         <sequential>
             <java jar="${commons:basedir}/main/resources/rhino/rhino/js.jar"
                   fork="true"
+                  output="@{output}"
                   failonerror="@{failonerror}"
                   taskname="rhino">
                 <configuration />
