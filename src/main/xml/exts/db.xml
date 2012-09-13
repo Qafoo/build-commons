@@ -131,6 +131,14 @@ configured:
     -->
 
     <!--
+        Hook into the initialize build step and generate the system database if
+        the current project uses a database.
+    -->
+    <target name="-db:initialize:main~hooked"
+            depends="db:initialize"
+            extensionOf="-initialize:main~hook" />
+
+    <!--
         Hook into the install build step and generate the system database if the
         current project uses a database.
     -->
