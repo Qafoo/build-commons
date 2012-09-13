@@ -28,9 +28,9 @@
     -->
     <target name="initialize:initialize"
             depends="validate:validate,
-                     -initialize:before~hook,
-                     -initialize:main~hook,
+			         -initialize:before~hook,
                      -initialize:initialize,
+                     -initialize:main~hook,
                      -initialize:after~hook" />
 
     <!--
