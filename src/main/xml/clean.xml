@@ -24,6 +24,7 @@
     <target name="clean:clean"
             depends="-clean:before~hook,
                      -clean:clean,
+                     -clean:main~hook,
                      -clean:after~hook" />
 
     <!--
@@ -42,6 +43,12 @@
         the clean target starts.
     -->
     <extension-point name="-clean:before~hook" />
+
+    <!--
+        Hook target that will be called during the build process, as part of the
+        main clean process.
+    -->
+    <extension-point name="-clean:main~hook" />
 
     <!--
         Hook target that will be called during the build process, when the clean
