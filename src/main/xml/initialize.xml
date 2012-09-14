@@ -108,6 +108,7 @@
                   suffix=".properties"
                   deleteonexit="true" />
 
+	    <mkdir dir="${commons:builddir}" />
         <echoproperties destfile="${commons:env.properties.file}.temp"
                         regex=".*\.${commons.env}\..*" />
 
