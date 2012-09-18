@@ -108,11 +108,13 @@
                   suffix=".properties"
                   deleteonexit="true" />
 
-	    <mkdir dir="${commons:builddir}" />
+	    <mkdir taskname="initialize:environment"
+               dir="${commons:builddir}" />
         <echoproperties destfile="${commons:env.properties.file}.temp"
                         regex=".*\.${commons.env}\..*" />
 
-        <copy file="${commons:env.properties.file}.temp"
+        <copy taskname="initialize:environment"
+              file="${commons:env.properties.file}.temp"
               tofile="${commons:env.properties.file}">
 
             <filterset begintoken="." endtoken=".">
@@ -120,7 +122,8 @@
             </filterset>
         </copy>
 
-        <delete file="${commons:env.properties.file}.temp" />
+        <delete taskname="initialize:environment"
+                file="${commons:env.properties.file}.temp" />
     </target>
 
     <!--
