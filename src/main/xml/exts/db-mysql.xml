@@ -17,7 +17,8 @@
         <sql driver="${db.driver}"
              url="jdbc:${db.system}://${db.hostname}"
              userid="${db.userid}"
-             password="${db.password}">
+			 password="${db.password}"
+			 taskname="db:mysql:initialize-database">
 
             <classpath refid="-db:mysql:classpath" />
             
