@@ -74,15 +74,15 @@
     -->
     <target name="-initialize:directories">
         <!-- Initialize framework related directories -->
-        <mkdir dir="${commons.metadata.cache.dir}" />
+        <mkdir taskname="initialize:directories" dir="${commons.metadata.cache.dir}" />
 
-        <mkdir dir="${commons:builddir}" />
-        <mkdir dir="${commons:tmpdir}" />
-        <mkdir dir="${commons:distdir}" />
-        <mkdir dir="${commons:bundledir}" />
-        <mkdir dir="${commons:logsdir}" />
-        <mkdir dir="${commons:builddir}/phpcb" />
-        <mkdir dir="${commons:builddir}/coverage" />
+        <mkdir taskname="initialize:directories" dir="${commons:builddir}" />
+        <mkdir taskname="initialize:directories" dir="${commons:tmpdir}" />
+        <mkdir taskname="initialize:directories" dir="${commons:distdir}" />
+        <mkdir taskname="initialize:directories" dir="${commons:bundledir}" />
+        <mkdir taskname="initialize:directories" dir="${commons:logsdir}" />
+        <mkdir taskname="initialize:directories" dir="${commons:builddir}/phpcb" />
+        <mkdir taskname="initialize:directories" dir="${commons:builddir}/coverage" />
     </target>
 
     <!--
@@ -94,7 +94,7 @@
     -->
     <target name="initialize:environment" depends="-initialize:environment" />
 
-    <!--
+   <!--
         Creates a temporary properties file with build environment specific
         settings.
 
