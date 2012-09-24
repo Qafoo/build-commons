@@ -275,6 +275,7 @@
         </condition>
 
         <exec executable="${commons.executable.php}"
+              taskname="phpunit:run-testdir"
               failonerror="true"
               dir="${commons.testdir.php}">
 
