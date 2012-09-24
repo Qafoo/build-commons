@@ -87,7 +87,8 @@
              url="${dbdeploy.url}"
              userid="${dbdeploy.userid}"
              password="${dbdeploy.password}"
-             src="${-dbdeploy:migrate.script}">
+			 src="${-dbdeploy:migrate.script}"
+			 taskname="dbdeploy:migrate">
 
             <classpath refid="-dbdeploy:classpath" />
         </sql>
