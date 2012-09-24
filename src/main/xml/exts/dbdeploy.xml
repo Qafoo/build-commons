@@ -32,19 +32,20 @@
     -->
     <target name="dbdeploy" depends="dbdeploy:dbdeploy" />
 
-    <target name="dbdeploy:dbdeploy" depends="dbdeploy:migrate">
-        
-    </target>
+	<target name="dbdeploy:dbdeploy" depends="dbdeploy:migrate" />
 
-    <target name="dbdeploy:init">
+	<target name="dbdeploy:init" depends="-dbdeploy:init" />
+
+    <target name="-dbdeploy:init">
         <sql driver="${dbdeploy.driver}"
              url="${dbdeploy.url}"
              userid="${dbdeploy.userid}"
              password="${dbdeploy.password}"
-             src="${dbdeploy.schema}">
+			 src="${dbdeploy.schema}"
+			 taskname="dbdeploy:init">
             <classpath refid="-dbdeploy:classpath" />
         </sql>
-    </target>
+	</target>
 
     <!--
         This target generates a migrate and a rollback sql script for the
@@ -67,7 +68,8 @@
                   dir="${dbdeploy.delta.dir}"
                   outputfile="${-dbdeploy:migrate.script}"
                   dbms="${dbdeploy.system}"
-                  undoOutputfile="${-dbdeploy:rollback.script}" />
+				  undoOutputfile="${-dbdeploy:rollback.script}"
+				  taskname="dbdeploy:generate" />
     </target>
 
     <!--
