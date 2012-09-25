@@ -91,17 +91,22 @@
         <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="${-temp:composer:installer}" />
         </exec>
-    </target>
+	</target>
 
-    <target name="composer:phar-update"
+	<target name="composer:phar-update"
+		    depends="-composer:phar-update" />
+
+    <target name="-composer:phar-update"
             depends="composer:phar-exists"
             if="-composer:phar.exists">
 
-        <exec executable="${commons.executable.php}" failonerror="true">
+        <exec executable="${commons.executable.php}" 
+              failonerror="true"
+              taskname="composer:phar-update">
             <arg value="${composer.executable}" />
             <arg value="selfupdate" />
         </exec>
-    </target>
+	</target>
 
     <target name="composer:phar-exists">
         <condition property="-composer:phar.exists">
