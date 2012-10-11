@@ -118,15 +118,15 @@
                 
                 // Reset fail indicator
                 self.project.setProperty( 'commons.scriptdef.failed', false );
-
-                try 
-                {
-                    parallel.perform();
-                } 
-                catch ( e )
-                {
-                    self.project.setProperty( 'commons.scriptdef.failed', true );
-                }
+            }
+            
+            try
+            {
+                parallel.perform();
+            }
+            catch ( e )
+            {
+                self.project.setProperty( 'commons.scriptdef.failed', true );
             }
         ]]>
     </commons.scriptdef>
