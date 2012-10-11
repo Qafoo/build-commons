@@ -101,7 +101,7 @@
             if="-composer:phar.exists">
 
         <exec executable="${commons.executable.php}" 
-              failonerror="true"
+              failonerror="false"
               taskname="composer:phar-update">
             <arg value="${composer.executable}" />
             <arg value="selfupdate" />
