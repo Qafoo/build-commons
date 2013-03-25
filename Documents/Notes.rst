@@ -90,7 +90,7 @@ Directory:
     - ``Extensions/JavaScript/Linter/JSLint/Configure.xml``
 
 Taskname:
-    - ``abc:javascript:linter:jslint:extension``
+    - ``-abc:javascript:linter:jslint:extension``
     - ``-abc:javascript:linter:jslint:someInternalTask``
 
 Profile:
@@ -100,9 +100,9 @@ Profile:
 Task Aliases
 ------------
 
-All main extension entrypoints need to have an alias to their extension name:
+All main extension entrypoints need to have a public alias to their extension name:
 
-``abc:javascript:linter:jslint:extension`` is aliased to
+``-abc:javascript:linter:jslint:extension`` is aliased to
 ``javascript:linter:jslint``.
 
 Extensionpoint Dependencies
