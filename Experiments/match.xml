@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<abc>
+    <properties>
+        <property name="profile.php.testing" value="enabled" />
+        <!--<property name="profile.php.testing.phpunit" value="disabled" />-->
+    </properties>
+    <project name="abc:php:testing:behat"></project>
+    <project name="abc:php:testing:phpunit"></project>
+    <project name="abc:php:blub:blah"></project>
+</abc>
