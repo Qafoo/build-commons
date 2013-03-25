@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="abc:configure">
+
+    <!-- TODO: Refactor to environment -->
+    <dirname property="abc:configure:base.directory"
+             file="${ant.file.abc:configure}" />
+    <property name="abc:resources.directory"
+              location="${abc:configure:base.directory}/../../Resources" />
+    <property file="${abc:configure:base.directory}/Configure.properties" />
+
+    <target name="-abc:configure:configure">
+        <property name="abc:configure:resources.directory"
+                  value="${abc:resources.directory}/Configure" />
+
+        <tempfile property="abc:configure:extensions.file"
+                  deleteonexit="true" />
+
+        <tempfile property="abc:configure:profiles.file"
+                  deleteonexit="true" />
+
+        <echoproperties destfile="${abc:configure:profiles.file}"
+                        prefix="profile."
+                        format="xml" />
+
+        <concat destfile="${abc:configure:extensions.file}"
+                overwrite="true"
+                append="false">
+            <file file="${abc:configure:resources.directory}/header.xml" />
+        </concat>
+        <concat destfile="${abc:configure:extensions.file}"
+                overwrite="true"
+                append="true"
+                fixlastline="true">
+            <file file="${abc:configure:profiles.file}" />
+            <fileset dir="${abc:configure:base.directory}/../Extensions/"
+                     includes="**/Extension.xml">
+            </fileset>
+            <!-- TODO: include custom project fileset -->
+            <filterchain>
+                <tokenfilter>
+                    <filetokenizer />
+                    <replaceregex pattern="&lt;\?xml\s[^?]+\?&gt;"
+                                  replace=""
+                                  flags="g" />
+                </tokenfilter>
+            </filterchain>
+        </concat>
+        <concat destfile="${abc:configure:extensions.file}"
+                overwrite="true"
+                append="true">
+            <file file="${abc:configure:resources.directory}/footer.xml" />
+        </concat>
+
+        <xslt in="${abc:configure:extensions.file}"
+              out="${user.dir}/build.xml"
+              style="${abc:configure:base.directory}/Configure.xslt" />
+    </target>
+
+    <target name="configure" depends="-abc:configure:configure" />
+</project>
