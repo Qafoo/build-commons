@@ -15,7 +15,8 @@
     -->
     <xsl:template match="/">
         <project name="{$ant.project.name}"
-                 basedir="{$ant.basedir}">
+                 basedir="{$ant.basedir}"
+                 default="verify">
             <xsl:apply-templates select="/abc/project" />
         </project>
     </xsl:template>
