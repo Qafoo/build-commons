@@ -125,6 +125,37 @@ on a profile level as well:
 
 .. note:: It needs to be determined if an how this can be done properly.
 
+Configure Step
+==============
+
+One of the biggest changes made with the 2.x branch is the introduction of
+a **configure** step. This step is executed before anything else and bootstraps
+a build environment for a certain build configuration into a given directory.
+
+This **configure** step is equivalent to a ``autoconf`` ``./configure`` or
+a ``cmake`` ``cmake ./builddir``.
+
+It creates a new environment inside the given directory ready for building the
+current project. Switching to the directory and calling ``ant`` there executes
+the build process.
+
+Precompiled build.xml
+---------------------
+
+During **configure** a *new* ``build.xml`` is created. It contains the abc base
+environment, the software lifecycle as well as any currently enabled
+**profile**.
+
+This file is the minimal needed version of the buildenvironment to satisfy all
+enabled profiles and tasks.
+
+Dependency install/management
+-----------------------------
+
+During the **configure** phase all needed dependencies for active **profiles**
+are loaded and installed to the build directory. Therefore effectively
+preparing everything needed for a build to be run.
+
 
 
 ..
