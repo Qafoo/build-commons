@@ -6,6 +6,7 @@
              file="${ant.file.abc:configure}" />
     <property name="abc:resources.directory"
               location="${abc:configure:base.directory}/../../Resources" />
+
     <property file="${abc:configure:base.directory}/Configure.properties" />
 
     <target name="-abc:configure:configure">
@@ -32,9 +33,10 @@
                 append="true"
                 fixlastline="true">
             <file file="${abc:configure:profiles.file}" />
+            <fileset dir="${abc:base.directory}/Base/"
+                     includes="**/*.xml" />
             <fileset dir="${abc:configure:base.directory}/../Extensions/"
-                     includes="**/Extension.xml">
-            </fileset>
+                     includes="**/Extension.xml" />
             <!-- TODO: include custom project fileset -->
             <filterchain>
                 <tokenfilter>
