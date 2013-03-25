@@ -23,7 +23,7 @@
     <xsl:template match="/abc/project">
         <xsl:variable name="profile.enabled">
             <xsl:choose>
-                <xsl:when test="starts-with(@name, 'abc:')">
+                <xsl:when test="starts-with(@name, 'abc:') and not(starts-with(@name, 'abc:base:'))">
                     <xsl:call-template name="profile.enabled">
                         <xsl:with-param name="profile.name">
                             <xsl:call-template name="profile.from.project.name">
@@ -34,7 +34,7 @@
                     </xsl:call-template>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:text>1</xsl:text>
+                    <xsl:text>true</xsl:text>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
