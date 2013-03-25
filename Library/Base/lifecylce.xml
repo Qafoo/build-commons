@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="abc:base:lifecycle">
+    <target name="validate"
+            depends="-validate:before~hook,
+                     -validate:main~hook,
+                     -validate:after~hook" />
+
+    <extension-point name="-validate:before~hook" />
+    <extension-point name="-validate:main~hook" />
+    <extension-point name="-validate:after~hook" />
+
+
+    <target name="initialize"
+            depends="validate,
+                     -initialize:before~hook,
+                     -initialize:main~hook,
+                     -initialize:after~hook" />
+
+    <extension-point name="-initialize:before~hook" />
+    <extension-point name="-initialize:main~hook" />
+    <extension-point name="-initialize:after~hook" />
+
+
+    <target name="compile"
+            depends="initialize,
+                     -compile:before~hook,
+                     -compile:main~hook,
+                     -compile:after~hook" />
+
+    <extension-point name="-compile:before~hook" />
+    <extension-point name="-compile:main~hook" />
+    <extension-point name="-compile:after~hook" />
+
+
+    <target name="link"
+            depends="compile,
+                     -link:before~hook,
+                     -link:main~hook,
+                     -link:after~hook" />
+
+    <extension-point name="-link:before~hook" />
+    <extension-point name="-link:main~hook" />
+    <extension-point name="-link:after~hook" />
+
+
+    <target name="test"
+            depends="link,
+                     -test:before~hook,
+                     -test:main~hook,
+                     -test:after~hook" />
+
+    <extension-point name="-test:before~hook" />
+    <extension-point name="-test:main~hook" />
+    <extension-point name="-test:after~hook" />
+
+
+    <target name="package"
+            depends="test,
+                     -package:before~hook,
+                     -package:main~hook,
+                     -package:after~hook" />
+
+    <extension-point name="-package:before~hook" />
+    <extension-point name="-package:main~hook" />
+    <extension-point name="-package:after~hook" />
+
+
+    <target name="integration-test"
+            depends="package,
+                     -integration-test:before~hook,
+                     -integration-test:main~hook,
+                     -integration-test:after~hook" />
+
+    <extension-point name="-integration-test:before~hook" />
+    <extension-point name="-integration-test:main~hook" />
+    <extension-point name="-integration-test:after~hook" />
+
+
+    <target name="verify"
+            depends="integration-test,
+                     -verify:before~hook,
+                     -verify:main~hook,
+                     -verify:after~hook" />
+
+    <extension-point name="-verify:before~hook" />
+    <extension-point name="-verify:main~hook" />
+    <extension-point name="-verify:after~hook" />
+
+
+    <target name="deploy"
+            depends="verify,
+                     -deploy:before~hook,
+                     -deploy:main~hook,
+                     -deploy:after~hook" />
+
+    <extension-point name="-deploy:before~hook" />
+    <extension-point name="-deploy:main~hook" />
+    <extension-point name="-deploy:after~hook" />
+
+
+    <target name="clean"
+            depends="-clean:before~hook,
+                     -clean:main~hook,
+                     -clean:after~hook" />
+
+    <extension-point name="-clean:before~hook" />
+    <extension-point name="-clean:main~hook" />
+    <extension-point name="-clean:after~hook" />
+
+</project>
