@@ -46,20 +46,20 @@ There is **one** arch-type per project. An archtype may define a set of used
 **profiles**. Profiles may aggregate each other::
 
     .
-    ├── javascript
-    │   ├── analasys
-    │   │   └── linter
-    │   │       ├── jshint
-    │   │       └── jslint
-    │   └── testing
-    │       └── testacular
-    └── php
-        ├── analysis
-        │   └── linter
+    ├── JavaScript
+    │   ├── Analysis
+    │   │   └── Linter
+    │   │       ├── JSHint
+    │   │       └── JSLint
+    │   └── Testing
+    │       └── Karma
+    └── PHP
+        ├── Analysis
+        │   └── Linter
         │       └── phpl
-        └── testing
-            ├── phpunit
-            └── sahi
+        └── Testing
+            ├── PHPUnit
+            └── Sahi
 
 Profiles are activated or deactivated on a arch-type level. Arch-types are
 defined using property files::
@@ -85,12 +85,12 @@ Naming Structure
 Directories, tasknames and profile names are required to match each other.
 
 Directory:
-    - ``extensions/javascript/linter/jslint/jslint.xml``
-    - ``extensions/javascript/linter/jslint/jslint.properties``
-    - ``extensions/javascript/linter/jslint/configure.xml``
+    - ``Extensions/JavaScript/Linter/JSLint/Extension.xml``
+    - ``Extensions/JavaScript/Linter/JSLint/Extension.properties``
+    - ``Extensions/JavaScript/Linter/JSLint/Configure.xml``
 
 Taskname:
-    - ``abc:javascript:linter:jslint:jslint``
+    - ``abc:javascript:linter:jslint:extension``
     - ``-abc:javascript:linter:jslint:someInternalTask``
 
 Profile:
@@ -102,7 +102,7 @@ Task Aliases
 
 All main extension entrypoints need to have an alias to their extension name:
 
-``abc:javascript:linter:jslint:jslint`` is aliased to
+``abc:javascript:linter:jslint:extension`` is aliased to
 ``javascript:linter:jslint``.
 
 Extensionpoint Dependencies
