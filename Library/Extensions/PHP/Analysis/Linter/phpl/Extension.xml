@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="abc:php:analysis:linter:phpl">
+    <target name="-abc:php:analysis:linter:phpl:extension"
+            depends="-abc:extension">
+        <echo taskname="phpl"
+              message="Linting PHP stuff ;)" />
+    </target>
+
+    <!-- Public execution alias -->
+    <target name="php:analysis:linter:phpl"
+            depends="-abc:php:analysis:linter:phpl:extension" />
+
+    <!-- Hook into build system -->
+    <target name="-abc:php:analysis:linter:phpl:compile:before~hooked"
+            depends="-compile:before~hook" />
+</project>
