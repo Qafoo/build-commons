@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="abc:php:analysis:linter:phpl">
-    <target name="-abc:php:analysis:linter:phpl:extension"
-            depends="-abc:extension">
+    <target name="-abc:php:analysis:linter:phpl:extension">
+<!--            depends="-abc:extension">-->
         <echo taskname="phpl"
               message="Linting PHP stuff ;)" />
     </target>
@@ -12,5 +12,6 @@
 
     <!-- Hook into build system -->
     <target name="-abc:php:analysis:linter:phpl:compile:before~hooked"
-            depends="-compile:before~hook" />
+            depends="php:analysis:linter:phpl"
+            extensionOf="-compile:before~hook" />
 </project>
