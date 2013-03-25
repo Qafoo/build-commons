@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="abc">
+    <dirname property="abc:base.directory"
+             file="${ant.file.abc}" />
+
+    <import file="${abc:base.directory}/Configure/Configure.xml" />
+
+    <target name="foo">
+        <echo message="foobar" />
+        <echo message="${abc:base.directory}" />
+    </target>
+</project>
