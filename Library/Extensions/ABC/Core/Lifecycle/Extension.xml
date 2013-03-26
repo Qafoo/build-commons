@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ABC:Core:Lifecycle">
+    <!--
+        No extension entry point for this extension, as it only defined
+        the lifecycle. Nothing to hook to or init here
+    -->
+
     <target name="validate"
             depends="-validate:before~hook,
                      -validate:main~hook,

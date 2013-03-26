@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ABC:Core:Ant-Contrib">
 
+    <!--
+        We can't use the abc-extension-init magic for this extension,
+        because this does rely on a loaded ant-contrib environment ;)
+    -->
     <dirname property="-ABC.Core.Ant-Contrib.Directory"
              file="${ant.file.ABC:Core:Ant-Contrib}" />
 
@@ -11,7 +15,8 @@
              uri="http://ant-contrib.sourceforge.net">
 
         <classpath>
-            <fileset dir="${-ABC.Core.Ant-Contrib.Resources.Directory}" includes="*.jar" />
+            <fileset dir="${-ABC.Core.Ant-Contrib.Resources.Directory}"
+                     includes="*.jar" />
         </classpath>
     </taskdef>
 

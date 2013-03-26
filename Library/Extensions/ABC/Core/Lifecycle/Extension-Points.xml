@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ABC:Core:Lifecycle:Extension-Points">
 
+    <!--
+        Extension points are separated from the Lifecycle entry point,as we want
+        them to be available inside the base "build.xml" file of the project.
+
+        To allow for the project/user to specify custom targets hooked into the
+        lifecycle.
+
+        We however don't want the lifecycle targets there, as those will only be
+        available after the *configure* step
+    -->
+
     <extension-point name="-validate:before~hook" />
     <extension-point name="-validate:main~hook" />
     <extension-point name="-validate:after~hook" />

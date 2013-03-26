@@ -3,13 +3,10 @@
 
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
             extensionOf="-compile:before~hook">
-<!--            depends="-abc:extension">-->
+        <abc-extension-init extension="ABC:PHP:Analysis:Linter:phpl" />
+
         <echo taskname="phpl"
               message="Linting PHP stuff ;)" />
-
-        <abc-extension-init extension="ABC:PHP:Analysis:Linter:phpl"
-                            has-resources="false"/>
-
     </target>
 
     <!-- Public execution alias -->

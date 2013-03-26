@@ -25,12 +25,19 @@
                  basedir="{$ant.basedir}"
                  default="{$project.default-target}">
 
+            <!-- Import the original build file first, to allow it overwriting abc related properties -->
             <import file="{$ant.project.build-file}" />
 
+            <!--
+                Exposed default properties based on the original build file
+            -->
             <property name="abc:project.name" value="{$ant.project.name}" />
 
             <xsl:apply-templates select="/abc/project" />
 
+            <!--
+                Overwrite configure target, to reconfigure the build system automatically
+            -->
             <target name="configure">
                 <ant antfile="{$ant.project.build-file}"
                      dir="{$user.dir}"

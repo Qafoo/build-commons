@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ABC:Core:SDK" xmlns:ac="http://ant-contrib.sourceforge.net">
 
+    <!--
+        Entry point, which any extension has to call first
+
+        This macro defines certain extension based variables, like its directory,
+        its resource directory and so on. Furthermore the extension default
+        properties will be loaded, if available.
+
+        Using this macro instead of doing everything by oneself ensures all
+        necessary steps are executed in the correct order.
+    -->
     <macrodef name="abc-extension-init">
         <attribute name="extension" />
         <attribute name="has-resources" default="" />
@@ -9,27 +19,42 @@
             <ac:if>
                 <istrue value="@{has-resources}" />
                 <ac:then>
-                    <abc-extension-resources extension="@{extension}"
-                                             property="@{extension}.Resources.Directory" />
+                    <ABC-Core-SDK-Resource-Directory extension="@{extension}"
+                                                     property="@{extension}.Resources.Directory" />
                 </ac:then>
             </ac:if>
 
-            <abc-extension-directory extension="@{extension}"
-                                     property="@{extension}.Directory" />
+            <ABC-Core-SDK-Extension-Directory extension="@{extension}"
+                                              property="@{extension}.Directory" />
 
             <property file="@{extension}.Directory/Extension.properties" />
         </sequential>
     </macrodef>
 
     <!--
+        Macro that determines the directory of a given extension.
+    -->
+    <macrodef name="ABC-Core-SDK-Extension-Directory">
+        <attribute name="extension" />
+        <attribute name="property" />
+
+        <sequential>
+            <ac:propertycopy property="@{property}#Extension.File"
+                             from="ant.file.@{extension}" />
+            <dirname property="@{property}"
+                     file="${@{property}#Extension.File}" />
+        </sequential>
+    </macrodef>
+
+    <!--
         Macro that determines the "Resources" directory of a given extension.
     -->
-    <macrodef name="abc-extension-resources">
+    <macrodef name="ABC-Core-SDK-Resources-Directory">
         <attribute name="extension" />
         <attribute name="property" />
         <sequential>
-            <abc-extension-directory extension="@{extension}"
-                                     property="@{property}#Extension.Directory" />
+            <ABC-Core-SDK-Extension-Directory extension="@{extension}"
+                                               property="@{property}#Extension.Directory" />
 
             <property name="@{property}"
                       location="${@{property}#Extension.Directory}/Resources" />
@@ -44,15 +69,4 @@
         </sequential>
     </macrodef>
 
-    <macrodef name="abc-extension-directory">
-        <attribute name="extension" />
-        <attribute name="property" />
-
-        <sequential>
-            <ac:propertycopy property="@{property}#Extension.File"
-                             from="ant.file.@{extension}" />
-            <dirname property="@{property}"
-                     file="${@{property}#Extension.File}" />
-        </sequential>
-    </macrodef>
 </project>
