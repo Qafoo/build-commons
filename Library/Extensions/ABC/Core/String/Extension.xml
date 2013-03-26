@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ABC:Core:String" xmlns:ac="http://ant-contrib.sourceforge.net">
+    <macrodef name="abc-string-transform">
+        <attribute name="input" />
+        <attribute name="property" />
+        <attribute name="setonempty" default="true" />
+        <element name="mappers" implicit="yes" />
+        <sequential>
+            <ac:var name="-ABC.Core.String.Input"
+                    value="@{input}" />
+            <pathconvert dirsep=""
+                         pathsep=""
+                         property="@{property}"
+                         setonempty="@{setonempty}">
+                <chainedmapper>
+                    <mappers />
+                </chainedmapper>
+                <propertyresource name="-ABC.Core.String.Input" />
+            </pathconvert>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="abc-string-filter">
+        <attribute name="input" />
+        <attribute name="property" />
+        <element name="filters" implicit="yes" />
+
+        <sequential>
+            <abc-string-transform input="@{input}"
+                                  property="@{property}">
+                <filtermapper>
+                    <filters />
+                </filtermapper>
+            </abc-string-transform>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="abc-string-lowercase">
+        <attribute name="input" />
+        <attribute name="property" />
+        <sequential>
+            <abc-string-filter input="@{input}"
+                               property="@{property}">
+                <replacestring from="A" to="a" />
+                <replacestring from="B" to="b" />
+                <replacestring from="C" to="c" />
+                <replacestring from="D" to="d" />
+                <replacestring from="E" to="e" />
+                <replacestring from="F" to="f" />
+                <replacestring from="G" to="g" />
+                <replacestring from="H" to="h" />
+                <replacestring from="I" to="i" />
+                <replacestring from="J" to="j" />
+                <replacestring from="K" to="k" />
+                <replacestring from="L" to="l" />
+                <replacestring from="M" to="m" />
+                <replacestring from="N" to="n" />
+                <replacestring from="O" to="o" />
+                <replacestring from="P" to="p" />
+                <replacestring from="Q" to="q" />
+                <replacestring from="R" to="r" />
+                <replacestring from="S" to="s" />
+                <replacestring from="T" to="t" />
+                <replacestring from="U" to="u" />
+                <replacestring from="V" to="v" />
+                <replacestring from="W" to="w" />
+                <replacestring from="X" to="x" />
+                <replacestring from="Y" to="y" />
+                <replacestring from="Z" to="z" />
+            </abc-string-filter>
+        </sequential>
+    </macrodef>
+</project>
