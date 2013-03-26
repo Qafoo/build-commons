@@ -41,28 +41,34 @@
     </xsl:template>
 
     <xsl:template match="/abc/project">
+        <xsl:variable name="project.name" select="@name" />
+
         <xsl:variable name="profile.enabled">
             <xsl:choose>
-                <xsl:when test="not(starts-with(@name, 'ABC:Core:'))">
+                <xsl:when test="/abc/profile-defaults/profile[text() = $project.name and @default='disabled']">
+                    <xsl:text>false</xsl:text>
+                </xsl:when>
+                <xsl:when test="/abc/profile-defaults/profile[text() = $project.name and @default='enabled']">
+                    <xsl:text>true</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
                     <xsl:call-template name="profile.enabled">
                         <xsl:with-param name="profile.name">
                             <xsl:call-template name="profile.from.project.name">
                                 <xsl:with-param name="project.name"
-                                                select="@name" />
+                                                select="$project.name" />
                             </xsl:call-template>
                         </xsl:with-param>
                     </xsl:call-template>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text>true</xsl:text>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
+
         <xsl:if test="$profile.enabled = 'true'">
             <xsl:element name="import">
                 <xsl:attribute name="file">
                     <xsl:call-template name="file.from.project.name">
-                        <xsl:with-param name="project.name" select="@name" />
+                        <xsl:with-param name="project.name" select="$project.name" />
                     </xsl:call-template>
                 </xsl:attribute>
             </xsl:element>

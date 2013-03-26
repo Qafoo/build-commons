@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile-defaults>
+    <profile default="enabled">ABC:Core:Lifecycle</profile>
+    <profile default="disabled">ABC:Core:Ant-Contrib</profile>
+    <profile default="disabled">ABC:Core:Configure</profile>
+    <profile default="disabled">ABC:Core:SDK</profile>
+</profile-defaults>

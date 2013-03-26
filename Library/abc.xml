@@ -9,5 +9,7 @@
 
     <!-- Just to have extension points available for the user build.xml-->
     <import file="${abc.base.directory}/Extensions/ABC/Core/Lifecycle/Extension-Points.xml" />
-    <import file="${abc.base.directory}/Configure/Configure.xml" />
+    <import file="${abc.base.directory}/Extensions/ABC/Core/Ant-Contrib/Extension.xml" />
+    <import file="${abc.base.directory}/Extensions/ABC/Core/SDK/Extension.xml" />
+    <import file="${abc.base.directory}/Extensions/ABC/Core/Configure/Extension.xml" />
 </project>

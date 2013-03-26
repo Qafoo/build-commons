@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../Experiments/ant.dtd">
-
-<project name="ABC:Configure">
+<!--<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">-->
+<project name="ABC:Core:Configure">
 
     <property name="abc.configure.base.directory"
               location="${abc.base.directory}/Configure" />
 
-    <property name="abc:resources.directory"
-              location="${abc.configure.base.directory}/../../Resources" />
+    <property file="${abc.configure.base.directory}/Extension.properties" />
 
-    <property file="${abc.configure.base.directory}/Configure.properties" />
+    <target name="-ABC:Core:Configure:Extension">
 
-    <target name="-abc:configure:configure">
-        <property name="abc:configure:resources.directory"
-                  value="${abc:resources.directory}/Configure" />
+        <!--<abc-extension-properties extension="ABC:Core:Configure" />-->
+
+        <abc-extension-resources extension="ABC:Core:Configure"
+                                 property="-ABC.Core.Configure.Resource.Directory" />
 
         <tempfile property="abc:configure:extensions.file"
                   deleteonexit="true" />
@@ -28,13 +27,14 @@
         <concat destfile="${abc:configure:extensions.file}"
                 overwrite="true"
                 append="false">
-            <file file="${abc:configure:resources.directory}/header.xml" />
+            <file file="${-ABC.Core.Configure.Resource.Directory}/Header.xml" />
         </concat>
         <concat destfile="${abc:configure:extensions.file}"
                 overwrite="true"
                 append="true"
                 fixlastline="true">
             <file file="${abc:configure:profiles.file}" />
+            <file file="${-ABC.Core.Configure.Resource.Directory}/Profile-Defaults.xml" />
             <fileset dir="${project.extensions.directory}"
                      includes="**/Extension.xml"
                      erroronmissingdir="false" />
@@ -54,7 +54,7 @@
         <concat destfile="${abc:configure:extensions.file}"
                 overwrite="true"
                 append="true">
-            <file file="${abc:configure:resources.directory}/footer.xml" />
+            <file file="${-ABC.Core.Configure.Resource.Directory}/Footer.xml" />
         </concat>
 
         <property name="-abc.configure.base.directory" location="${basedir}" />
@@ -66,9 +66,11 @@
             <isset property="ant.project.default-target" />
         </condition>
 
-        <xslt in="${abc:configure:extensions.file}"
+        <xslt taskname="ABC:Core:Configure:Extension"
+              in="${abc:configure:extensions.file}"
               out="${user.dir}/build.xml"
-              style="${abc.configure.base.directory}/Configure.xslt">
+              style="${-ABC.Core.Configure.Resource.Directory}/Configure.xslt">
+
             <param name="project.default-target" expression="${-abc.configure.default-target}" />
             <param name="ant.project.name" expression="${ant.project.name}" />
             <param name="ant.basedir" expression="${-abc.configure.base.directory}" />
@@ -80,5 +82,5 @@
         </xslt>
     </target>
 
-    <target name="configure" depends="-abc:configure:configure" />
+    <target name="configure" depends="-ABC:Core:Configure:Extension" />
 </project>

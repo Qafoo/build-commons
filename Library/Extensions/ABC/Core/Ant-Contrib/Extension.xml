@@ -15,16 +15,4 @@
         </classpath>
     </taskdef>
 
-    <target name="call" extensionOf="-initialize:before~hook">
-        <abc-extension-resources extension="ABC:Core:Ant-Contrib"
-                                 property="-ABC.Core.Ant-Contrib.Test" />
-        <echo>${-ABC.Core.Ant-Contrib.Test}</echo>
-
-        <abc-extension-resources extension="ABC:Core:Lifecycle"
-                                 property="-ABC.Core.Lifecycle.Test" />
-        <echo>${-ABC.Core.Lifecycle.Test}</echo>
-    </target>
-
-
-
 </project>
