@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../Experiments/ant.dtd">
+
 <project name="abc:configure">
 
     <!-- TODO: Refactor to environment -->
