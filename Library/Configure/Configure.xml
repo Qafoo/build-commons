@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../Experiments/ant.dtd">
 
-<project name="abc:configure">
+<project name="ABC:Configure">
 
-    <!-- TODO: Refactor to environment -->
-    <dirname property="abc:configure:base.directory"
-             file="${ant.file.abc:configure}" />
+    <property name="abc.configure.base.directory"
+              location="${abc.base.directory}/Configure" />
+
     <property name="abc:resources.directory"
-              location="${abc:configure:base.directory}/../../Resources" />
+              location="${abc.configure.base.directory}/../../Resources" />
 
-    <property file="${abc:configure:base.directory}/Configure.properties" />
+    <property file="${abc.configure.base.directory}/Configure.properties" />
 
     <target name="-abc:configure:configure">
         <property name="abc:configure:resources.directory"
@@ -39,9 +39,9 @@
                      includes="**/Extension.xml"
                      erroronmissingdir="false" />
 
-            <fileset dir="${abc:base.directory}/Extensions/"
+            <fileset dir="${abc.extensions.directory}"
                      includes="**/Extension.xml" />
-            <!-- TODO: include custom project fileset -->
+
             <filterchain>
                 <tokenfilter>
                     <filetokenizer />
@@ -68,14 +68,14 @@
 
         <xslt in="${abc:configure:extensions.file}"
               out="${user.dir}/build.xml"
-              style="${abc:configure:base.directory}/Configure.xslt">
+              style="${abc.configure.base.directory}/Configure.xslt">
             <param name="abc.project.default-target" expression="${abc.project.default-target}" />
             <param name="ant.project.name" expression="${ant.project.name}" />
             <param name="ant.basedir" expression="${ant.basedir}" />
             <param name="ant.project.build-file" expression="${ant.project.build-file}" />
             <param name="user.dir" expression="${user.dir}" />
 
-            <param name="abc.extensions.directory" expression="${abc:base.directory}/Extensions/" />
+            <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
             <param name="project.extensions.directory" expression="${abc:custom.extensions.directory}" />
         </xslt>
     </target>

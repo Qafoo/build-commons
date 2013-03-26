@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="abc">
-    <dirname property="abc:base.directory"
+
+    <dirname property="abc.base.directory"
              file="${ant.file.abc}" />
 
+    <property name="abc.extensions.directory"
+              location="${abc.base.directory}/Extensions" />
+
     <!-- Just to have extension points available for the user build.xml-->
-    <import file="${abc:base.directory}/Extensions/ABC/Core/Lifecycle/Extension-Points.xml" />
-    <import file="${abc:base.directory}/Configure/Configure.xml" />
+    <import file="${abc.base.directory}/Extensions/ABC/Core/Lifecycle/Extension-Points.xml" />
+    <import file="${abc.base.directory}/Configure/Configure.xml" />
 </project>
