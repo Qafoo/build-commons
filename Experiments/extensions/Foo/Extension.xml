@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="abc:php:foobar" basedir=".">
+
+    <target name="qafoobar" extensionOf="-initialize:before~hook">
+        <echo>Sindelfingen 42</echo>
+    </target>
+
+</project>

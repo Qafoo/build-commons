@@ -3,6 +3,20 @@
 
     <property file="build.properties" />
 
+    <property name="abc:custom.extensions.directory" location="extensions" />
+
     <import file="../Library/abc.xml" />
+
+    <target name="sindelfingen" extensionOf="-initialize:before~hook">
+        <echo>Sindelfingen 42</echo>
+    </target>
+
+    <target name="coffee">
+
+    </target>
+
+    <target name="hilfe">
+        <echoproperties />
+    </target>
 
 </project>

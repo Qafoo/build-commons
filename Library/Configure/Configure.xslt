@@ -7,17 +7,32 @@
     <!--
         Variables filled by ANT call
     -->
-    <xsl:param name="ant.project.name" select="'abc:configured:project'" />
+    <xsl:param name="abc.project.default-target" />
+    <xsl:param name="ant.project.build-file" />
+    <xsl:param name="ant.project.name" />
     <xsl:param name="ant.basedir" />
+    <xsl:param name="user.dir" />
 
     <!--
         Basic Document Transformations
     -->
     <xsl:template match="/">
-        <project name="{$ant.project.name}"
+        <project name="{$ant.project.name}#generated"
                  basedir="{$ant.basedir}"
-                 default="verify">
+                 default="{$abc.project.default-target}">
+
+            <import file="{$ant.project.build-file}" />
+
+            <property name="abc:project.name" value="{$ant.project.name}" />
+
             <xsl:apply-templates select="/abc/project" />
+
+            <target name="configure">
+                <ant antfile="{$ant.project.build-file}"
+                     dir="${$user.dir}"
+                     target="configure"
+                     useNativeBasedir="true" />
+            </target>
         </project>
     </xsl:template>
 
