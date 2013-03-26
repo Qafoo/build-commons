@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="abc:base:lifecycle-extension-points">
+
+    <extension-point name="-validate:before~hook" />
+    <extension-point name="-validate:main~hook" />
+    <extension-point name="-validate:after~hook" />
+
+    <extension-point name="-initialize:before~hook" />
+    <extension-point name="-initialize:main~hook" />
+    <extension-point name="-initialize:after~hook" />
+
+    <extension-point name="-compile:before~hook" />
+    <extension-point name="-compile:main~hook" />
+    <extension-point name="-compile:after~hook" />
+
+    <extension-point name="-link:before~hook" />
+    <extension-point name="-link:main~hook" />
+    <extension-point name="-link:after~hook" />
+
+    <extension-point name="-test:before~hook" />
+    <extension-point name="-test:main~hook" />
+    <extension-point name="-test:after~hook" />
+
+    <extension-point name="-package:before~hook" />
+    <extension-point name="-package:main~hook" />
+    <extension-point name="-package:after~hook" />
+
+    <extension-point name="-integration-test:before~hook" />
+    <extension-point name="-integration-test:main~hook" />
+    <extension-point name="-integration-test:after~hook" />
+
+    <extension-point name="-verify:before~hook" />
+    <extension-point name="-verify:main~hook" />
+    <extension-point name="-verify:after~hook" />
+
+    <extension-point name="-deploy:before~hook" />
+    <extension-point name="-deploy:main~hook" />
+    <extension-point name="-deploy:after~hook" />
+
+    <extension-point name="-clean:before~hook" />
+    <extension-point name="-clean:main~hook" />
+    <extension-point name="-clean:after~hook" />
+
+</project>

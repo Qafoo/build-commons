@@ -38,8 +38,11 @@
             <fileset dir="${abc:custom.extensions.directory}"
                      includes="**/Extension.xml"
                      erroronmissingdir="false" />
-            <fileset dir="${abc:base.directory}/Base/"
-                     includes="**/*.xml" />
+            <fileset dir="${abc:base.directory}/Base/">
+                <include name="**/*.xml" />
+                <!-- Already included through abc entrypoint import -->
+                <exclude name="Lifecycle Extension Points.xml" />
+            </fileset>
             <fileset dir="${abc:configure:base.directory}/../Extensions/"
                      includes="**/Extension.xml" />
             <!-- TODO: include custom project fileset -->

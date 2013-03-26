@@ -3,8 +3,7 @@
     <dirname property="abc:base.directory"
              file="${ant.file.abc}" />
 
-    <!-- Just to have extension points available -->
-    <!-- TODO: Move extension points into a separate file -->
-    <import file="${abc:base.directory}/Base/Lifecycle.xml" />
+    <!-- Just to have extension points available for the user build.xml-->
+    <import file="${abc:base.directory}/Base/Lifecycle Extension Points.xml" />
     <import file="${abc:base.directory}/Configure/Configure.xml" />
 </project>
