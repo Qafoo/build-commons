@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ABC:Core:SDK" xmlns:ac="http://ant-contrib.sourceforge.net">
 
+    <macrodef name="abc-extension-init">
+        <attribute name="extension" />
+        <attribute name="has-resources" default="" />
+
+        <sequential>
+            <ac:if>
+                <istrue value="@{has-resources}" />
+                <ac:then>
+                    <abc-extension-resources extension="@{extension}"
+                                             property="@{extension}.Resources.Directory" />
+                </ac:then>
+            </ac:if>
+
+            <abc-extension-directory extension="@{extension}"
+                                     property="@{extension}.Directory" />
+
+            <property file="@{extension}.Directory/Extension.properties" />
+        </sequential>
+    </macrodef>
+
     <!--
         Macro that determines the "Resources" directory of a given extension.
     -->
@@ -8,10 +28,9 @@
         <attribute name="extension" />
         <attribute name="property" />
         <sequential>
-            <ac:propertycopy property="@{property}#Extension.File"
-                             from="ant.file.@{extension}" />
-            <dirname property="@{property}#Extension.Directory"
-                     file="${@{property}#Extension.File}" />
+            <abc-extension-directory extension="@{extension}"
+                                     property="@{property}#Extension.Directory" />
+
             <property name="@{property}"
                       location="${@{property}#Extension.Directory}/Resources" />
 
@@ -22,6 +41,18 @@
                     </not>
                 </condition>
             </fail>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="abc-extension-directory">
+        <attribute name="extension" />
+        <attribute name="property" />
+
+        <sequential>
+            <ac:propertycopy property="@{property}#Extension.File"
+                             from="ant.file.@{extension}" />
+            <dirname property="@{property}"
+                     file="${@{property}#Extension.File}" />
         </sequential>
     </macrodef>
 </project>

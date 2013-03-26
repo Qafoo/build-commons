@@ -7,6 +7,9 @@
         <echo taskname="phpl"
               message="Linting PHP stuff ;)" />
 
+        <abc-extension-init extension="ABC:PHP:Analysis:Linter:phpl"
+                            has-resources="false"/>
+
     </target>
 
     <!-- Public execution alias -->
