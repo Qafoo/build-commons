@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="abc:php:analysis:linter:phpl">
-    <target name="-abc:php:analysis:linter:phpl:extension"
+<project name="ABC:PHP:Analysis:Linter:phpl">
+
+    <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
             extensionOf="-compile:before~hook">
 <!--            depends="-abc:extension">-->
         <echo taskname="phpl"
@@ -9,5 +10,5 @@
 
     <!-- Public execution alias -->
     <target name="php:analysis:linter:phpl"
-            depends="-abc:php:analysis:linter:phpl:extension" />
+            depends="-ABC:PHP:Analysis:Linter:phpl:Extension" />
 </project>

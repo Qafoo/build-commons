@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="abc:base:lifecycle-extension-points">
+<project name="ABC:Core:Lifecycle:Extension-Points">
 
     <extension-point name="-validate:before~hook" />
     <extension-point name="-validate:main~hook" />

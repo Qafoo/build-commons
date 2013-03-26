@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
     <xsl:output encoding="UTF-8"
                 indent="yes"
                 method="xml" />
@@ -12,6 +13,9 @@
     <xsl:param name="ant.project.name" />
     <xsl:param name="ant.basedir" />
     <xsl:param name="user.dir" />
+
+    <xsl:param name="abc.extensions.directory" />
+    <xsl:param name="project.extensions.directory" />
 
     <!--
         Basic Document Transformations
@@ -29,7 +33,7 @@
 
             <target name="configure">
                 <ant antfile="{$ant.project.build-file}"
-                     dir="${$user.dir}"
+                     dir="{$user.dir}"
                      target="configure"
                      useNativeBasedir="true" />
             </target>
@@ -39,7 +43,7 @@
     <xsl:template match="/abc/project">
         <xsl:variable name="profile.enabled">
             <xsl:choose>
-                <xsl:when test="starts-with(@name, 'abc:') and not(starts-with(@name, 'abc:base:'))">
+                <xsl:when test="not(starts-with(@name, 'ABC:Core:'))">
                     <xsl:call-template name="profile.enabled">
                         <xsl:with-param name="profile.name">
                             <xsl:call-template name="profile.from.project.name">
@@ -55,7 +59,13 @@
             </xsl:choose>
         </xsl:variable>
         <xsl:if test="$profile.enabled = 'true'">
-            <xsl:copy-of select="node()" />
+            <xsl:element name="import">
+                <xsl:attribute name="file">
+                    <xsl:call-template name="file.from.project.name">
+                        <xsl:with-param name="project.name" select="@name" />
+                    </xsl:call-template>
+                </xsl:attribute>
+            </xsl:element>
         </xsl:if>
     </xsl:template>
 
@@ -64,7 +74,44 @@
     -->
     <xsl:template name="profile.from.project.name">
         <xsl:param name="project.name" />
-        <xsl:value-of select="concat('profile.', translate($project.name, ':', '.'))" />
+
+        <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
+        <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+
+        <xsl:value-of select="concat(
+                'profile.',
+                translate(
+                    translate(
+                        $project.name,
+                        $uppercase,
+                        $lowercase
+                    ),
+                    ':',
+                    '.'
+                )
+            )" />
+    </xsl:template>
+
+    <xsl:template name="file.from.project.name">
+        <xsl:param name="project.name" />
+
+        <xsl:variable name="extensions.directory">
+            <xsl:choose>
+                <xsl:when test="starts-with($project.name, 'ABC:')">
+                    <xsl:value-of select="$abc.extensions.directory" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$project.extensions.directory" />
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
+        <xsl:value-of select="concat(
+                $extensions.directory,
+                '/',
+                translate($project.name, ':', '/'),
+                '/Extension.xml'
+            )" />
     </xsl:template>
 
     <xsl:template name="profile.enabled">

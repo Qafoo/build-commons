@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="abc:base:lifecycle">
+<project name="ABC:Core:Lifecycle">
     <target name="validate"
             depends="-validate:before~hook,
                      -validate:main~hook,

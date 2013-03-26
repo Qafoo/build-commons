@@ -38,12 +38,8 @@
             <fileset dir="${abc:custom.extensions.directory}"
                      includes="**/Extension.xml"
                      erroronmissingdir="false" />
-            <fileset dir="${abc:base.directory}/Base/">
-                <include name="**/*.xml" />
-                <!-- Already included through abc entrypoint import -->
-                <exclude name="Lifecycle Extension Points.xml" />
-            </fileset>
-            <fileset dir="${abc:configure:base.directory}/../Extensions/"
+
+            <fileset dir="${abc:base.directory}/Extensions/"
                      includes="**/Extension.xml" />
             <!-- TODO: include custom project fileset -->
             <filterchain>
@@ -78,6 +74,9 @@
             <param name="ant.basedir" expression="${ant.basedir}" />
             <param name="ant.project.build-file" expression="${ant.project.build-file}" />
             <param name="user.dir" expression="${user.dir}" />
+
+            <param name="abc.extensions.directory" expression="${abc:base.directory}/Extensions/" />
+            <param name="project.extensions.directory" expression="${abc:custom.extensions.directory}" />
         </xslt>
     </target>
 

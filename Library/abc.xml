@@ -4,6 +4,6 @@
              file="${ant.file.abc}" />
 
     <!-- Just to have extension points available for the user build.xml-->
-    <import file="${abc:base.directory}/Base/Lifecycle Extension Points.xml" />
+    <import file="${abc:base.directory}/Extensions/ABC/Core/Lifecycle/Extension-Points.xml" />
     <import file="${abc:base.directory}/Configure/Configure.xml" />
 </project>
