@@ -8,7 +8,7 @@
     <!--
         Variables filled by ANT call
     -->
-    <xsl:param name="abc.project.default-target" />
+    <xsl:param name="project.default-target" />
     <xsl:param name="ant.project.build-file" />
     <xsl:param name="ant.project.name" />
     <xsl:param name="ant.basedir" />
@@ -23,7 +23,7 @@
     <xsl:template match="/">
         <project name="{$ant.project.name}#generated"
                  basedir="{$ant.basedir}"
-                 default="{$abc.project.default-target}">
+                 default="{$project.default-target}">
 
             <import file="{$ant.project.build-file}" />
 

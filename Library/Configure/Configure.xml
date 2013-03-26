@@ -35,7 +35,7 @@
                 append="true"
                 fixlastline="true">
             <file file="${abc:configure:profiles.file}" />
-            <fileset dir="${abc:custom.extensions.directory}"
+            <fileset dir="${project.extensions.directory}"
                      includes="**/Extension.xml"
                      erroronmissingdir="false" />
 
@@ -57,10 +57,10 @@
             <file file="${abc:configure:resources.directory}/footer.xml" />
         </concat>
 
-        <property name="ant.basedir" location="${basedir}" />
-        <property name="ant.project.build-file" location="${ant.file}" />
+        <property name="-abc.configure.base.directory" location="${basedir}" />
+        <property name="-abc.configure.build.file" location="${ant.file}" />
 
-        <condition property="abc.project.default-target"
+        <condition property="-abc.configure.default-target"
                    value="${ant.project.default-target}"
                    else="verify">
             <isset property="ant.project.default-target" />
@@ -69,14 +69,14 @@
         <xslt in="${abc:configure:extensions.file}"
               out="${user.dir}/build.xml"
               style="${abc.configure.base.directory}/Configure.xslt">
-            <param name="abc.project.default-target" expression="${abc.project.default-target}" />
+            <param name="project.default-target" expression="${-abc.configure.default-target}" />
             <param name="ant.project.name" expression="${ant.project.name}" />
-            <param name="ant.basedir" expression="${ant.basedir}" />
-            <param name="ant.project.build-file" expression="${ant.project.build-file}" />
+            <param name="ant.basedir" expression="${-abc.configure.base.directory}" />
+            <param name="ant.project.build-file" expression="${-abc.configure.build.file}" />
             <param name="user.dir" expression="${user.dir}" />
 
             <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
-            <param name="project.extensions.directory" expression="${abc:custom.extensions.directory}" />
+            <param name="project.extensions.directory" expression="${project.extensions.directory}" />
         </xslt>
     </target>
 

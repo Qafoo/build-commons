@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ABC:Core:SDK" xmlns:ac="http://ant-contrib.sourceforge.net">
+
+    <!--
+        Macro that determines the "Resources" directory of a given extension.
+    -->
+    <macrodef name="abc-extension-resources">
+        <attribute name="extension" />
+        <attribute name="property" />
+        <sequential>
+            <ac:propertycopy property="@{property}#Extension.File"
+                             from="ant.file.@{extension}" />
+            <dirname property="@{property}#Extension.Directory"
+                     file="${@{property}#Extension.File}" />
+            <property name="@{property}"
+                      location="${@{property}#Extension.Directory}/Resources" />
+
+            <fail message="The requested 'Resources' directory does not exist for extension '@{extension}'.">
+                <condition>
+                    <not>
+                        <available file="${@{property}}" type="dir" />
+                    </not>
+                </condition>
+            </fail>
+        </sequential>
+    </macrodef>
+</project>
