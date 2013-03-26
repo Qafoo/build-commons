@@ -7,9 +7,4 @@
     <!-- TODO: Move extension points into a separate file -->
     <import file="${abc:base.directory}/Base/Lifecycle.xml" />
     <import file="${abc:base.directory}/Configure/Configure.xml" />
-
-    <target name="foo">
-        <echo message="foobar" />
-        <echo message="${abc:base.directory}" />
-    </target>
 </project>
