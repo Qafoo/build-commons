@@ -200,7 +200,8 @@
           id ID #IMPLIED
           name CDATA #IMPLIED
           type CDATA #IMPLIED
-          value CDATA #IMPLIED>
+          value CDATA #IMPLIED
+          expression CDATA #IMPLIED>
 
 <!ELEMENT or (custom | none | present | not | type | readable | writable | modified | or | contains | depend | different | size | majority | containsregexp | filename | selector | date | and | depth)*>
 <!ATTLIST or
@@ -354,7 +355,8 @@
 <!ELEMENT file EMPTY>
 <!ATTLIST file
           id ID #IMPLIED
-          name CDATA #IMPLIED>
+          name CDATA #IMPLIED
+          file CDATA #IMPLIED>
 
 <!ELEMENT pathelement EMPTY>
 <!ATTLIST pathelement
@@ -5169,7 +5171,7 @@
           description CDATA #IMPLIED
           files CDATA #IMPLIED>
 
-<!ELEMENT concat (#PCDATA | filterchain | fileset | filelist | path | footer | header)*>
+<!ELEMENT concat (#PCDATA | filterchain | fileset | filelist | file | path | footer | header)*>
 <!ATTLIST concat
           id ID #IMPLIED
           force %boolean; #IMPLIED
