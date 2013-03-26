@@ -8,11 +8,8 @@
     <property file="${abc.configure.base.directory}/Extension.properties" />
 
     <target name="-ABC:Core:Configure:Extension">
-
-        <!--<abc-extension-properties extension="ABC:Core:Configure" />-->
-
-        <abc-extension-resources extension="ABC:Core:Configure"
-                                 property="-ABC.Core.Configure.Resource.Directory" />
+        <abc-extension-init extension="ABC:Core:Configure"
+                            has-resources="true" />
 
         <tempfile property="abc:configure:extensions.file"
                   deleteonexit="true" />
@@ -27,14 +24,14 @@
         <concat destfile="${abc:configure:extensions.file}"
                 overwrite="true"
                 append="false">
-            <file file="${-ABC.Core.Configure.Resource.Directory}/Header.xml" />
+            <file file="${abc.core.configure.resources.directory}/Header.xml" />
         </concat>
         <concat destfile="${abc:configure:extensions.file}"
                 overwrite="true"
                 append="true"
                 fixlastline="true">
             <file file="${abc:configure:profiles.file}" />
-            <file file="${-ABC.Core.Configure.Resource.Directory}/Profile-Defaults.xml" />
+            <file file="${abc.core.configure.resources.directory}/Profile-Defaults.xml" />
             <fileset dir="${project.extensions.directory}"
                      includes="**/Extension.xml"
                      erroronmissingdir="false" />
@@ -54,7 +51,7 @@
         <concat destfile="${abc:configure:extensions.file}"
                 overwrite="true"
                 append="true">
-            <file file="${-ABC.Core.Configure.Resource.Directory}/Footer.xml" />
+            <file file="${abc.core.configure.resources.directory}/Footer.xml" />
         </concat>
 
         <property name="-abc.configure.base.directory" location="${basedir}" />
@@ -69,7 +66,7 @@
         <xslt taskname="ABC:Core:Configure:Extension"
               in="${abc:configure:extensions.file}"
               out="${user.dir}/build.xml"
-              style="${-ABC.Core.Configure.Resource.Directory}/Configure.xslt">
+              style="${abc.core.configure.resources.directory}/Configure.xslt">
 
             <param name="project.default-target" expression="${-abc.configure.default-target}" />
             <param name="ant.project.name" expression="${ant.project.name}" />

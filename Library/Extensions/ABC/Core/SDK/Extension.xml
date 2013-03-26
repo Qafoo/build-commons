@@ -16,18 +16,37 @@
         <attribute name="has-resources" default="" />
 
         <sequential>
+            <ABC-Core-SDK-Public-Property-Name-From-Extension extension="@{extension}"
+                                                              property="@{extension}#Public.Property.Prefix" />
             <ac:if>
                 <istrue value="@{has-resources}" />
                 <ac:then>
-                    <ABC-Core-SDK-Resource-Directory extension="@{extension}"
-                                                     property="@{extension}.Resources.Directory" />
+                    <ABC-Core-SDK-Resources-Directory extension="@{extension}"
+                                                      property="${@{extension}#Public.Property.Prefix}.resources.directory" />
                 </ac:then>
             </ac:if>
 
             <ABC-Core-SDK-Extension-Directory extension="@{extension}"
-                                              property="@{extension}.Directory" />
+                                              property="${@{extension}#Public.Property.Prefix}.directory" />
 
             <property file="@{extension}.Directory/Extension.properties" />
+        </sequential>
+    </macrodef>
+
+    <!--
+        Convert an extension name to a public property name prefix
+    -->
+    <macrodef name="ABC-Core-SDK-Public-Property-Name-From-Extension">
+        <attribute name="extension" />
+        <attribute name="property" />
+
+        <sequential>
+            <abc-string-lowercase property="@{property}#Not.Lowercased"
+                                  input="@{extension}"  />
+            <abc-string-filter property="@{property}"
+                               input="${@{property}#Not.Lowercased}">
+                <replacestring from=":" to="." />
+            </abc-string-filter>
         </sequential>
     </macrodef>
 
@@ -57,7 +76,7 @@
                                                property="@{property}#Extension.Directory" />
 
             <property name="@{property}"
-                      location="${@{property}#Extension.Directory}/Resources" />
+                  location="${@{property}#Extension.Directory}/Resources" />
 
             <fail message="The requested 'Resources' directory does not exist for extension '@{extension}'.">
                 <condition>
