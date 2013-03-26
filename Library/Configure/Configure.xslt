@@ -49,7 +49,7 @@
     -->
     <xsl:template name="profile.from.project.name">
         <xsl:param name="project.name" />
-        <xsl:value-of select="concat('profile.', translate(substring-after($project.name, 'abc:'), ':', '.'))" />
+        <xsl:value-of select="concat('profile.', translate($project.name, ':', '.'))" />
     </xsl:template>
 
     <xsl:template name="profile.enabled">
