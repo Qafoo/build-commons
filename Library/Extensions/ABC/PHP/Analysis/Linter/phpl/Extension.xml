@@ -8,7 +8,20 @@
             extensionOf="-compile:before~hook">
         <abc:extension-init extension="ABC:PHP:Analysis:Linter:phpl" />
 
+        <abc:changed-fileset id="-ABC.PHP.Analysis.Linter.phpl.fileset">
+            <include name="**/*" />
+        </abc:changed-fileset>
 
+        <abc:apply apply-taskname="phpl"
+               executable="${abc.environment.executable.php}"
+               failonerror="true"
+               parallel="false"
+               visible-stdout="false"
+               visible-stderr="false"
+               verbose="true">
+            <arg value="-l" />
+            <fileset refid="-ABC.PHP.Analysis.Linter.phpl.fileset" />
+        </abc:apply>
     </target>
 
     <!-- Public execution alias -->

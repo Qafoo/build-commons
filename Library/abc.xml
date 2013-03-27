@@ -12,12 +12,10 @@
     <!--
         Include all Configure time dependencies. Explicitly leaving out the lifecycle targets
      -->
-    <import>
-        <fileset dir="${abc.extensions.directory}/ABC/Core">
-            <include name="**/Extension.xml" />
-            <include name="**/Extension-Points.xml" />
-            <exclude name="Lifecycle/Extension.xml" />
-            <exclude name="Changes/Extension.xml" />
-        </fileset>
-    </import>
+    <import file="${abc.extensions.directory}/ABC/Core/Ant-Contrib/Extension.xml" />
+    <import file="${abc.extensions.directory}/ABC/Core/SDK/Extension.xml" />
+    <import file="${abc.extensions.directory}/ABC/Core/String/Extension.xml" />
+    <import file="${abc.extensions.directory}/ABC/Core/Configure/Extension.xml" />
+    <import file="${abc.extensions.directory}/ABC/Core/Configure/Extension-Points.xml" />
+    <import file="${abc.extensions.directory}/ABC/Core/Lifecycle/Extension-Points.xml" />
 </project>

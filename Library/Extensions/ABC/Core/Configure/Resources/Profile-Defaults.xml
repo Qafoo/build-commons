@@ -9,4 +9,5 @@
     <!-- Needed during runtime -->
     <profile default="enabled">ABC:Core:Lifecycle</profile>
     <profile default="enabled">ABC:Core:Changes</profile>
+    <profile default="enabled">ABC:Core:Execution</profile>
 </profile-defaults>

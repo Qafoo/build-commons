@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:Core:Execution"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:macrodef name="tempfile">
+        <attribute name="property" />
+        <attribute name="destdir" default="${abc.temp.directory}" />
+        <attribute name="prefix" default="abc" />
+        <attribute name="suffix" default=".tmp" />
+        <attribute name="deleteonexit" default="true" />
+        <attribute name="createfile" default="false" />
+        <attribute name="file" default="" />
+
+        <sequential>
+            <mkdir dir="${abc.temp.directory}" />
+            <ac:var name="-ABC.Core.Execution.Temp.File"
+                    unset="true" />
+            <tempfile property="-ABC.Core.Execution.Temp.File"
+                      suffix="@{suffix}"
+                      prefix="@{prefix}"
+                      destdir="@{destdir}"
+                      deleteonexit="@{deleteonexit}"
+                      createfile="@{createfile}" />
+
+            <condition property="@{property}"
+                       value="@{file}"
+                       else="${-ABC.Core.Execution.Temp.File}">
+                <not>
+                    <equals arg1="@{file}" arg2="" forcestring="true" />
+                </not>
+            </condition>
+        </sequential>
+    </abc:macrodef>
+
+    <abc:macrodef name="apply">
+        <attribute name="executable" />
+        <attribute name="dir" default="${project.directory}" />
+        <attribute name="output" default="" />
+        <attribute name="error" default="" />
+        <attribute name="append" default="false" />
+        <attribute name="failonerror" default="false" />
+        <attribute name="parallel" default="false" />
+        <attribute name="type" default="file" />
+        <attribute name="maxparallel" default="0" />
+        <attribute name="verbose" default="false" />
+
+        <attribute name="visible-stdout" default="true" />
+        <attribute name="visible-stderr" default="true" />
+        <attribute name="fail-on-non-empty-stderr" default="true" />
+        <attribute name="apply-taskname" default="apply" />
+
+        <element name="configuration" implicit="yes" />
+
+        <sequential>
+
+            <ac:var name="-ABC.Core.Execution.Stdout.Temp.File"
+                    unset="true" />
+            <abc:tempfile property="-ABC.Core.Execution.Stdout.Temp.File"
+                          file="@{output}"
+                          prefix="stdout"
+                          suffix=".log" />
+            <ac:var name="-ABC.Core.Execution.Stderr.Temp.File"
+                    unset="true" />
+            <abc:tempfile property="-ABC.Core.Execution.Stderr.Temp.File"
+                          file="@{error}"
+                          prefix="stderr"
+                          suffix=".log" />
+
+            <ac:if>
+                <not>
+                    <istrue value="@{append}" />
+                </not>
+                <ac:then>
+                    <delete file="${-ABC.Core.Execution.Stdout.Temp.File}"
+                            quiet="true"
+                            failonerror="false" />
+                    <delete file="${-ABC.Core.Execution.Stderr.Temp.File}"
+                            quiet="true"
+                            failonerror="false" />
+                </ac:then>
+            </ac:if>
+            <ac:var name="-ABC.Core.Execution.Return.Code"
+                    unset="true" />
+            <apply taskname="@{apply-taskname}"
+                   executable="@{executable}"
+                   dir="@{dir}"
+                   output="${-ABC.Core.Execution.Stdout.Temp.File}"
+                   error="${-ABC.Core.Execution.Stderr.Temp.File}"
+                   failonerror="false"
+                   parallel="@{parallel}"
+                   type="@{type}"
+                   maxparallel="@{maxparallel}"
+                   verbose="@{verbose}"
+                   append="true"
+                   resultproperty="-ABC.Core.Execution.Return.Code">
+                <configuration />
+            </apply>
+
+            <!--
+                Only do all the output stuff if the apply did run at all
+
+                It does not run for example if the given fileset is empty
+            -->
+            <ac:if>
+                <isset property="-ABC.Core.Execution.Return.Code" />
+                <ac:then>
+                    <ac:if>
+                        <istrue value="@{visible-stdout}" />
+                        <ac:then>
+                            <concat taskname="stdout">
+                                <file file="${-ABC.Core.Execution.Stdout.Temp.File}" />
+                            </concat>
+                        </ac:then>
+                    </ac:if>
+
+                    <ac:if>
+                        <istrue value="@{visible-stderr}" />
+                        <ac:then>
+                            <concat taskname="stderr">
+                                <file file="${-ABC.Core.Execution.Stderr.Temp.File}" />
+                            </concat>
+                        </ac:then>
+                    </ac:if>
+
+                    <ac:if>
+                        <or>
+                            <and>
+                                <istrue value="@{failonerror}" />
+                                <not>
+                                    <equals arg1="${-ABC.Core.Execution.Return.Code}" arg2="0" />
+                                </not>
+                            </and>
+                            <and>
+                                <istrue value="@{fail-on-non-empty-stderr}" />
+                                <isfileselected file="${-ABC.Core.Execution.Stderr.Temp.File}">
+                                    <size value="0" when="more" />
+                                </isfileselected>
+                            </and>
+                        </or>
+
+                        <ac:then>
+                            <ac:if>
+                                <not>
+                                    <istrue value="@{visible-stderr}" />
+                                </not>
+                                <ac:then>
+                                    <concat taskname="stderr">
+                                        <file file="${-ABC.Core.Execution.Stderr.Temp.File}" />
+                                    </concat>
+                                </ac:then>
+                            </ac:if>
+                            <fail message="Execution of '@{executable}' failed with return code '${-ABC.Core.Execution.Return.Code}'." />
+                        </ac:then>
+                    </ac:if>
+                </ac:then>
+            </ac:if>
+
+        </sequential>
+
+    </abc:macrodef>
+</project>

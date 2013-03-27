@@ -65,7 +65,10 @@
                     extension="@{extension}"
                     property="${@{extension}#Public.Property.Prefix}.directory" />
 
-            <property file="@{extension}.Directory/Extension.properties" />
+
+            <ac:propertycopy from="${@{extension}#Public.Property.Prefix}.directory"
+                             property="@{extension}#Directory" />
+            <property file="${@{extension}#Directory}/Extension.properties" />
         </sequential>
     </abc:macrodef>
 
@@ -148,6 +151,7 @@
     -->
     <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Common">
         <sequential>
+            <echo message="Common Bootstrap" />
         </sequential>
     </internal:macrodef>
 

@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:Core:String"
+<project name="ABC:Core:Changes"
          xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:macrodef name="changed-fileset">
+        <attribute name="id" />
+        <attribute name="dir" default="${project.directory}"/>
+        <element name="restrictions" implicit="yes" />
+        <sequential>
+            <abc:extension-init extension="ABC:Core:Changes" />
+            <pathconvert property="-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}">
+                <path location="${project.build.directory}" />
+                <map from="@{dir}/" to="" />
+            </pathconvert>
 
-
+            <mkdir dir="${abc.core.changes.metadata.directory}" />
+            <fileset dir="@{dir}" id="@{id}">
+                <restrictions />
+                <exclude name="${-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}}/**" />
+                <modified>
+                    <param name="cache.cachefile" value="${abc.core.changes.metadata.directory}/@{id}.properties" />
+                </modified>
+            </fileset>
+        </sequential>
+    </abc:macrodef>
 </project>
