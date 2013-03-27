@@ -7,6 +7,8 @@
     <property name="abc.extensions.directory"
               location="${abc.base.directory}/Extensions" />
 
+    <property file="${abc.base.directory}/abc.properties" />
+
     <!--
         Include all Configure time dependencies. Explicitly leaving out the lifecycle targets
      -->
