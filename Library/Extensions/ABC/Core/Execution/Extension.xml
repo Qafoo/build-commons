@@ -106,6 +106,7 @@
             <ac:if>
                 <isset property="-ABC.Core.Execution.Return.Code" />
                 <ac:then>
+                    <!-- Output if stdout if requested -->
                     <ac:if>
                         <istrue value="@{visible-stdout}" />
                         <ac:then>
@@ -115,6 +116,7 @@
                         </ac:then>
                     </ac:if>
 
+                    <!-- Output if stderr if requested -->
                     <ac:if>
                         <istrue value="@{visible-stderr}" />
                         <ac:then>
@@ -124,6 +126,7 @@
                         </ac:then>
                     </ac:if>
 
+                    <!-- Make sure we fail on error and have at least outputted stderr -->
                     <ac:if>
                         <or>
                             <and>
