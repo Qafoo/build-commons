@@ -12,7 +12,7 @@
     </target>
 
     <target name="coffee">
-
+        <echo>Coffee is awesome...</echo>
     </target>
 
     <target name="hilfe">
