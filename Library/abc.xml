@@ -15,6 +15,7 @@
         <fileset dir="${abc.extensions.directory}/ABC/Core">
             <include name="**/Extension.xml" />
             <exclude name="Lifecycle/Extension.xml" />
+            <exclude name="Changes/Extension.xml" />
         </fileset>
     </import>
 </project>
