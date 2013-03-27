@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ABC:PHP:Analysis:Linter:phpl"
-         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd">
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
+            depends="-ABC:Core:SDK:Extension"
             extensionOf="-compile:before~hook">
         <abc:extension-init extension="ABC:PHP:Analysis:Linter:phpl" />
+
+
     </target>
 
     <!-- Public execution alias -->

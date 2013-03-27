@@ -124,4 +124,48 @@
         </sequential>
     </internal:macrodef>
 
+    <!--
+        Target, which each Extension needs to depend on.
+
+        This Target is used for bootstrapping. As it will be called before any other extension.
+        It may initialize build directories or do other *runtime* configuration
+    -->
+    <target name="-ABC:Core:SDK:Extension">
+        <internal:ABC-Core-SDK-Extension-Bootstrap-Common />
+        <ac:if>
+            <istrue value="${abc.runtime.mode}" />
+            <ac:then>
+                <internal:ABC-Core-SDK-Extension-Bootstrap-Runtime />
+            </ac:then>
+            <ac:else>
+                <internal:ABC-Core-SDK-Extension-Bootstrap-Configure />
+            </ac:else>
+        </ac:if>
+    </target>
+
+    <!--
+        Initialization which is done during both phases
+    -->
+    <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Common">
+        <sequential>
+        </sequential>
+    </internal:macrodef>
+
+    <!--
+        Initialization which is done only during runtime
+    -->
+    <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Runtime">
+        <sequential>
+            <echo message="Runtime Bootstrap" />
+        </sequential>
+    </internal:macrodef>
+
+    <!--
+        Initialization which is done only during configure
+    -->
+    <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Configure">
+        <sequential>
+            <echo message="Configure Bootstrap" />
+        </sequential>
+    </internal:macrodef>
 </project>

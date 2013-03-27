@@ -4,7 +4,8 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
-    <target name="-ABC:Core:Configure:Extension">
+    <target name="-ABC:Core:Configure:Extension"
+            depends="-ABC:Core:SDK:Extension">
         <abc:extension-init extension="ABC:Core:Configure"
                             has-resources="true" />
 
@@ -66,10 +67,10 @@
               style="${abc.core.configure.resources.directory}/Configure.xslt">
 
             <param name="project.default-target" expression="${-ABC.Core.Configure.Default-Target}" />
-            <param name="ant.project.name" expression="${ant.project.name}" />
-            <param name="ant.basedir" expression="${-ABC.Core.Configure.Base.Directory}" />
-            <param name="ant.project.build-file" expression="${-ABC.Core.Configure.Build.File}" />
-            <param name="user.dir" expression="${user.dir}" />
+            <param name="project.name" expression="${ant.project.name}" />
+            <param name="project.directory" expression="${-ABC.Core.Configure.Base.Directory}" />
+            <param name="project.build.file" expression="${-ABC.Core.Configure.Build.File}" />
+            <param name="project.build.directory" expression="${user.dir}" />
 
             <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
             <param name="project.extensions.directory" expression="${project.extensions.directory}" />

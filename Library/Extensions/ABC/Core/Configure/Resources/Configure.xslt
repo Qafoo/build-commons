@@ -9,10 +9,10 @@
         Variables filled by ANT call
     -->
     <xsl:param name="project.default-target" />
-    <xsl:param name="ant.project.build-file" />
-    <xsl:param name="ant.project.name" />
-    <xsl:param name="ant.basedir" />
-    <xsl:param name="user.dir" />
+    <xsl:param name="project.build.file" />
+    <xsl:param name="project.name" />
+    <xsl:param name="project.directory" />
+    <xsl:param name="project.build.directory" />
 
     <xsl:param name="abc.extensions.directory" />
     <xsl:param name="project.extensions.directory" />
@@ -21,17 +21,30 @@
         Basic Document Transformations
     -->
     <xsl:template match="/">
-        <project name="{$ant.project.name}#generated"
-                 basedir="{$ant.basedir}"
+        <project name="{$project.name}#generated"
+                 basedir="{$project.directory}"
                  default="{$project.default-target}">
 
-            <!-- Import the original build file first, to allow it overwriting abc related properties -->
-            <import file="{$ant.project.build-file}" />
+            <!--
+                Let the system know, that we are in runtime mode now
+            -->
+            <property name="abc.runtime.mode" value="true" />
 
             <!--
                 Exposed default properties based on the original build file
+                !! Can not be overwritten by the user. as they depend on the configure process !!
             -->
-            <property name="abc:project.name" value="{$ant.project.name}" />
+            <property name="project.directory" value="{$project.directory}" />
+            <property name="project.build.directory" value="{$project.build.directory}" />
+
+            <!-- Import the original build file first, to allow it overwriting abc related properties -->
+            <import file="{$project.build.file}" />
+
+            <!--
+                Exposed default properties based on the original build file
+                !! May be overwritten by user configuration !!
+            -->
+            <property name="project.name" value="{$project.name}" />
 
             <xsl:apply-templates select="/abc/project" />
 
@@ -39,8 +52,8 @@
                 Overwrite configure target, to reconfigure the build system automatically
             -->
             <target name="configure">
-                <ant antfile="{$ant.project.build-file}"
-                     dir="{$user.dir}"
+                <ant antfile="{$project.build.file}"
+                     dir="{$project.build.directory}"
                      target="configure"
                      useNativeBasedir="true" />
             </target>
