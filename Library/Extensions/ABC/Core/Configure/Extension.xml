@@ -6,80 +6,124 @@
 
     <target name="-ABC:Core:Configure:Extension"
             depends="-ABC:Core:SDK:Extension"
-			extensionOf="-configure:main~hook">
+			extensionOf="-configure:hamburger:with:fries~hook [">
+
         <abc:extension-init extension="ABC:Core:Configure"
                             has-resources="true" />
 
-        <tempfile property="-ABC.Core.Configure.Generated.File"
-                  deleteonexit="true" />
-
-        <tempfile property="-ABC.Core.Configure.Enabled-Profiles.File"
-                  deleteonexit="true" />
+        <abc:tempfile property="-ABC.Core.Configure.Enabled-Profiles.File"
+                      suffix=".xml" />
 
         <echoproperties destfile="${-ABC.Core.Configure.Enabled-Profiles.File}"
                         prefix="profile."
                         format="xml" />
 
-        <concat destfile="${-ABC.Core.Configure.Generated.File}"
-                overwrite="true"
-                append="false">
-            <file file="${abc.core.configure.resources.directory}/Header.xml" />
-        </concat>
-        <concat destfile="${-ABC.Core.Configure.Generated.File}"
-                overwrite="true"
-                append="true"
-                fixlastline="true">
-            <file file="${-ABC.Core.Configure.Enabled-Profiles.File}" />
-            <file file="${abc.core.configure.resources.directory}/Profile-Defaults.xml" />
-            <fileset dir="${project.extensions.directory}"
-                     includes="**/Extension.xml"
-                     erroronmissingdir="false" />
+        <internal:configure-generate-build-file
+                srcfile="${-ABC.Core.Configure.Enabled-Profiles.File}"
+                destfile="${user.dir}/build.xml"
+                filename="Extension.xml"
+                mode="runtime" />
 
-            <fileset dir="${abc.extensions.directory}"
-                     includes="**/Extension.xml" />
+        <internal:configure-generate-build-file
+                srcfile="${-ABC.Core.Configure.Enabled-Profiles.File}"
+                destfile="${user.dir}/configure.xml"
+                filename="Configure.xml"
+                mode="configure" />
 
-            <filterchain>
-                <tokenfilter>
-                    <filetokenizer />
-                    <replaceregex pattern="&lt;\?xml\s[^?]+\?&gt;"
-                                  replace=""
-                                  flags="g" />
-                </tokenfilter>
-            </filterchain>
-        </concat>
-        <concat destfile="${-ABC.Core.Configure.Generated.File}"
-                overwrite="true"
-                append="true">
-            <file file="${abc.core.configure.resources.directory}/Footer.xml" />
-        </concat>
-
-        <property name="-ABC.Core.Configure.Base.Directory" location="${basedir}" />
-        <property name="-ABC.Core.Configure.Build.File" location="${ant.file}" />
-
-        <condition property="-ABC.Core.Configure.Default-Target"
-                   value="${ant.project.default-target}"
-                   else="verify">
-            <isset property="ant.project.default-target" />
-        </condition>
-
-        <xslt taskname="ABC:Core:Configure:Extension"
-              in="${-ABC.Core.Configure.Generated.File}"
-              out="${user.dir}/build.xml"
-              style="${abc.core.configure.resources.directory}/Configure.xslt">
-
-            <param name="project.default-target" expression="${-ABC.Core.Configure.Default-Target}" />
-            <param name="project.name" expression="${ant.project.name}" />
-            <param name="project.directory" expression="${-ABC.Core.Configure.Base.Directory}" />
-            <param name="project.build.file" expression="${-ABC.Core.Configure.Build.File}" />
-            <param name="project.build.directory" expression="${user.dir}" />
-
-            <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
-            <param name="project.extensions.directory" expression="${project.extensions.directory}" />
-        </xslt>
+        <ant antfile="${user.dir}/configure.xml"
+             target="configure"
+             inheritAll="true"
+             inheritRefs="true" />
     </target>
 
+    <internal:macrodef name="configure-generate-build-file">
+        <attribute name="srcfile" />
+        <attribute name="destfile" />
+        <attribute name="mode" />
+        <attribute name="filename" />
+
+        <sequential>
+            <tempfile property="-ABC.Core.Configure.Generated.File"
+                      suffix=".xml"
+                      deleteonexit="true" />
+
+            <internal:configure-generate-target-list
+                    srcfile="@{srcfile}"
+                    destfile="${-ABC.Core.Configure.Generated.File}"
+                    filename="@{filename}" />
+
+            <property name="-ABC.Core.Configure.Base.Directory" location="${basedir}" />
+            <property name="-ABC.Core.Configure.Build.File" location="${ant.file}" />
+
+            <condition property="-ABC.Core.Configure.Default-Target"
+                       value="${ant.project.default-target}"
+                       else="verify">
+                <isset property="ant.project.default-target" />
+            </condition>
+
+            <xslt taskname="ABC:Core:Configure:Extension"
+                  in="${-ABC.Core.Configure.Generated.File}"
+                  out="@{destfile}"
+                  style="${abc.core.configure.resources.directory}/Configure.xslt">
+
+                <param name="project.default-target" expression="${-ABC.Core.Configure.Default-Target}" />
+                <param name="project.name" expression="${ant.project.name}" />
+                <param name="project.directory" expression="${-ABC.Core.Configure.Base.Directory}" />
+                <param name="project.build.file" expression="${-ABC.Core.Configure.Build.File}" />
+                <param name="project.build.directory" expression="${user.dir}" />
+
+                <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
+                <param name="project.extensions.directory" expression="${project.extensions.directory}" />
+
+                <param name="abc.mode" expression="@{mode}" />
+            </xslt>
+        </sequential>
+    </internal:macrodef>
+
+    <internal:macrodef name="configure-generate-target-list">
+        <attribute name="srcfile" />
+        <attribute name="destfile" />
+        <attribute name="filename" />
+
+        <sequential>
+            <concat destfile="@{destfile}"
+                    overwrite="true"
+                    append="false">
+                <file file="${abc.core.configure.resources.directory}/Header.xml" />
+            </concat>
+            <concat destfile="@{destfile}"
+                    overwrite="true"
+                    append="true"
+                    fixlastline="true">
+                <file file="@{srcfile}" />
+                <file file="${abc.core.configure.resources.directory}/Profile-Defaults.xml" />
+                <fileset dir="${project.extensions.directory}"
+                         includes="**/@{filename}"
+                         erroronmissingdir="false" />
+
+                <fileset dir="${abc.extensions.directory}"
+                         includes="**/@{filename}" />
+
+                <filterchain>
+                    <tokenfilter>
+                        <filetokenizer />
+                        <replaceregex pattern="&lt;\?xml\s[^?]+\?&gt;"
+                                      replace=""
+                                      flags="g" />
+                    </tokenfilter>
+                </filterchain>
+            </concat>
+            <concat destfile="@{destfile}"
+                    overwrite="true"
+                    append="true">
+                <file file="${abc.core.configure.resources.directory}/Footer.xml" />
+            </concat>
+        </sequential>
+    </internal:macrodef>
+
     <target name="configure" 
-            depends="-configure:before~hook,
+            depends="-configure:hamburger:with:fries~hook [,
+                     -configure:before~hook,
                      -configure:main~hook,
                      -configure:after~hook" />
 </project>

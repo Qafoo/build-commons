@@ -4,5 +4,6 @@
     <extension-point name="-configure:before~hook" />
     <extension-point name="-configure:main~hook" />
     <extension-point name="-configure:after~hook" />
+    <extension-point name="-configure:hamburger:with:fries~hook [" />
 
 </project>

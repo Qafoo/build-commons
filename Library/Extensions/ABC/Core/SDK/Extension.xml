@@ -169,6 +169,7 @@
     -->
     <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Configure">
         <sequential>
+            <property name="bootstrapped" value="and ketchup" />
             <echo message="Configure Bootstrap" />
         </sequential>
     </internal:macrodef>

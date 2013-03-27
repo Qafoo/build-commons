@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ABC:PHP:Analysis:Linter:phpl">
+
+    <target name="ABC:PHP:Analysis:Linter:phpl:Configure"
+            extensionOf="-configure:main~hook">
+
+        <echo>Yes it works :)</echo>
+    </target>
+</project>

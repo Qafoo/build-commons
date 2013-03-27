@@ -17,6 +17,8 @@
     <xsl:param name="abc.extensions.directory" />
     <xsl:param name="project.extensions.directory" />
 
+    <xsl:param name="abc.mode" />
+
     <!--
         Basic Document Transformations
     -->
@@ -51,12 +53,22 @@
             <!--
                 Overwrite configure target, to reconfigure the build system automatically
             -->
-            <target name="configure">
-                <ant antfile="{$project.build.file}"
-                     dir="{$project.build.directory}"
-                     target="configure"
-                     useNativeBasedir="true" />
-            </target>
+            <xsl:choose>
+                <xsl:when test="$abc.mode = 'runtime'">
+                    <target name="configure">
+                        <ant antfile="{$project.build.file}"
+                             dir="{$project.build.directory}"
+                             target="configure"
+                             useNativeBasedir="true" />
+                    </target>
+                </xsl:when>
+                <xsl:otherwise>
+                    <target name="configure"
+                            depends="-configure:before~hook,
+                                     -configure:main~hook,
+                                     -configure:after~hook" />
+                </xsl:otherwise>
+            </xsl:choose>
         </project>
     </xsl:template>
 
@@ -121,6 +133,17 @@
     <xsl:template name="file.from.project.name">
         <xsl:param name="project.name" />
 
+        <xsl:variable name="filename">
+            <xsl:choose>
+                <xsl:when test="$abc.mode = 'runtime'">
+                    <xsl:text>Extension.xml</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>Configure.xml</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
         <xsl:variable name="extensions.directory">
             <xsl:choose>
                 <xsl:when test="starts-with($project.name, 'ABC:')">
@@ -136,7 +159,8 @@
                 $extensions.directory,
                 '/',
                 translate($project.name, ':', '/'),
-                '/Extension.xml'
+                '/',
+                $filename
             )" />
     </xsl:template>
 
