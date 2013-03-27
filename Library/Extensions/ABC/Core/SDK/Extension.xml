@@ -4,6 +4,10 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <!--
+        Macro to define proper macros inside the abc namespace
+        Use exactly like the original macrodef
+    -->
     <macrodef name="http://abc.tools.qafoo.com/abc.xsd:macrodef">
         <attribute name="name" />
         <element name="macro" implicit="true" />
@@ -15,6 +19,10 @@
         </sequential>
     </macrodef>
 
+    <!--
+        Macro to define proper macros inside the internal namespace
+        Use exactly like the original macrodef
+    -->
     <macrodef name="http://abc.tools.qafoo.com/abc-internal.xsd:macrodef">
         <attribute name="name" />
         <element name="macro" implicit="true" />
