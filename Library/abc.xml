@@ -10,10 +10,10 @@
     <!--
         Include all Configure time dependencies. Explicitly leaving out the lifecycle targets
      -->
-    <import file="${abc.extensions.directory}/ABC/Core/Lifecycle/Extension-Points.xml" />
     <import>
         <fileset dir="${abc.extensions.directory}/ABC/Core">
             <include name="**/Extension.xml" />
+            <include name="**/Extension-Points.xml" />
             <exclude name="Lifecycle/Extension.xml" />
             <exclude name="Changes/Extension.xml" />
         </fileset>

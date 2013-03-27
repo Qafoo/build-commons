@@ -5,7 +5,8 @@
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
     <target name="-ABC:Core:Configure:Extension"
-            depends="-ABC:Core:SDK:Extension">
+            depends="-ABC:Core:SDK:Extension"
+			extensionOf="-configure:main~hook">
         <abc:extension-init extension="ABC:Core:Configure"
                             has-resources="true" />
 
@@ -77,5 +78,8 @@
         </xslt>
     </target>
 
-    <target name="configure" depends="-ABC:Core:Configure:Extension" />
+    <target name="configure" 
+            depends="-configure:before~hook,
+                     -configure:main~hook,
+                     -configure:after~hook" />
 </project>
