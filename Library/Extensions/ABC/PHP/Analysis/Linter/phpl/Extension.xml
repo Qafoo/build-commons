@@ -22,6 +22,8 @@
             <arg value="-l" />
             <fileset refid="-ABC.PHP.Analysis.Linter.phpl.fileset" />
         </abc:apply>
+
+        <abc:commit-changes id="-ABC.PHP.Analysis.Linter.phpl.fileset" />
     </target>
 
     <!-- Public execution alias -->

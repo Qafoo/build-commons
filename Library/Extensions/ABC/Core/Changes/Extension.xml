@@ -8,8 +8,10 @@
         <attribute name="id" />
         <attribute name="dir" default="${project.directory}"/>
         <element name="restrictions" implicit="yes" />
+
         <sequential>
             <abc:extension-init extension="ABC:Core:Changes" />
+            <!-- Remove the Build directory from the changeset -->
             <pathconvert property="-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}">
                 <path location="${project.build.directory}" />
                 <map from="@{dir}/" to="" />
@@ -19,10 +21,30 @@
             <fileset dir="@{dir}" id="@{id}">
                 <restrictions />
                 <exclude name="${-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}}/**" />
-                <modified>
+                <modified update="false">
                     <param name="cache.cachefile" value="${abc.core.changes.metadata.directory}/@{id}.properties" />
                 </modified>
             </fileset>
+            <!-- Needed for later augementation on commit -->
+            <fileset dir="@{dir}" id="@{id}#Commit">
+                <restrictions />
+                <exclude name="${-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}}/**" />
+            </fileset>
+        </sequential>
+    </abc:macrodef>
+
+    <abc:macrodef name="commit-changes">
+        <attribute name="id" />
+
+        <sequential>
+            <augment id="@{id}#Commit">
+                <modified update="true" delayupdate="false">
+                    <param name="cache.cachefile" value="${abc.core.changes.metadata.directory}/@{id}.properties" />
+                </modified>
+            </augment>
+            <pathconvert property="@{id}#Commit.Pathconvert.Hack">
+                <fileset refid="@{id}#Commit" />
+            </pathconvert>
         </sequential>
     </abc:macrodef>
 </project>
