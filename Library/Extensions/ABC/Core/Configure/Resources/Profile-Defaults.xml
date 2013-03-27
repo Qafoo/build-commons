@@ -4,4 +4,5 @@
     <profile default="disabled">ABC:Core:Ant-Contrib</profile>
     <profile default="disabled">ABC:Core:Configure</profile>
     <profile default="disabled">ABC:Core:SDK</profile>
+    <profile default="disabled">ABC:Core:String</profile>
 </profile-defaults>
