@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:Core:SDK" xmlns:ac="http://ant-contrib.sourceforge.net">
+<project name="ABC:Core:SDK"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <macrodef name="http://abc.tools.qafoo.com/abc.xsd:macrodef">
+        <attribute name="name" />
+        <element name="macro" implicit="true" />
+
+        <sequential>
+            <macrodef name="http://abc.tools.qafoo.com/abc.xsd:@{name}">
+                <macro />
+            </macrodef>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="http://abc.tools.qafoo.com/abc-internal.xsd:macrodef">
+        <attribute name="name" />
+        <element name="macro" implicit="true" />
+
+        <sequential>
+            <macrodef name="http://abc.tools.qafoo.com/abc-internal.xsd:@{name}">
+                <macro />
+            </macrodef>
+        </sequential>
+    </macrodef>
 
     <!--
         Entry point, which any extension has to call first
@@ -11,49 +36,52 @@
         Using this macro instead of doing everything by oneself ensures all
         necessary steps are executed in the correct order.
     -->
-    <macrodef name="abc-extension-init">
+    <abc:macrodef name="extension-init">
         <attribute name="extension" />
         <attribute name="has-resources" default="" />
 
         <sequential>
-            <ABC-Core-SDK-Public-Property-Name-From-Extension extension="@{extension}"
-                                                              property="@{extension}#Public.Property.Prefix" />
+            <internal:ABC-Core-SDK-Public-Property-Name-From-Extension
+                    extension="@{extension}"
+                    property="@{extension}#Public.Property.Prefix" />
             <ac:if>
                 <istrue value="@{has-resources}" />
                 <ac:then>
-                    <ABC-Core-SDK-Resources-Directory extension="@{extension}"
-                                                      property="${@{extension}#Public.Property.Prefix}.resources.directory" />
+                    <internal:ABC-Core-SDK-Resources-Directory
+                            extension="@{extension}"
+                            property="${@{extension}#Public.Property.Prefix}.resources.directory" />
                 </ac:then>
             </ac:if>
 
-            <ABC-Core-SDK-Extension-Directory extension="@{extension}"
-                                              property="${@{extension}#Public.Property.Prefix}.directory" />
+            <internal:ABC-Core-SDK-Extension-Directory
+                    extension="@{extension}"
+                    property="${@{extension}#Public.Property.Prefix}.directory" />
 
             <property file="@{extension}.Directory/Extension.properties" />
         </sequential>
-    </macrodef>
+    </abc:macrodef>
 
     <!--
         Convert an extension name to a public property name prefix
     -->
-    <macrodef name="ABC-Core-SDK-Public-Property-Name-From-Extension">
+    <internal:macrodef name="ABC-Core-SDK-Public-Property-Name-From-Extension">
         <attribute name="extension" />
         <attribute name="property" />
 
         <sequential>
-            <abc-string-lowercase property="@{property}#Not.Lowercased"
+            <abc:string-lowercase property="@{property}#Not.Lowercased"
                                   input="@{extension}"  />
-            <abc-string-filter property="@{property}"
+            <abc:string-filter property="@{property}"
                                input="${@{property}#Not.Lowercased}">
                 <replacestring from=":" to="." />
-            </abc-string-filter>
+            </abc:string-filter>
         </sequential>
-    </macrodef>
+    </internal:macrodef>
 
     <!--
         Macro that determines the directory of a given extension.
     -->
-    <macrodef name="ABC-Core-SDK-Extension-Directory">
+    <internal:macrodef name="ABC-Core-SDK-Extension-Directory">
         <attribute name="extension" />
         <attribute name="property" />
 
@@ -63,17 +91,17 @@
             <dirname property="@{property}"
                      file="${@{property}#Extension.File}" />
         </sequential>
-    </macrodef>
+    </internal:macrodef>
 
     <!--
         Macro that determines the "Resources" directory of a given extension.
     -->
-    <macrodef name="ABC-Core-SDK-Resources-Directory">
+    <internal:macrodef name="ABC-Core-SDK-Resources-Directory">
         <attribute name="extension" />
         <attribute name="property" />
         <sequential>
-            <ABC-Core-SDK-Extension-Directory extension="@{extension}"
-                                               property="@{property}#Extension.Directory" />
+            <internal:ABC-Core-SDK-Extension-Directory extension="@{extension}"
+                                                       property="@{property}#Extension.Directory" />
 
             <property name="@{property}"
                   location="${@{property}#Extension.Directory}/Resources" />
@@ -86,6 +114,6 @@
                 </condition>
             </fail>
         </sequential>
-    </macrodef>
+    </internal:macrodef>
 
 </project>

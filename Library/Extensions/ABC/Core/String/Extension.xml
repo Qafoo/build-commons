@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:Core:String" xmlns:ac="http://ant-contrib.sourceforge.net">
-    <macrodef name="abc-string-transform">
+<project name="ABC:Core:String"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:macrodef name="string-transform">
         <attribute name="input" />
         <attribute name="property" />
         <attribute name="setonempty" default="true" />
@@ -18,28 +22,28 @@
                 <propertyresource name="-ABC.Core.String.Input" />
             </pathconvert>
         </sequential>
-    </macrodef>
+    </abc:macrodef>
 
-    <macrodef name="abc-string-filter">
+    <abc:macrodef name="string-filter">
         <attribute name="input" />
         <attribute name="property" />
         <element name="filters" implicit="yes" />
 
         <sequential>
-            <abc-string-transform input="@{input}"
+            <abc:string-transform input="@{input}"
                                   property="@{property}">
                 <filtermapper>
                     <filters />
                 </filtermapper>
-            </abc-string-transform>
+            </abc:string-transform>
         </sequential>
-    </macrodef>
+    </abc:macrodef>
 
-    <macrodef name="abc-string-lowercase">
+    <abc:macrodef name="string-lowercase">
         <attribute name="input" />
         <attribute name="property" />
         <sequential>
-            <abc-string-filter input="@{input}"
+            <abc:string-filter input="@{input}"
                                property="@{property}">
                 <replacestring from="A" to="a" />
                 <replacestring from="B" to="b" />
@@ -67,7 +71,7 @@
                 <replacestring from="X" to="x" />
                 <replacestring from="Y" to="y" />
                 <replacestring from="Z" to="z" />
-            </abc-string-filter>
+            </abc:string-filter>
         </sequential>
-    </macrodef>
+    </abc:macrodef>
 </project>

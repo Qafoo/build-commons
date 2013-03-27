@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">-->
-<project name="ABC:Core:Configure">
+<project name="ABC:Core:Configure"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
     <target name="-ABC:Core:Configure:Extension">
-        <abc-extension-init extension="ABC:Core:Configure"
+        <abc:extension-init extension="ABC:Core:Configure"
                             has-resources="true" />
 
         <tempfile property="-ABC.Core.Configure.Generated.File"

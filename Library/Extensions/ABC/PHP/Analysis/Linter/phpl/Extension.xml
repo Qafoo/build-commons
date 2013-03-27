@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:PHP:Analysis:Linter:phpl">
+<project name="ABC:PHP:Analysis:Linter:phpl"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd">
 
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
             extensionOf="-compile:before~hook">
-        <abc-extension-init extension="ABC:PHP:Analysis:Linter:phpl" />
-
-        <echo taskname="phpl"
-              message="Linting PHP stuff ;)" />
+        <abc:extension-init extension="ABC:PHP:Analysis:Linter:phpl" />
     </target>
 
     <!-- Public execution alias -->
