@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:SDK:Filesystem:Common"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:macrodef name="tempfile">
+        <attribute name="property" />
+        <attribute name="destdir" default="${abc.build.temp.directory}" />
+        <attribute name="prefix" default="abc" />
+        <attribute name="suffix" default=".tmp" />
+        <attribute name="deleteonexit" default="true" />
+        <attribute name="createfile" default="false" />
+        <attribute name="file" default="" />
+
+        <sequential>
+            <mkdir dir="${abc.build.temp.directory}" />
+            <ac:var name="-ABC.SDK.Execution.Temp.File"
+                    unset="true" />
+            <tempfile property="-ABC.SDK.Execution.Temp.File"
+                      suffix="@{suffix}"
+                      prefix="@{prefix}"
+                      destdir="@{destdir}"
+                      deleteonexit="@{deleteonexit}"
+                      createfile="@{createfile}" />
+
+            <condition property="@{property}"
+                       value="@{file}"
+                       else="${-ABC.SDK.Execution.Temp.File}">
+                <not>
+                    <equals arg1="@{file}" arg2="" forcestring="true" />
+                </not>
+            </condition>
+        </sequential>
+    </abc:macrodef>
+
+</project>
