@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:SDK:Changes"
+<project name="ABC:SDK:Changes:Extension"
          xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
@@ -10,7 +10,8 @@
         <element name="restrictions" implicit="yes" />
 
         <sequential>
-            <abc:extension-init name="ABC:SDK:Changes" />
+            <abc:extension-init name="ABC:SDK:Changes:Extension" />
+
             <!-- Remove the Build directory from the changeset -->
             <pathconvert property="-ABC.SDK.Changes.Project.Build.Directory.Relative#@{id}">
                 <path location="${project.build.directory}" />

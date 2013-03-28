@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:SDK:Ant-Contrib">
+<project name="ABC:SDK:Ant-Contrib:Extension">
 
     <!--
         We can't use the abc-extension-init magic for this extension,
         because this does rely on a loaded ant-contrib environment ;)
     -->
     <dirname property="-ABC.SDK.Ant-Contrib.Directory"
-             file="${ant.file.ABC:SDK:Ant-Contrib}" />
+             file="${ant.file.ABC:SDK:Ant-Contrib:Extension}" />
 
     <property name="-ABC.SDK.Ant-Contrib.Resources.Directory"
               location="${-ABC.SDK.Ant-Contrib.Directory}/Resources" />

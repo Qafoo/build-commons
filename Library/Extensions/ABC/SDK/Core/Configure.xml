@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:SDK:Core"
+<project name="ABC:SDK:Core:Configure"
          xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
@@ -85,6 +85,9 @@
                                   input="@{extension}"  />
             <abc:string-filter property="@{property}"
                                input="${@{property}#Not.Lowercased}">
+                <replaceregex pattern=":(Extension|Configure|Common)$"
+                              replace=""
+                              flags="i" />
                 <replacestring from=":" to="." />
             </abc:string-filter>
         </sequential>

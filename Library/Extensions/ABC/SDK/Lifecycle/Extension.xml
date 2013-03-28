@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:SDK:Lifecycle">
+<project name="ABC:SDK:Lifecycle:Extension">
     <!--
         No extension entry point for this extension, as it only defined
         the lifecycle. Nothing to hook to or init here

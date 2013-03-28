@@ -81,20 +81,27 @@
     <xsl:template match="/abc/project">
         <xsl:variable name="project.name" select="@name" />
 
+        <xsl:variable name="project.namespace">
+            <xsl:call-template name="string.get.parent">
+                <xsl:with-param name="input" select="$project.name" />
+                <xsl:with-param name="delimiter" select="':'" />
+            </xsl:call-template>
+        </xsl:variable>
+
         <xsl:variable name="profile.enabled">
             <xsl:choose>
-                <xsl:when test="/abc/profile-defaults/profile[text() = $project.name and @default='disabled']">
+                <xsl:when test="/abc/profile-defaults/profile[text() = $project.namespace and @default='disabled']">
                     <xsl:text>false</xsl:text>
                 </xsl:when>
-                <xsl:when test="/abc/profile-defaults/profile[text() = $project.name and @default='enabled']">
+                <xsl:when test="/abc/profile-defaults/profile[text() = $project.namespace and @default='enabled']">
                     <xsl:text>true</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:call-template name="profile.enabled">
                         <xsl:with-param name="profile.name">
-                            <xsl:call-template name="profile.from.project.name">
-                                <xsl:with-param name="project.name"
-                                                select="$project.name" />
+                            <xsl:call-template name="profile.from.project.namespace">
+                                <xsl:with-param name="project.namespace"
+                                                select="$project.namespace" />
                             </xsl:call-template>
                         </xsl:with-param>
                     </xsl:call-template>
@@ -116,8 +123,8 @@
     <!--
         Utillity Functions
     -->
-    <xsl:template name="profile.from.project.name">
-        <xsl:param name="project.name" />
+    <xsl:template name="profile.from.project.namespace">
+        <xsl:param name="project.namespace" />
 
         <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
         <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
@@ -126,7 +133,7 @@
                 'profile.',
                 translate(
                     translate(
-                        $project.name,
+                        $project.namespace,
                         $uppercase,
                         $lowercase
                     ),
@@ -138,17 +145,6 @@
 
     <xsl:template name="file.from.project.name">
         <xsl:param name="project.name" />
-
-        <xsl:variable name="filename">
-            <xsl:choose>
-                <xsl:when test="$abc.mode = 'runtime'">
-                    <xsl:text>Extension.xml</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text>Configure.xml</xsl:text>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
 
         <xsl:variable name="extensions.directory">
             <xsl:choose>
@@ -165,8 +161,7 @@
                 $extensions.directory,
                 '/',
                 translate($project.name, ':', '/'),
-                '/',
-                $filename
+                '.xml'
             )" />
     </xsl:template>
 
@@ -187,8 +182,8 @@
             <xsl:when test="$profile.name != 'profile'">
                 <xsl:call-template name="profile.enabled">
                     <xsl:with-param name="profile.name">
-                        <xsl:call-template name="profile.get.parent">
-                            <xsl:with-param name="profile.name"
+                        <xsl:call-template name="string.get.parent">
+                            <xsl:with-param name="input"
                                             select="$profile.name" />
                         </xsl:call-template>
                     </xsl:with-param>
@@ -197,17 +192,19 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template name="profile.get.parent">
-        <xsl:param name="profile.name" />
+    <xsl:template name="string.get.parent">
+        <xsl:param name="input" />
+        <xsl:param name="delimiter" select="'.'" />
 
-        <xsl:if test="contains($profile.name, '.')">
-            <xsl:value-of select="substring-before($profile.name, '.')" />
-            <xsl:if test="contains(substring-after($profile.name, '.'), '.')">
-                <xsl:text>.</xsl:text>
+        <xsl:if test="contains($input, $delimiter)">
+            <xsl:value-of select="substring-before($input, $delimiter)" />
+            <xsl:if test="contains(substring-after($input, $delimiter), $delimiter)">
+                <xsl:value-of select="$delimiter" />
             </xsl:if>
-            <xsl:call-template name="profile.get.parent">
-                <xsl:with-param name="profile.name"
-                                select="substring-after($profile.name, '.')" />
+            <xsl:call-template name="string.get.parent">
+                <xsl:with-param name="input"
+                                select="substring-after($input, $delimiter)" />
+                <xsl:with-param name="delimiter" select="$delimiter" />
             </xsl:call-template>
         </xsl:if>
     </xsl:template>

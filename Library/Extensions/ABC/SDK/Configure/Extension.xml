@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">-->
-<project name="ABC:SDK:Configure"
+<project name="ABC:SDK:Configure:Extension"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
@@ -8,7 +8,7 @@
             depends="-ABC:SDK:Core:Extension"
 			extensionOf="-configure:hamburger:with:fries~hook [">
 
-        <abc:extension-init name="ABC:SDK:Configure"
+        <abc:extension-init name="ABC:SDK:Configure:Extension"
                             has-resources="true" />
 
         <abc:tempfile property="-ABC.SDK.Configure.Enabled-Profiles.File"

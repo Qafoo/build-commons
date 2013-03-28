@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:PHP:Analysis:Linter:phpl"
+<project name="ABC:PHP:Analysis:Linter:phpl:Extension"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
             depends="-ABC:SDK:Core:Extension"
             extensionOf="-compile:before~hook">
-        <abc:extension-init name="ABC:PHP:Analysis:Linter:phpl" />
+        <abc:extension-init name="ABC:PHP:Analysis:Linter:phpl:Extension" />
 
         <abc:changed-fileset id="-ABC.PHP.Analysis.Linter.phpl.fileset">
             <include name="**/*" />

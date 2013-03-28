@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:Environment:Composer"
+<project name="ABC:Environment:Composer:Configure"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
     <import file="Common.xml" />
 
     <target name="-ABC:Environment:Composer:Configure">
-        <abc:configure-init name="ABC:Environment:Composer" />
+        <abc:configure-init name="ABC:Environment:Composer:Configure" />
 
         <mkdir taskname="ABC:Environment:Composer:Configure"
                dir="${-ABC.Environment.Composer.Application.Directory}" />

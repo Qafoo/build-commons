@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:PHP:Testing:PHPUnit">
+<project name="ABC:PHP:Testing:PHPUnit:Configure">
 
     <target name="-ABC:PHP:Testing:PHPUnit:Configure"
             depends="-ABC:Environment:Composer:Configure"
