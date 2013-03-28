@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:Environment:Composer"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <import file="Common.xml" />
+
+    <target name="-ABC:Environment:Composer:Configure">
+
+    </target>
+</project>

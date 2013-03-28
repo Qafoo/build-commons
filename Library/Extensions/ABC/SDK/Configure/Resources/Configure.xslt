@@ -56,10 +56,16 @@
             <xsl:choose>
                 <xsl:when test="$abc.mode = 'runtime'">
                     <target name="configure">
-                        <ant antfile="{$project.build.file}"
-                             dir="{$project.build.directory}"
-                             target="configure"
-                             useNativeBasedir="true" />
+                        <java classname="org.apache.tools.ant.Main"
+                              classpath="${{java.class.path}}"
+                              taskname="configure"
+                              fork="true"
+                              dir="{$project.build.directory}">
+                            <arg value="-emacs" />
+                            <arg value="-buildfile" />
+                            <arg value="{$project.build.file}" />
+                            <arg value="configure" />
+                        </java>
                     </target>
                 </xsl:when>
                 <xsl:otherwise>

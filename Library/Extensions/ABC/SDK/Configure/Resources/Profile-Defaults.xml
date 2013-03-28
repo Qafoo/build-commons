@@ -10,4 +10,11 @@
     <profile default="enabled">ABC:SDK:Lifecycle</profile>
     <profile default="enabled">ABC:SDK:Changes</profile>
     <profile default="enabled">ABC:SDK:Execution</profile>
+
+    <!-- Mandatory environments -->
+    <!-- TODO: Auto generate the required environments based on project dependencies (in the *.xslt) -->
+    <!--<profile default="enabled">ABC:Environment:PHP</profile>-->
+    <!--<profile default="enabled">ABC:Environment:Rhino</profile>-->
+    <!--<profile default="enabled">ABC:Environment:nodejs</profile>-->
+    <profile default="enabled">ABC:Environment:Composer</profile>
 </profile-defaults>
