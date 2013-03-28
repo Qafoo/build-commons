@@ -3,9 +3,11 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
-    <!--
-    <abc:macrodef name="environment-composer-install">
 
+    <abc:macrodef name="environment-composer-install">
+        <sequential>
+
+        </sequential>
     </abc:macrodef>
-    -->
+
 </project>

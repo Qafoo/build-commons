@@ -3,8 +3,6 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
-    <import file="Common.xml" />
-
     <target name="-ABC:Environment:Composer:Configure">
         <abc:configure-init name="ABC:Environment:Composer:Configure" />
 
