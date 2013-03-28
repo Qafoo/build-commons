@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:Core:String"
+<project name="ABC:SDK:String"
          xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
@@ -10,7 +10,7 @@
         <attribute name="setonempty" default="true" />
         <element name="mappers" implicit="yes" />
         <sequential>
-            <ac:var name="-ABC.Core.String.Input"
+            <ac:var name="-ABC.SDK.String.Input"
                     value="@{input}" />
             <pathconvert dirsep=""
                          pathsep=""
@@ -19,7 +19,7 @@
                 <chainedmapper>
                     <mappers />
                 </chainedmapper>
-                <propertyresource name="-ABC.Core.String.Input" />
+                <propertyresource name="-ABC.SDK.String.Input" />
             </pathconvert>
         </sequential>
     </abc:macrodef>

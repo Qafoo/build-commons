@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:Core:Changes"
+<project name="ABC:SDK:Changes"
          xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
@@ -10,25 +10,25 @@
         <element name="restrictions" implicit="yes" />
 
         <sequential>
-            <abc:extension-init extension="ABC:Core:Changes" />
+            <abc:extension-init extension="ABC:SDK:Changes" />
             <!-- Remove the Build directory from the changeset -->
-            <pathconvert property="-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}">
+            <pathconvert property="-ABC.SDK.Changes.Project.Build.Directory.Relative#@{id}">
                 <path location="${project.build.directory}" />
                 <map from="@{dir}/" to="" />
             </pathconvert>
 
-            <mkdir dir="${abc.core.changes.metadata.directory}" />
+            <mkdir dir="${abc.sdk.changes.metadata.directory}" />
             <fileset dir="@{dir}" id="@{id}">
                 <restrictions />
-                <exclude name="${-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}}/**" />
+                <exclude name="${-ABC.SDK.Changes.Project.Build.Directory.Relative#@{id}}/**" />
                 <modified update="false">
-                    <param name="cache.cachefile" value="${abc.core.changes.metadata.directory}/@{id}.properties" />
+                    <param name="cache.cachefile" value="${abc.sdk.changes.metadata.directory}/@{id}.properties" />
                 </modified>
             </fileset>
             <!-- Needed for later augementation on commit -->
             <fileset dir="@{dir}" id="@{id}#Commit">
                 <restrictions />
-                <exclude name="${-ABC.Core.Changes.Project.Build.Directory.Relative#@{id}}/**" />
+                <exclude name="${-ABC.SDK.Changes.Project.Build.Directory.Relative#@{id}}/**" />
             </fileset>
         </sequential>
     </abc:macrodef>
@@ -39,7 +39,7 @@
         <sequential>
             <augment id="@{id}#Commit">
                 <modified update="true" delayupdate="false">
-                    <param name="cache.cachefile" value="${abc.core.changes.metadata.directory}/@{id}.properties" />
+                    <param name="cache.cachefile" value="${abc.sdk.changes.metadata.directory}/@{id}.properties" />
                 </modified>
             </augment>
             <pathconvert property="@{id}#Commit.Pathconvert.Hack">

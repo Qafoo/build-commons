@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">-->
-<project name="ABC:Core:Configure"
+<project name="ABC:SDK:Configure"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
-    <target name="-ABC:Core:Configure:Extension"
-            depends="-ABC:Core:SDK:Extension"
+    <target name="-ABC:SDK:Configure:Extension"
+            depends="-ABC:SDK:Core:Extension"
 			extensionOf="-configure:hamburger:with:fries~hook [">
 
-        <abc:extension-init extension="ABC:Core:Configure"
+        <abc:extension-init extension="ABC:SDK:Configure"
                             has-resources="true" />
 
-        <abc:tempfile property="-ABC.Core.Configure.Enabled-Profiles.File"
+        <abc:tempfile property="-ABC.SDK.Configure.Enabled-Profiles.File"
                       suffix=".xml" />
 
-        <echoproperties destfile="${-ABC.Core.Configure.Enabled-Profiles.File}"
+        <echoproperties destfile="${-ABC.SDK.Configure.Enabled-Profiles.File}"
                         prefix="profile."
                         format="xml" />
 
         <internal:configure-generate-build-file
-                srcfile="${-ABC.Core.Configure.Enabled-Profiles.File}"
+                srcfile="${-ABC.SDK.Configure.Enabled-Profiles.File}"
                 destfile="${user.dir}/build.xml"
                 filename="Extension.xml"
                 mode="runtime" />
 
         <internal:configure-generate-build-file
-                srcfile="${-ABC.Core.Configure.Enabled-Profiles.File}"
+                srcfile="${-ABC.SDK.Configure.Enabled-Profiles.File}"
                 destfile="${user.dir}/configure.xml"
                 filename="Configure.xml"
                 mode="configure" />
@@ -43,33 +43,33 @@
         <attribute name="filename" />
 
         <sequential>
-            <tempfile property="-ABC.Core.Configure.Generated.File"
+            <tempfile property="-ABC.SDK.Configure.Generated.File"
                       suffix=".xml"
                       deleteonexit="true" />
 
             <internal:configure-generate-target-list
                     srcfile="@{srcfile}"
-                    destfile="${-ABC.Core.Configure.Generated.File}"
+                    destfile="${-ABC.SDK.Configure.Generated.File}"
                     filename="@{filename}" />
 
-            <property name="-ABC.Core.Configure.Base.Directory" location="${basedir}" />
-            <property name="-ABC.Core.Configure.Build.File" location="${ant.file}" />
+            <property name="-ABC.SDK.Configure.Base.Directory" location="${basedir}" />
+            <property name="-ABC.SDK.Configure.Build.File" location="${ant.file}" />
 
-            <condition property="-ABC.Core.Configure.Default-Target"
+            <condition property="-ABC.SDK.Configure.Default-Target"
                        value="${ant.project.default-target}"
                        else="verify">
                 <isset property="ant.project.default-target" />
             </condition>
 
-            <xslt taskname="ABC:Core:Configure:Extension"
-                  in="${-ABC.Core.Configure.Generated.File}"
+            <xslt taskname="ABC:SDK:Configure:Extension"
+                  in="${-ABC.SDK.Configure.Generated.File}"
                   out="@{destfile}"
-                  style="${abc.core.configure.resources.directory}/Configure.xslt">
+                  style="${abc.sdk.configure.resources.directory}/Configure.xslt">
 
-                <param name="project.default-target" expression="${-ABC.Core.Configure.Default-Target}" />
+                <param name="project.default-target" expression="${-ABC.SDK.Configure.Default-Target}" />
                 <param name="project.name" expression="${ant.project.name}" />
-                <param name="project.directory" expression="${-ABC.Core.Configure.Base.Directory}" />
-                <param name="project.build.file" expression="${-ABC.Core.Configure.Build.File}" />
+                <param name="project.directory" expression="${-ABC.SDK.Configure.Base.Directory}" />
+                <param name="project.build.file" expression="${-ABC.SDK.Configure.Build.File}" />
                 <param name="project.build.directory" expression="${user.dir}" />
 
                 <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
@@ -89,14 +89,14 @@
             <concat destfile="@{destfile}"
                     overwrite="true"
                     append="false">
-                <file file="${abc.core.configure.resources.directory}/Header.xml" />
+                <file file="${abc.sdk.configure.resources.directory}/Header.xml" />
             </concat>
             <concat destfile="@{destfile}"
                     overwrite="true"
                     append="true"
                     fixlastline="true">
                 <file file="@{srcfile}" />
-                <file file="${abc.core.configure.resources.directory}/Profile-Defaults.xml" />
+                <file file="${abc.sdk.configure.resources.directory}/Profile-Defaults.xml" />
                 <fileset dir="${project.extensions.directory}"
                          includes="**/@{filename}"
                          erroronmissingdir="false" />
@@ -116,7 +116,7 @@
             <concat destfile="@{destfile}"
                     overwrite="true"
                     append="true">
-                <file file="${abc.core.configure.resources.directory}/Footer.xml" />
+                <file file="${abc.sdk.configure.resources.directory}/Footer.xml" />
             </concat>
         </sequential>
     </internal:macrodef>

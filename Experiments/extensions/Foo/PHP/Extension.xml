@@ -2,7 +2,7 @@
 <project name="Foo:PHP" basedir=".">
 
     <target name="-Foo:PHP:Extension"
-            depends="-ABC:Core:SDK:Extension"
+            depends="-ABC:SDK:Core:Extension"
             extensionOf="-initialize:before~hook">
         <echo>42 &gt; 23</echo>
     </target>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profile-defaults>
+    <!-- Loaded during bootstrap anyways -->
+    <profile default="disabled">ABC:SDK:Ant-Contrib</profile>
+    <profile default="disabled">ABC:SDK:Configure</profile>
+    <profile default="disabled">ABC:SDK:Core</profile>
+    <profile default="disabled">ABC:SDK:String</profile>
+
+    <!-- Needed during runtime -->
+    <profile default="enabled">ABC:SDK:Lifecycle</profile>
+    <profile default="enabled">ABC:SDK:Changes</profile>
+    <profile default="enabled">ABC:SDK:Execution</profile>
+</profile-defaults>

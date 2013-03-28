@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:Core:Lifecycle:Extension-Points">
+<project name="ABC:SDK:Lifecycle:Extension-Points">
 
     <!--
         Extension points are separated from the Lifecycle entry point,as we want

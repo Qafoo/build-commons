@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:Core:Ant-Contrib">
+<project name="ABC:SDK:Ant-Contrib">
 
     <!--
         We can't use the abc-extension-init magic for this extension,
         because this does rely on a loaded ant-contrib environment ;)
     -->
-    <dirname property="-ABC.Core.Ant-Contrib.Directory"
-             file="${ant.file.ABC:Core:Ant-Contrib}" />
+    <dirname property="-ABC.SDK.Ant-Contrib.Directory"
+             file="${ant.file.ABC:SDK:Ant-Contrib}" />
 
-    <property name="-ABC.Core.Ant-Contrib.Resources.Directory"
-              location="${-ABC.Core.Ant-Contrib.Directory}/Resources" />
+    <property name="-ABC.SDK.Ant-Contrib.Resources.Directory"
+              location="${-ABC.SDK.Ant-Contrib.Directory}/Resources" />
 
     <taskdef resource="net/sf/antcontrib/antlib.xml"
              uri="http://ant-contrib.sourceforge.net">
 
         <classpath>
-            <fileset dir="${-ABC.Core.Ant-Contrib.Resources.Directory}"
+            <fileset dir="${-ABC.SDK.Ant-Contrib.Resources.Directory}"
                      includes="*.jar" />
         </classpath>
     </taskdef>

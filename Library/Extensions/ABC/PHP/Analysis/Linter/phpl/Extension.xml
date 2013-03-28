@@ -4,7 +4,7 @@
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
-            depends="-ABC:Core:SDK:Extension"
+            depends="-ABC:SDK:Core:Extension"
             extensionOf="-compile:before~hook">
         <abc:extension-init extension="ABC:PHP:Analysis:Linter:phpl" />
 

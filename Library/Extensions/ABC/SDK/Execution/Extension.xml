@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:Core:Execution"
+<project name="ABC:SDK:Execution"
          xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
@@ -15,9 +15,9 @@
 
         <sequential>
             <mkdir dir="${abc.temp.directory}" />
-            <ac:var name="-ABC.Core.Execution.Temp.File"
+            <ac:var name="-ABC.SDK.Execution.Temp.File"
                     unset="true" />
-            <tempfile property="-ABC.Core.Execution.Temp.File"
+            <tempfile property="-ABC.SDK.Execution.Temp.File"
                       suffix="@{suffix}"
                       prefix="@{prefix}"
                       destdir="@{destdir}"
@@ -26,7 +26,7 @@
 
             <condition property="@{property}"
                        value="@{file}"
-                       else="${-ABC.Core.Execution.Temp.File}">
+                       else="${-ABC.SDK.Execution.Temp.File}">
                 <not>
                     <equals arg1="@{file}" arg2="" forcestring="true" />
                 </not>
@@ -55,15 +55,15 @@
 
         <sequential>
 
-            <ac:var name="-ABC.Core.Execution.Stdout.Temp.File"
+            <ac:var name="-ABC.SDK.Execution.Stdout.Temp.File"
                     unset="true" />
-            <abc:tempfile property="-ABC.Core.Execution.Stdout.Temp.File"
+            <abc:tempfile property="-ABC.SDK.Execution.Stdout.Temp.File"
                           file="@{output}"
                           prefix="stdout"
                           suffix=".log" />
-            <ac:var name="-ABC.Core.Execution.Stderr.Temp.File"
+            <ac:var name="-ABC.SDK.Execution.Stderr.Temp.File"
                     unset="true" />
-            <abc:tempfile property="-ABC.Core.Execution.Stderr.Temp.File"
+            <abc:tempfile property="-ABC.SDK.Execution.Stderr.Temp.File"
                           file="@{error}"
                           prefix="stderr"
                           suffix=".log" />
@@ -73,28 +73,28 @@
                     <istrue value="@{append}" />
                 </not>
                 <ac:then>
-                    <delete file="${-ABC.Core.Execution.Stdout.Temp.File}"
+                    <delete file="${-ABC.SDK.Execution.Stdout.Temp.File}"
                             quiet="true"
                             failonerror="false" />
-                    <delete file="${-ABC.Core.Execution.Stderr.Temp.File}"
+                    <delete file="${-ABC.SDK.Execution.Stderr.Temp.File}"
                             quiet="true"
                             failonerror="false" />
                 </ac:then>
             </ac:if>
-            <ac:var name="-ABC.Core.Execution.Return.Code"
+            <ac:var name="-ABC.SDK.Execution.Return.Code"
                     unset="true" />
             <apply taskname="@{apply-taskname}"
                    executable="@{executable}"
                    dir="@{dir}"
-                   output="${-ABC.Core.Execution.Stdout.Temp.File}"
-                   error="${-ABC.Core.Execution.Stderr.Temp.File}"
+                   output="${-ABC.SDK.Execution.Stdout.Temp.File}"
+                   error="${-ABC.SDK.Execution.Stderr.Temp.File}"
                    failonerror="false"
                    parallel="@{parallel}"
                    type="@{type}"
                    maxparallel="@{maxparallel}"
                    verbose="@{verbose}"
                    append="true"
-                   resultproperty="-ABC.Core.Execution.Return.Code">
+                   resultproperty="-ABC.SDK.Execution.Return.Code">
                 <configuration />
             </apply>
 
@@ -104,14 +104,14 @@
                 It does not run for example if the given fileset is empty
             -->
             <ac:if>
-                <isset property="-ABC.Core.Execution.Return.Code" />
+                <isset property="-ABC.SDK.Execution.Return.Code" />
                 <ac:then>
                     <!-- Output if stdout if requested -->
                     <ac:if>
                         <istrue value="@{visible-stdout}" />
                         <ac:then>
                             <concat taskname="stdout">
-                                <file file="${-ABC.Core.Execution.Stdout.Temp.File}" />
+                                <file file="${-ABC.SDK.Execution.Stdout.Temp.File}" />
                             </concat>
                         </ac:then>
                     </ac:if>
@@ -121,7 +121,7 @@
                         <istrue value="@{visible-stderr}" />
                         <ac:then>
                             <concat taskname="stderr">
-                                <file file="${-ABC.Core.Execution.Stderr.Temp.File}" />
+                                <file file="${-ABC.SDK.Execution.Stderr.Temp.File}" />
                             </concat>
                         </ac:then>
                     </ac:if>
@@ -132,12 +132,12 @@
                             <and>
                                 <istrue value="@{failonerror}" />
                                 <not>
-                                    <equals arg1="${-ABC.Core.Execution.Return.Code}" arg2="0" />
+                                    <equals arg1="${-ABC.SDK.Execution.Return.Code}" arg2="0" />
                                 </not>
                             </and>
                             <and>
                                 <istrue value="@{fail-on-non-empty-stderr}" />
-                                <isfileselected file="${-ABC.Core.Execution.Stderr.Temp.File}">
+                                <isfileselected file="${-ABC.SDK.Execution.Stderr.Temp.File}">
                                     <size value="0" when="more" />
                                 </isfileselected>
                             </and>
@@ -150,11 +150,11 @@
                                 </not>
                                 <ac:then>
                                     <concat taskname="stderr">
-                                        <file file="${-ABC.Core.Execution.Stderr.Temp.File}" />
+                                        <file file="${-ABC.SDK.Execution.Stderr.Temp.File}" />
                                     </concat>
                                 </ac:then>
                             </ac:if>
-                            <fail message="Execution of '@{executable}' failed with return code '${-ABC.Core.Execution.Return.Code}'." />
+                            <fail message="Execution of '@{executable}' failed with return code '${-ABC.SDK.Execution.Return.Code}'." />
                         </ac:then>
                     </ac:if>
                 </ac:then>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:Core:Configure:Extension-Points">
+<project name="ABC:SDK:Configure:Extension-Points">
     
     <extension-point name="-configure:before~hook" />
     <extension-point name="-configure:main~hook" />

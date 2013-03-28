@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ABC:Core:SDK"
+<project name="ABC:SDK:Core"
          xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
@@ -49,19 +49,19 @@
         <attribute name="has-resources" default="" />
 
         <sequential>
-            <internal:ABC-Core-SDK-Public-Property-Name-From-Extension
+            <internal:ABC-SDK-Core-Public-Property-Name-From-Extension
                     extension="@{extension}"
                     property="@{extension}#Public.Property.Prefix" />
             <ac:if>
                 <istrue value="@{has-resources}" />
                 <ac:then>
-                    <internal:ABC-Core-SDK-Resources-Directory
+                    <internal:ABC-SDK-Core-Resources-Directory
                             extension="@{extension}"
                             property="${@{extension}#Public.Property.Prefix}.resources.directory" />
                 </ac:then>
             </ac:if>
 
-            <internal:ABC-Core-SDK-Extension-Directory
+            <internal:ABC-SDK-Core-Extension-Directory
                     extension="@{extension}"
                     property="${@{extension}#Public.Property.Prefix}.directory" />
 
@@ -75,7 +75,7 @@
     <!--
         Convert an extension name to a public property name prefix
     -->
-    <internal:macrodef name="ABC-Core-SDK-Public-Property-Name-From-Extension">
+    <internal:macrodef name="ABC-SDK-Core-Public-Property-Name-From-Extension">
         <attribute name="extension" />
         <attribute name="property" />
 
@@ -92,7 +92,7 @@
     <!--
         Macro that determines the directory of a given extension.
     -->
-    <internal:macrodef name="ABC-Core-SDK-Extension-Directory">
+    <internal:macrodef name="ABC-SDK-Core-Extension-Directory">
         <attribute name="extension" />
         <attribute name="property" />
 
@@ -107,11 +107,11 @@
     <!--
         Macro that determines the "Resources" directory of a given extension.
     -->
-    <internal:macrodef name="ABC-Core-SDK-Resources-Directory">
+    <internal:macrodef name="ABC-SDK-Core-Resources-Directory">
         <attribute name="extension" />
         <attribute name="property" />
         <sequential>
-            <internal:ABC-Core-SDK-Extension-Directory extension="@{extension}"
+            <internal:ABC-SDK-Core-Extension-Directory extension="@{extension}"
                                                        property="@{property}#Extension.Directory" />
 
             <property name="@{property}"
@@ -133,15 +133,15 @@
         This Target is used for bootstrapping. As it will be called before any other extension.
         It may initialize build directories or do other *runtime* configuration
     -->
-    <target name="-ABC:Core:SDK:Extension">
-        <internal:ABC-Core-SDK-Extension-Bootstrap-Common />
+    <target name="-ABC:SDK:Core:Extension">
+        <internal:ABC-SDK-Core-Extension-Bootstrap-Common />
         <ac:if>
             <istrue value="${abc.runtime.mode}" />
             <ac:then>
-                <internal:ABC-Core-SDK-Extension-Bootstrap-Runtime />
+                <internal:ABC-SDK-Core-Extension-Bootstrap-Runtime />
             </ac:then>
             <ac:else>
-                <internal:ABC-Core-SDK-Extension-Bootstrap-Configure />
+                <internal:ABC-SDK-Core-Extension-Bootstrap-Configure />
             </ac:else>
         </ac:if>
     </target>
@@ -149,7 +149,7 @@
     <!--
         Initialization which is done during both phases
     -->
-    <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Common">
+    <internal:macrodef name="ABC-SDK-Core-Extension-Bootstrap-Common">
         <sequential>
             <echo message="Common Bootstrap" />
         </sequential>
@@ -158,7 +158,7 @@
     <!--
         Initialization which is done only during runtime
     -->
-    <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Runtime">
+    <internal:macrodef name="ABC-SDK-Core-Extension-Bootstrap-Runtime">
         <sequential>
             <echo message="Runtime Bootstrap" />
         </sequential>
@@ -167,9 +167,8 @@
     <!--
         Initialization which is done only during configure
     -->
-    <internal:macrodef name="ABC-Core-SDK-Extension-Bootstrap-Configure">
+    <internal:macrodef name="ABC-SDK-Core-Extension-Bootstrap-Configure">
         <sequential>
-            <property name="bootstrapped" value="and ketchup" />
             <echo message="Configure Bootstrap" />
         </sequential>
     </internal:macrodef>
