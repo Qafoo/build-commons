@@ -95,14 +95,21 @@
                     overwrite="true"
                     append="true"
                     fixlastline="true">
+
                 <file file="@{srcfile}" />
                 <file file="${abc.sdk.configure.resources.directory}/Profile-Defaults.xml" />
-                <fileset dir="${project.extensions.directory}"
-                         includes="**/@{filename}"
-                         erroronmissingdir="false" />
 
-                <fileset dir="${abc.extensions.directory}"
-                         includes="**/@{filename}" />
+                <sort>
+                    <fileset dir="${project.extensions.directory}"
+                             includes="**/@{filename}"
+                             erroronmissingdir="false" />
+                    <name />
+                </sort>
+                <sort>
+                    <fileset dir="${abc.extensions.directory}"
+                             includes="**/@{filename},**/Common.xml" />
+                    <name />
+                </sort>
 
                 <filterchain>
                     <tokenfilter>
