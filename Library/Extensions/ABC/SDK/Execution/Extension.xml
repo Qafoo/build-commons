@@ -6,7 +6,7 @@
 
     <abc:macrodef name="tempfile">
         <attribute name="property" />
-        <attribute name="destdir" default="${abc.temp.directory}" />
+        <attribute name="destdir" default="${abc.build.temp.directory}" />
         <attribute name="prefix" default="abc" />
         <attribute name="suffix" default=".tmp" />
         <attribute name="deleteonexit" default="true" />
@@ -14,7 +14,7 @@
         <attribute name="file" default="" />
 
         <sequential>
-            <mkdir dir="${abc.temp.directory}" />
+            <mkdir dir="${abc.build.temp.directory}" />
             <ac:var name="-ABC.SDK.Execution.Temp.File"
                     unset="true" />
             <tempfile property="-ABC.SDK.Execution.Temp.File"

@@ -5,7 +5,25 @@
 
     <import file="Common.xml" />
 
-    <target name="-ABC:Environment:Composer:Configure">
+    <property name="abc.environment.composer.download.url"
+              value="http://getcomposer.org/composer.phar" />
 
+    <property name="-ABC.Environment.Composer.Application.Directory"
+              value="${abc.configure.applications.directory}/Composer" />
+
+    <property name="-ABC.Environment.Composer.Application.File"
+              value="${-ABC.Environment.Composer.Application.Directory}/composer.phar" />
+
+    <target name="-ABC:Environment:Composer:Configure">
+        <mkdir taskname="ABC:Environment:Composer:Configure"
+               dir="${-ABC.Environment.Composer.Application.Directory}" />
+
+        <get taskname="ABC:Environment:Composer:Configure"
+             src="${abc.environment.composer.download.url}"
+             dest="${-ABC.Environment.Composer.Application.File}"
+             skipexisting="false" />
+
+        <chmod file="${-ABC.Environment.Composer.Application.File}"
+               perm="ug+x"/>
     </target>
 </project>

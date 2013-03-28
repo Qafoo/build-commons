@@ -32,8 +32,8 @@
 
         <ant antfile="${user.dir}/configure.xml"
              target="configure"
-             inheritAll="true"
-             inheritRefs="true" />
+             inheritAll="false"
+             inheritRefs="false" />
     </target>
 
     <internal:macrodef name="configure-generate-build-file">

@@ -2,7 +2,8 @@
 <project name="ABC:PHP:Testing:PHPUnit">
 
     <target name="-ABC:PHP:Testing:PHPUnit:Configure"
-            depends="-ABC:Environment:Composer:Configure">
+            depends="-ABC:Environment:Composer:Configure"
+            extensionOf="-configure:main~hook">
 
         <!--
         <abc:environment-composer-install
