@@ -6,7 +6,7 @@
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
             depends="-ABC:SDK:Core:Extension"
             extensionOf="-compile:before~hook">
-        <abc:extension-init extension="ABC:PHP:Analysis:Linter:phpl" />
+        <abc:extension-init name="ABC:PHP:Analysis:Linter:phpl" />
 
         <abc:changed-fileset id="-ABC.PHP.Analysis.Linter.phpl.fileset">
             <include name="**/*" />

@@ -5,16 +5,9 @@
 
     <import file="Common.xml" />
 
-    <property name="abc.environment.composer.download.url"
-              value="http://getcomposer.org/composer.phar" />
-
-    <property name="-ABC.Environment.Composer.Application.Directory"
-              value="${abc.configure.applications.directory}/Composer" />
-
-    <property name="-ABC.Environment.Composer.Application.File"
-              value="${-ABC.Environment.Composer.Application.Directory}/composer.phar" />
-
     <target name="-ABC:Environment:Composer:Configure">
+        <abc:configure-init name="ABC:Environment:Composer" />
+
         <mkdir taskname="ABC:Environment:Composer:Configure"
                dir="${-ABC.Environment.Composer.Application.Directory}" />
 

@@ -10,7 +10,7 @@
         <element name="restrictions" implicit="yes" />
 
         <sequential>
-            <abc:extension-init extension="ABC:SDK:Changes" />
+            <abc:extension-init name="ABC:SDK:Changes" />
             <!-- Remove the Build directory from the changeset -->
             <pathconvert property="-ABC.SDK.Changes.Project.Build.Directory.Relative#@{id}">
                 <path location="${project.build.directory}" />

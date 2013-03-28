@@ -44,7 +44,7 @@
         Using this macro instead of doing everything by oneself ensures all
         necessary steps are executed in the correct order.
     -->
-    <abc:macrodef name="extension-init">
+    <abc:macrodef name="configure-init">
         <attribute name="name" />
         <attribute name="has-resources" default="" />
 
@@ -68,8 +68,7 @@
 
             <ac:propertycopy from="${@@{name}#Public.Property.Prefix}.directory"
                              property="@@{name}#Directory" />
-
-            <property file="${@@{name}#Directory}/Extension.properties" />
+            <property file="${@@{name}#Directory}/Configure.properties" />
             <property file="${@@{name}#Directory}/Common.properties" />
         </sequential>
     </abc:macrodef>
@@ -129,49 +128,4 @@
         </sequential>
     </internal:macrodef>
 
-    <!--
-        Target, which each Extension needs to depend on.
-
-        This Target is used for bootstrapping. As it will be called before any other extension.
-        It may initialize build directories or do other *runtime* configuration
-    -->
-    <target name="-ABC:SDK:Core:Extension">
-        <internal:ABC-SDK-Core-Extension-Bootstrap-Common />
-        <ac:if>
-            <istrue value="${abc.runtime.mode}" />
-            <ac:then>
-                <internal:ABC-SDK-Core-Extension-Bootstrap-Runtime />
-            </ac:then>
-            <ac:else>
-                <internal:ABC-SDK-Core-Extension-Bootstrap-Configure />
-            </ac:else>
-        </ac:if>
-    </target>
-
-    <!--
-        Initialization which is done during both phases
-    -->
-    <internal:macrodef name="ABC-SDK-Core-Extension-Bootstrap-Common">
-        <sequential>
-            <echo message="Common Bootstrap" />
-        </sequential>
-    </internal:macrodef>
-
-    <!--
-        Initialization which is done only during runtime
-    -->
-    <internal:macrodef name="ABC-SDK-Core-Extension-Bootstrap-Runtime">
-        <sequential>
-            <echo message="Runtime Bootstrap" />
-        </sequential>
-    </internal:macrodef>
-
-    <!--
-        Initialization which is done only during configure
-    -->
-    <internal:macrodef name="ABC-SDK-Core-Extension-Bootstrap-Configure">
-        <sequential>
-            <echo message="Configure Bootstrap" />
-        </sequential>
-    </internal:macrodef>
 </project>

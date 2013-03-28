@@ -8,7 +8,7 @@
             depends="-ABC:SDK:Core:Extension"
 			extensionOf="-configure:hamburger:with:fries~hook [">
 
-        <abc:extension-init extension="ABC:SDK:Configure"
+        <abc:extension-init name="ABC:SDK:Configure"
                             has-resources="true" />
 
         <abc:tempfile property="-ABC.SDK.Configure.Enabled-Profiles.File"
