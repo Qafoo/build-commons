@@ -7,6 +7,15 @@
     <property name="abc.extensions.directory"
               location="${abc.base.directory}/Extensions" />
 
+    <!--
+    ############################################################################
+      This property should normally be set by the generated build.xml file.
+      But we need to kick of the initial configuration and generation of
+      this build.xml file, which is executed from within the build directory.
+    ############################################################################
+    -->
+    <property name="project.build.directory" location="${user.dir}" />
+
     <property file="${abc.base.directory}/abc.properties" />
 
     <!--
