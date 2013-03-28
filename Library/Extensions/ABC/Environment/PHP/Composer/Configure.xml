@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:Environment:PHP:Composer:Configure"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <target name="-ABC:Environment:PHP:Composer:Configure">
+        <abc:configure-init name="ABC:Environment:PHP:Composer:Configure" />
+
+        <mkdir taskname="ABC:Environment:PHP:Composer:Configure"
+               dir="${-ABC.Environment.PHP.Composer.Application.Directory}" />
+
+        <get taskname="ABC:Environment:PHP:Composer:Configure"
+             src="${abc.environment.php.composer.download.url}"
+             dest="${-ABC.Environment.PHP.Composer.Application.File}"
+             skipexisting="false" />
+
+        <chmod file="${-ABC.Environment.PHP.Composer.Application.File}"
+               perm="ug+x"/>
+    </target>
+</project>

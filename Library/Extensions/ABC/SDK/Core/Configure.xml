@@ -38,8 +38,8 @@
 
             <ac:propertycopy from="${@@{name}#Public.Property.Prefix}.directory"
                              property="@@{name}#Directory" />
-            <property file="${@@{name}#Directory}/Configure.properties" />
             <property file="${@@{name}#Directory}/Common.properties" />
+            <property file="${@@{name}#Directory}/Configure.properties" />
         </sequential>
     </abc:macrodef>
 

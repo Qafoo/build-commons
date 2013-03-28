@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:Environment:PHP:PHPUnit:Configure"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <property name="abc.environment.php.phpunit.application.directory"
+              value="${abc.configure.applications.directory}/PHPUnit" />
+
+    <target name="-ABC:Environment:PHP:PHPUnit:Configure"
+            depends="-ABC:Environment:PHP:Composer:Configure">
+
+        <abc:configure-init name="ABC:Environment:PHP:PHPUnit:Configure" />
+
+        <mkdir dir="${abc.environment.php.phpunit.application.directory}" />
+
+        <abc:environment-composer-single-install
+            dir="${abc.environment.php.phpunit.application.directory}"
+            package="phpunit/phpunit"
+            version="3.7.x" />
+    </target>
+
+</project>

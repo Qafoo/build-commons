@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ABC:Environment:Composer:Common"
+<project name="ABC:Environment:PHP:PHPUnit:Extension"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
 
-    <abc:macrodef name="environment-composer-install">
-        <sequential>
-
-        </sequential>
-    </abc:macrodef>
 
 </project>

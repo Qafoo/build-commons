@@ -10,7 +10,7 @@
         <attribute name="output" default="" />
         <attribute name="error" default="" />
         <attribute name="append" default="false" />
-        <attribute name="failonerror" default="false" />
+        <attribute name="failonerror" default="true" />
         <attribute name="parallel" default="false" />
         <attribute name="type" default="file" />
         <attribute name="maxparallel" default="0" />
@@ -93,6 +93,141 @@
                             <concat taskname="stderr">
                                 <file file="${-ABC.SDK.Execution.Stderr.Temp.File}" />
                             </concat>
+                        </ac:then>
+                    </ac:if>
+
+                    <!-- Make sure we fail on error and have at least outputted stderr -->
+                    <ac:if>
+                        <or>
+                            <and>
+                                <istrue value="@{failonerror}" />
+                                <not>
+                                    <equals arg1="${-ABC.SDK.Execution.Return.Code}" arg2="0" />
+                                </not>
+                            </and>
+                            <and>
+                                <istrue value="@{fail-on-non-empty-stderr}" />
+                                <isfileselected file="${-ABC.SDK.Execution.Stderr.Temp.File}">
+                                    <size value="0" when="more" />
+                                </isfileselected>
+                            </and>
+                        </or>
+
+                        <ac:then>
+                            <ac:if>
+                                <not>
+                                    <istrue value="@{visible-stderr}" />
+                                </not>
+                                <ac:then>
+                                    <concat taskname="stderr">
+                                        <file file="${-ABC.SDK.Execution.Stderr.Temp.File}" />
+                                    </concat>
+                                </ac:then>
+                            </ac:if>
+                            <fail message="Execution of '@{executable}' failed with return code '${-ABC.SDK.Execution.Return.Code}'." />
+                        </ac:then>
+                    </ac:if>
+                </ac:then>
+            </ac:if>
+
+        </sequential>
+
+    </abc:macrodef>
+
+
+
+    <abc:macrodef name="exec">
+        <attribute name="executable" />
+        <attribute name="dir" default="${project.directory}" />
+        <attribute name="output" default="" />
+        <attribute name="error" default="" />
+        <attribute name="append" default="false" />
+        <attribute name="failonerror" default="true" />
+        <attribute name="resultproperty" default="" />
+
+        <attribute name="visible-stdout" default="true" />
+        <attribute name="visible-stderr" default="true" />
+        <attribute name="fail-on-non-empty-stderr" default="true" />
+        <attribute name="exec-taskname" default="exec" />
+
+        <element name="configuration" implicit="yes" />
+
+        <sequential>
+
+            <ac:var name="-ABC.SDK.Execution.Stdout.Temp.File"
+                    unset="true" />
+            <abc:tempfile property="-ABC.SDK.Execution.Stdout.Temp.File"
+                          file="@{output}"
+                          prefix="stdout"
+                          suffix=".log" />
+            <ac:var name="-ABC.SDK.Execution.Stderr.Temp.File"
+                    unset="true" />
+            <abc:tempfile property="-ABC.SDK.Execution.Stderr.Temp.File"
+                          file="@{error}"
+                          prefix="stderr"
+                          suffix=".log" />
+
+            <ac:if>
+                <not>
+                    <istrue value="@{append}" />
+                </not>
+                <ac:then>
+                    <delete file="${-ABC.SDK.Execution.Stdout.Temp.File}"
+                            quiet="true"
+                            failonerror="false" />
+                    <delete file="${-ABC.SDK.Execution.Stderr.Temp.File}"
+                            quiet="true"
+                            failonerror="false" />
+                </ac:then>
+            </ac:if>
+            <ac:var name="-ABC.SDK.Execution.Return.Code"
+                    unset="true" />
+            <exec taskname="@{exec-taskname}"
+                   executable="@{executable}"
+                   dir="@{dir}"
+                   output="${-ABC.SDK.Execution.Stdout.Temp.File}"
+                   error="${-ABC.SDK.Execution.Stderr.Temp.File}"
+                   failonerror="false"
+                   append="true"
+                   resultproperty="-ABC.SDK.Execution.Return.Code">
+                <configuration />
+            </exec>
+
+            <!--
+                Only do all the output stuff if the apply did run at all
+
+                It does not run for example if the given fileset is empty
+            -->
+            <ac:if>
+                <isset property="-ABC.SDK.Execution.Return.Code" />
+                <ac:then>
+                    <!-- Output if stdout if requested -->
+                    <ac:if>
+                        <istrue value="@{visible-stdout}" />
+                        <ac:then>
+                            <concat taskname="stdout">
+                                <file file="${-ABC.SDK.Execution.Stdout.Temp.File}" />
+                            </concat>
+                        </ac:then>
+                    </ac:if>
+
+                    <!-- Output if stderr if requested -->
+                    <ac:if>
+                        <istrue value="@{visible-stderr}" />
+                        <ac:then>
+                            <concat taskname="stderr">
+                                <file file="${-ABC.SDK.Execution.Stderr.Temp.File}" />
+                            </concat>
+                        </ac:then>
+                    </ac:if>
+
+                    <!-- Store exit code in resultproperty if this attribute is set. -->
+                    <ac:if>
+                        <not>
+                            <equals arg1="@{resultproperty}" arg2="" />
+                        </not>
+                        <ac:then>
+                            <property name="@{resultproperty}" value="${-ABC.SDK.Execution.Return.Code}" />
                         </ac:then>
                     </ac:if>
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:Environment:PHP:Composer:Common"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:macrodef name="environment-composer-single-install">
+        <attribute name="dir" />
+        <attribute name="package" />
+        <attribute name="version" />
+
+        <sequential>
+            <abc:environment-composer dir="@{dir}">
+                <arg value="--no-update" />
+                <arg value="require" />
+                <arg value="@{package}" />
+                <arg value="@{version}" />
+            </abc:environment-composer>
+
+            <abc:environment-composer dir="@{dir}">
+                <arg value="install" />
+            </abc:environment-composer>
+        </sequential>
+    </abc:macrodef>
+
+    <abc:macrodef name="environment-composer">
+        <attribute name="dir" />
+        <element name="arguments" implicit="yes" />
+
+        <sequential>
+            <abc:exec executable="${abc.environment.executable.php}"
+                      failonerror="true"
+                      dir="@{dir}">
+                <arg value="${-ABC.Environment.PHP.Composer.Application.File}" />
+                <arg value="--no-interaction" />
+                <arg value="--ansi" />
+
+                <arguments />
+            </abc:exec>
+        </sequential>
+    </abc:macrodef>
+
+</project>

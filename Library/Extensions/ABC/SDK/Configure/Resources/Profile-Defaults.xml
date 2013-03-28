@@ -16,5 +16,6 @@
     <!--<profile default="enabled">ABC:Environment:PHP</profile>-->
     <!--<profile default="enabled">ABC:Environment:Rhino</profile>-->
     <!--<profile default="enabled">ABC:Environment:nodejs</profile>-->
-    <profile default="enabled">ABC:Environment:Composer</profile>
+    <profile default="enabled">ABC:Environment:PHP:Composer</profile>
+    <profile default="enabled">ABC:Environment:PHP:PHPUnit</profile>
 </profile-defaults>
