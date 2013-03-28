@@ -7,7 +7,8 @@
               value="${abc.configure.applications.directory}/PHPUnit" />
 
     <target name="-ABC:Environment:PHP:PHPUnit:Configure"
-            depends="-ABC:Environment:PHP:Composer:Configure">
+            depends="-ABC:Environment:PHP:Composer:Configure"
+            extensionOf="-configure:main~hook">
 
         <abc:configure-init name="ABC:Environment:PHP:PHPUnit:Configure" />
 
