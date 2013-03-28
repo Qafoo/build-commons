@@ -22,8 +22,9 @@
         Include all Configure time dependencies. Explicitly leaving out the lifecycle targets
      -->
     <import file="${abc.extensions.directory}/ABC/SDK/Ant-Contrib/Extension.xml" />
-    <import file="${abc.extensions.directory}/ABC/SDK/Core/Extension.xml" />
+    <import file="${abc.extensions.directory}/ABC/SDK/Core/Common.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/Core/Configure.xml" />
+    <import file="${abc.extensions.directory}/ABC/SDK/Core/Extension.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/Execution/Extension.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/String/Extension.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/Configure/Extension.xml" />

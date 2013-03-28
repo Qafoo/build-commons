@@ -5,36 +5,6 @@
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
     <!--
-        Macro to define proper macros inside the abc namespace
-        Use exactly like the original macrodef
-    -->
-    <macrodef name="http://abc.tools.qafoo.com/abc.xsd:macrodef">
-        <attribute name="name" />
-        <element name="macro" implicit="true" />
-
-        <sequential>
-            <macrodef name="http://abc.tools.qafoo.com/abc.xsd:@{name}">
-                <macro />
-            </macrodef>
-        </sequential>
-    </macrodef>
-
-    <!--
-        Macro to define proper macros inside the internal namespace
-        Use exactly like the original macrodef
-    -->
-    <macrodef name="http://abc.tools.qafoo.com/abc-internal.xsd:macrodef">
-        <attribute name="name" />
-        <element name="macro" implicit="true" />
-
-        <sequential>
-            <macrodef name="http://abc.tools.qafoo.com/abc-internal.xsd:@{name}">
-                <macro />
-            </macrodef>
-        </sequential>
-    </macrodef>
-
-    <!--
         Entry point, which any extension has to call first
 
         This macro defines certain extension based variables, like its directory,
@@ -72,63 +42,5 @@
             <property file="${@@{name}#Directory}/Common.properties" />
         </sequential>
     </abc:macrodef>
-
-    <!--
-        Convert an extension name to a public property name prefix
-    -->
-    <internal:macrodef name="ABC-SDK-Core-Public-Property-Name-From-Extension">
-        <attribute name="extension" />
-        <attribute name="property" />
-
-        <sequential>
-            <abc:string-lowercase property="@{property}#Not.Lowercased"
-                                  input="@{extension}"  />
-            <abc:string-filter property="@{property}"
-                               input="${@{property}#Not.Lowercased}">
-                <replaceregex pattern=":(Extension|Configure|Common)$"
-                              replace=""
-                              flags="i" />
-                <replacestring from=":" to="." />
-            </abc:string-filter>
-        </sequential>
-    </internal:macrodef>
-
-    <!--
-        Macro that determines the directory of a given extension.
-    -->
-    <internal:macrodef name="ABC-SDK-Core-Extension-Directory">
-        <attribute name="extension" />
-        <attribute name="property" />
-
-        <sequential>
-            <ac:propertycopy property="@{property}#Extension.File"
-                             from="ant.file.@{extension}" />
-            <dirname property="@{property}"
-                     file="${@{property}#Extension.File}" />
-        </sequential>
-    </internal:macrodef>
-
-    <!--
-        Macro that determines the "Resources" directory of a given extension.
-    -->
-    <internal:macrodef name="ABC-SDK-Core-Resources-Directory">
-        <attribute name="extension" />
-        <attribute name="property" />
-        <sequential>
-            <internal:ABC-SDK-Core-Extension-Directory extension="@{extension}"
-                                                       property="@{property}#Extension.Directory" />
-
-            <property name="@{property}"
-                  location="${@{property}#Extension.Directory}/Resources" />
-
-            <fail message="The requested 'Resources' directory does not exist for extension '@{extension}'.">
-                <condition>
-                    <not>
-                        <available file="${@{property}}" type="dir" />
-                    </not>
-                </condition>
-            </fail>
-        </sequential>
-    </internal:macrodef>
 
 </project>
