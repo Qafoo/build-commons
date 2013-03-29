@@ -100,6 +100,7 @@
                     <import>
                         <fileset dir="{$abc.extensions.directory}/ABC/SDK">
                             <include name="**/Common.xml"/>
+                            <include name="**/Extension-Points.xml"/>
                             <xsl:choose>
                                 <xsl:when test="$abc.mode = 'runtime'">
                                     <include name="**/Extension.xml"/>
@@ -155,13 +156,8 @@
             </xsl:variable>
 
             <xsl:if test="$profile.enabled = 'true'">
-                <xsl:if test="position() = 1">
-                    <xsl:value-of select="', '" />
-                </xsl:if>
+                <xsl:value-of select="', '" />
                 <xsl:value-of select="target[@depends = concat('-', ../@name)]/@name" />
-                <xsl:if test="position() != last()">
-                    <xsl:value-of select="', '" />
-                </xsl:if>
             </xsl:if>
         </xsl:for-each>
     </xsl:template>

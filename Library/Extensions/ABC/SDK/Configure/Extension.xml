@@ -47,7 +47,8 @@
             <ac:var name="-ABC.SDK.Configure.Generate-Build-File.Intermediate.File"
                     unset="true" />
             <abc:tempfile property="-ABC.SDK.Configure.Generate-Build-File.Intermediate.File"
-                          suffix=".xml" />
+                          suffix=".xml"/>
+
             <internal:configure-generate-intermediate-build-file
                     srcfile="@{srcfile}"
                     intermediate-destfile="${-ABC.SDK.Configure.Generate-Build-File.Intermediate.File}"
