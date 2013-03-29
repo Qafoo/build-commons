@@ -35,39 +35,6 @@
     </macrodef>
 
     <!--
-        Spawn a new and independant ant instance
-    -->
-    <abc:macrodef name="spawn-ant">
-        <attribute name="file" />
-        <attribute name="dir" default="${project.build.directory}"/>
-        <attribute name="target" default="" />
-        <attribute name="quiet" default="false" />
-        <attribute name="taskname-overwrite" default="ant" />
-
-        <sequential>
-            <ac:var name="-ABC.SDK.Core.Spawn-Ant.Quiet.Argument"
-                    unset="true" />
-            <condition property="-ABC.SDK.Core.Spawn-Ant.Quiet.Argument"
-                       value="-quiet"
-                       else="">
-                <istrue value="@{quiet}" />
-            </condition>
-
-            <java classname="org.apache.tools.ant.Main"
-                  classpath="${java.class.path}"
-                  taskname="@{taskname-overwrite}"
-                  fork="true"
-                  dir="${project.build.directory}">
-                <arg value="${-ABC.SDK.Core.Spawn-Ant.Quiet.Argument}" />
-                <arg value="-emacs" />
-                <arg value="-buildfile" />
-                <arg value="@{file}" />
-                <arg value="@{target}" />
-            </java>
-        </sequential>
-    </abc:macrodef>
-
-    <!--
         Convert an extension name to a public property name prefix
     -->
     <internal:macrodef name="ABC-SDK-Core-Public-Property-Name-From-Extension">

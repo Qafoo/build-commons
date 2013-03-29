@@ -4,6 +4,12 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <!--
+        A sane implementation of apply. At least as sane as it is possible in plain ant.
+
+        Most attributes and defaults are the same as in ants apply. Error output however is a lot
+        better and smoother
+    -->
     <abc:macrodef name="apply">
         <attribute name="executable" />
         <attribute name="dir" default="${project.directory}" />
@@ -135,7 +141,12 @@
     </abc:macrodef>
 
 
+    <!--
+        A sane implementation of exec. At least as sane as it is possible in plain ant.
 
+        Most attributes and defaults are the same as in ants exec. Error output however is a lot
+        better and smoother
+    -->
     <abc:macrodef name="exec">
         <attribute name="executable" />
         <attribute name="dir" default="${project.directory}" />
@@ -268,4 +279,41 @@
         </sequential>
 
     </abc:macrodef>
+
+
+    <!--
+        Spawn a new and independant ant instance
+    -->
+    <abc:macrodef name="spawn-ant">
+        <attribute name="file" />
+        <attribute name="dir" default="${project.build.directory}"/>
+        <attribute name="target" default="" />
+        <attribute name="failonerror" default="true" />
+        <attribute name="quiet" default="false" />
+        <attribute name="taskname-overwrite" default="ant" />
+
+        <sequential>
+            <ac:var name="-ABC.SDK.Core.Spawn-Ant.Quiet.Argument"
+                    unset="true" />
+            <condition property="-ABC.SDK.Core.Spawn-Ant.Quiet.Argument"
+                       value="-quiet"
+                       else="">
+                <istrue value="@{quiet}" />
+            </condition>
+
+            <java classname="org.apache.tools.ant.Main"
+                  classpath="${java.class.path}"
+                  taskname="@{taskname-overwrite}"
+                  fork="true"
+                  dir="${project.build.directory}"
+                  failonerror="@{failonerror}">
+                <arg value="${-ABC.SDK.Core.Spawn-Ant.Quiet.Argument}" />
+                <arg value="-emacs" />
+                <arg value="-buildfile" />
+                <arg value="@{file}" />
+                <arg value="@{target}" />
+            </java>
+        </sequential>
+    </abc:macrodef>
+
 </project>
