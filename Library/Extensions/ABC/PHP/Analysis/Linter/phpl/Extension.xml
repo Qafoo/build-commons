@@ -8,8 +8,9 @@
             extensionOf="-compile:before~hook">
         <abc:extension-init name="ABC:PHP:Analysis:Linter:phpl:Extension" />
 
-        <abc:changed-fileset id="-ABC.PHP.Analysis.Linter.phpl.fileset">
-            <include name="**/*" />
+        <abc:changed-fileset id="-ABC.PHP.Analysis.Linter.phpl.fileset"
+                             dir="${abc.source.php.directory}">
+            <include name="**/*.php" />
         </abc:changed-fileset>
 
         <abc:apply apply-taskname="phpl"
