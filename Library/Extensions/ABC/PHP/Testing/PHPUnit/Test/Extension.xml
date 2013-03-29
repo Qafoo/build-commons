@@ -9,7 +9,9 @@
         <abc:extension-init name="ABC:PHP:Testing:PHPUnit:Test:Extension" />
 
         <abc:environment-phpunit>
-            <arg value="--help" />
+            <arg value="--configuration" />
+            <arg value="${abc.php.testing.phpunit.test.configuration.file}" />
+            <arg value="${abc.test.php.directory}" />
         </abc:environment-phpunit>
     </target>
 
