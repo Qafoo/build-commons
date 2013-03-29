@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">-->
 <project name="ABC:SDK:Configure:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
@@ -30,11 +31,10 @@
                 filename="Configure.xml"
                 mode="configure" />
 
-        <!--
         <ant antfile="${user.dir}/configure.xml"
              target="configure"
              inheritAll="false"
-             inheritRefs="false" /> -->
+             inheritRefs="false" />
     </target>
 
     <internal:macrodef name="configure-generate-build-file">
@@ -44,14 +44,37 @@
         <attribute name="filename" />
 
         <sequential>
-            <abc:tempfile property="-ABC.SDK.Configure.Generated.File"
-                      suffix=".xml"
-                      deleteonexit="false" />
-            <echo message="${-ABC.SDK.Configure.Generated.File}" />
+            <ac:var name="-ABC.SDK.Configure.Generate-Build-File.Intermediate.File"
+                    unset="true" />
+            <abc:tempfile property="-ABC.SDK.Configure.Generate-Build-File.Intermediate.File"
+                          suffix=".xml" />
+            <internal:configure-generate-intermediate-build-file
+                    srcfile="@{srcfile}"
+                    intermediate-destfile="${-ABC.SDK.Configure.Generate-Build-File.Intermediate.File}"
+                    final-destfile="@{destfile}"
+                    filename="@{filename}"
+                    mode="@{mode}" />
+            <abc:spawn-ant file="${-ABC.SDK.Configure.Generate-Build-File.Intermediate.File}"
+                           target="${ant.project.name}#Bootstrap"
+                           quiet="true"
+                           taskname-overwrite="Dependency Analysis"/>
+        </sequential>
+    </internal:macrodef>
+
+    <internal:macrodef name="configure-generate-intermediate-build-file">
+        <attribute name="srcfile" />
+        <attribute name="intermediate-destfile" />
+        <attribute name="final-destfile" />
+        <attribute name="mode" />
+        <attribute name="filename" />
+
+        <sequential>
+            <abc:tempfile property="-ABC.SDK.Configure.Concat.File"
+                      suffix=".xml" />
 
             <internal:configure-generate-target-list
                     srcfile="@{srcfile}"
-                    destfile="${-ABC.SDK.Configure.Generated.File}"
+                    destfile="${-ABC.SDK.Configure.Concat.File}"
                     filename="@{filename}" />
 
             <property name="-ABC.SDK.Configure.Base.Directory" location="${basedir}" />
@@ -64,8 +87,8 @@
             </condition>
 
             <xslt taskname="ABC:SDK:Configure:Extension"
-                  in="${-ABC.SDK.Configure.Generated.File}"
-                  out="@{destfile}"
+                  in="${-ABC.SDK.Configure.Concat.File}"
+                  out="@{intermediate-destfile}"
                   style="${abc.sdk.configure.resources.directory}/Configure.xslt">
 
                 <param name="project.default-target" expression="${-ABC.SDK.Configure.Default-Target}" />
@@ -77,7 +100,7 @@
                 <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
                 <param name="project.extensions.directory" expression="${project.extensions.directory}" />
 
-                <param name="abc.generation.target" expression="${user.dir}/ant-build.xml" />
+                <param name="abc.generation.target" expression="@{final-destfile}" />
 
                 <param name="abc.mode" expression="@{mode}" />
             </xslt>
@@ -101,7 +124,6 @@
                     fixlastline="true">
 
                 <file file="@{srcfile}" />
-                <file file="${abc.sdk.configure.resources.directory}/Profile-Defaults.xml" />
 
                 <fileset dir="${project.extensions.directory}"
                          includes="**/Extension-Points.xml"

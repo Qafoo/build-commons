@@ -178,8 +178,8 @@
                         <target name="configure">
                             <java classname="org.apache.tools.ant.Main"
                                   classpath="${{java.class.path}}"
-                                  taskname="configure"
                                   fork="true"
+                                  taskname="configure"
                                   dir="{$project.build.directory}">
                                 <arg value="-emacs" />
                                 <arg value="-buildfile" />
