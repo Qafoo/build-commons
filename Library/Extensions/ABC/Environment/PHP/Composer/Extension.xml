@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:Environment:PHP:Composer:Extension"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <target name="-ABC:Environment:PHP:Composer:Extension">
+        <abc:extension-init name="ABC:Environment:PHP:Composer:Extension" />
+    </target>
+</project>

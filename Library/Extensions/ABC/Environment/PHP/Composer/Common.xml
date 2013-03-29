@@ -3,6 +3,10 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <!--
+        Execute an atomic (single) install of a certain package including all
+        dependencies to a given folder
+    -->
     <abc:macrodef name="environment-composer-single-install">
         <attribute name="dir" />
         <attribute name="package" />
@@ -22,6 +26,9 @@
         </sequential>
     </abc:macrodef>
 
+    <!--
+        Execute arbitrary composer commandlines, while still adding sane defaults
+    -->
     <abc:macrodef name="environment-composer">
         <attribute name="dir" />
         <element name="arguments" implicit="yes" />
@@ -30,7 +37,7 @@
             <abc:exec executable="${abc.environment.executable.php}"
                       failonerror="true"
                       dir="@{dir}">
-                <arg value="${-ABC.Environment.PHP.Composer.Application.File}" />
+                <arg value="${abc.environment.php.composer.application.file}" />
                 <arg value="--no-interaction" />
                 <arg value="--ansi" />
 

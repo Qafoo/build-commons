@@ -7,14 +7,14 @@
         <abc:configure-init name="ABC:Environment:PHP:Composer:Configure" />
 
         <mkdir taskname="ABC:Environment:PHP:Composer:Configure"
-               dir="${-ABC.Environment.PHP.Composer.Application.Directory}" />
+               dir="${abc.environment.php.composer.application.directory}" />
 
         <get taskname="ABC:Environment:PHP:Composer:Configure"
              src="${abc.environment.php.composer.download.url}"
-             dest="${-ABC.Environment.PHP.Composer.Application.File}"
+             dest="${abc.environment.php.composer.application.file}"
              skipexisting="false" />
 
-        <chmod file="${-ABC.Environment.PHP.Composer.Application.File}"
+        <chmod file="${abc.environment.php.composer.application.file}"
                perm="ug+x"/>
     </target>
 </project>
