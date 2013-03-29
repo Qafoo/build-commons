@@ -8,10 +8,10 @@
             extensionOf="-test:main~hook">
         <abc:extension-init name="ABC:PHP:Testing:PHPUnit:Test:Extension" />
 
-        <abc:environment-phpunit>
-            <arg value="--configuration" />
-            <arg value="${abc.php.testing.phpunit.test.configuration.file}" />
-            <arg value="${abc.test.php.directory}" />
+        <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}">
+            <paths>
+                <propertyresource name="abc.test.php.directory" />
+            </paths>
         </abc:environment-phpunit>
     </target>
 

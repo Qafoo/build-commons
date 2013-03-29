@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ABC:Environment:PHP:PHPUnit:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
@@ -8,7 +9,10 @@
         <abc:extension-init name="ABC:Environment:PHP:PHPUnit:Extension" />
     </target>
 
-    <abc:macrodef name="environment-phpunit">
+    <!--
+        Raw execution of phpunit with arbitrary arguments passed to it
+    -->
+    <abc:macrodef name="environment-phpunit-exec">
         <attribute name="dir" default="${abc.test.php.directory}"/>
         <element name="arguments" implicit="yes" />
 
@@ -21,5 +25,44 @@
                 <arguments />
             </abc:exec>
         </sequential>
+    </abc:macrodef>
+
+    <!--
+        Encapsulated convenience call to phpunit executions
+
+        This macro takes an optional configuration attribute, as well as two nested
+        element sets:
+
+        <arguments>:
+          Optionally further commandline arguments to be supplied to phpunit
+
+        <paths>:
+          Arbitrary resourcesets, which contain a list of files/directories, to pass
+          to phpunit for execution.
+
+          The usual rules of phpunit executing given directories recursively does apply
+          here of course
+    -->
+    <abc:macrodef name="environment-phpunit">
+        <attribute name="dir" default="${abc.test.php.directory}"/>
+        <attribute name="configuration" default="${abc.test.php.directory}/phpunit.xml" />
+        <element name="arguments" optional="true" />
+        <element name="paths" />
+
+        <sequential>
+            <ac:var name="-ABC.Environment.PHP.PHPUnit.Execution.Paths"
+                    unset="true" />
+            <pathconvert property="-ABC.Environment.PHP.PHPUnit.Execution.Paths"
+                         pathsep="' '">
+                <paths />
+            </pathconvert>
+            <abc:environment-phpunit-exec>
+                <arg value="--configuration" />
+                <arg value="@{configuration}" />
+                <arguments />
+                <arg line="'${-ABC.Environment.PHP.PHPUnit.Execution.Paths}'" />
+            </abc:environment-phpunit-exec>
+        </sequential>
+
     </abc:macrodef>
 </project>
