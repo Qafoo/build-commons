@@ -28,6 +28,7 @@
     <import file="${abc.extensions.directory}/ABC/SDK/Filesystem/Common.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/Execution/Extension.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/String/Extension.xml" />
+    <import file="${abc.extensions.directory}/ABC/SDK/Configure/Common.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/Configure/Extension.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/Configure/Extension-Points.xml" />
     <import file="${abc.extensions.directory}/ABC/SDK/Lifecycle/Extension-Points.xml" />

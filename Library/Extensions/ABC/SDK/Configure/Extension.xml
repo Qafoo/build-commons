@@ -30,10 +30,11 @@
                 filename="Configure.xml"
                 mode="configure" />
 
+        <!--
         <ant antfile="${user.dir}/configure.xml"
              target="configure"
              inheritAll="false"
-             inheritRefs="false" />
+             inheritRefs="false" /> -->
     </target>
 
     <internal:macrodef name="configure-generate-build-file">
@@ -43,9 +44,10 @@
         <attribute name="filename" />
 
         <sequential>
-            <tempfile property="-ABC.SDK.Configure.Generated.File"
+            <abc:tempfile property="-ABC.SDK.Configure.Generated.File"
                       suffix=".xml"
-                      deleteonexit="true" />
+                      deleteonexit="false" />
+            <echo message="${-ABC.SDK.Configure.Generated.File}" />
 
             <internal:configure-generate-target-list
                     srcfile="@{srcfile}"
@@ -75,6 +77,8 @@
                 <param name="abc.extensions.directory" expression="${abc.extensions.directory}" />
                 <param name="project.extensions.directory" expression="${project.extensions.directory}" />
 
+                <param name="abc.generation.target" expression="${user.dir}/ant-build.xml" />
+
                 <param name="abc.mode" expression="@{mode}" />
             </xslt>
         </sequential>
@@ -98,6 +102,13 @@
 
                 <file file="@{srcfile}" />
                 <file file="${abc.sdk.configure.resources.directory}/Profile-Defaults.xml" />
+
+                <fileset dir="${project.extensions.directory}"
+                         includes="**/Extension-Points.xml"
+                         erroronmissingdir="false" />
+
+                <fileset dir="${abc.extensions.directory}"
+                         includes="**/Extension-Points.xml" />
 
                 <sort>
                     <fileset dir="${project.extensions.directory}"
@@ -127,10 +138,4 @@
             </concat>
         </sequential>
     </internal:macrodef>
-
-    <target name="configure" 
-            depends="-configure:hamburger:with:fries~hook [,
-                     -configure:before~hook,
-                     -configure:main~hook,
-                     -configure:after~hook" />
 </project>

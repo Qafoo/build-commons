@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:SDK:Configure:Common">
+
+    <target name="configure"
+        depends="-configure:hamburger:with:fries~hook [,
+                     -configure:before~hook,
+                     -configure:main~hook,
+                     -configure:after~hook" />
+</project>
