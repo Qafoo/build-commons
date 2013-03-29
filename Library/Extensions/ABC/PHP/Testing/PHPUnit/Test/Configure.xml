@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:PHP:Testing:PHPUnit:Test:Configure"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <target name="-ABC:PHP:Testing:PHPUnit:Test:Configure"
+            depends="-ABC:Environment:PHP:PHPUnit:Configure"
+            extensionOf="-configure:main~hook">
+        <abc:configure-init name="ABC:PHP:Testing:PHPUnit:Test:Configure" />
+    </target>
+
+</project>
