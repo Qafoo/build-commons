@@ -3,6 +3,23 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <target name="-ABC:Environment:PHP:PHPUnit:Extension"
+            depends="-ABC:Environment:PHP:Composer:Extension">
+        <abc:extension-init name="ABC:Environment:PHP:PHPUnit:Extension" />
+    </target>
 
+    <abc:macrodef name="environment-phpunit">
+        <attribute name="dir" default="${abc.test.php.directory}"/>
+        <element name="arguments" implicit="yes" />
 
+        <sequential>
+            <abc:exec executable="${abc.environment.executable.php}"
+                      failonerror="true"
+                      dir="@{dir}">
+                <arg value="${abc.environment.php.phpunit.application.binary}" />
+
+                <arguments />
+            </abc:exec>
+        </sequential>
+    </abc:macrodef>
 </project>
