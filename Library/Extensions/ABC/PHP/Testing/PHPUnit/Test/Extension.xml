@@ -16,6 +16,6 @@
         </abc:environment-phpunit>
     </target>
 
-    <target name="abc.php.testing.phpunit.test"
+    <target name="abc:php:testing:phpunit:test"
             depends="-ABC:PHP:Testing:PHPUnit:Test:Extension" />
 </project>
