@@ -1,0 +1,273 @@
+<!--
+    Create target of the Scaffolding extension
+
+    Warning: As this is a core extension it does not completely adhere to the
+    structure and rules layed out by the system. A normal extension is usually
+    not supposed to have more than one entrypoint. In this case the extension
+    should usually be divided into multiple extensions.
+-->
+<project name="ABC:SDK:Scaffolding:Extension:Create"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <property file="${abc.sdk.scaffolding.directory}/Create.properties" />
+
+    <!-- Set the abc.sdk.scaffolding directory to the project extension
+         directory if it exists -->
+    <ac:if>
+        <isset property="project.extensions.directory" />
+        <ac:then>
+            <property name="abc.sdk.scaffolding.create.directory"
+                      value="${project.extensions.directory}" />
+        </ac:then>
+    </ac:if>
+
+    <!-- Extension entry point displaying some help -->
+    <target name="-ABC:SDK:Scaffolding:Extension:Create"
+            depends="-ABC:SDK:Core:Extension">
+
+        <!-- Create extension directory from name -->
+        <pathconvert dirsep="${file.separator}"
+                     pathsep=""
+                     property="-ABC.SDK.Scaffolding.Create.Target.Directory">
+            <filtermapper>
+                <replacestring from=":" to="${file.separator}" />
+                <prefixlines prefix="${abc.sdk.scaffolding.create.directory}${file.separator}" />
+            </filtermapper>
+
+            <propertyresource name="abc.sdk.scaffolding.create.name" />
+        </pathconvert>
+
+        <!-- Create public entrypoint name for the defined extension -->
+        <abc:string-lowercase input="${abc.sdk.scaffolding.create.name}"
+                              property="-ABC.SDK.Scaffolding.Create.Public.Entrypoint.Name" />
+
+        <!-- Create public properties name for the defined extension -->
+        <abc:string-lowercase input="${abc.sdk.scaffolding.create.name}"
+                              property="-ABC.SDK.Scaffolding.Create.Public.Property.Name">
+            <filters>
+                <replacestring from=":" to="." />
+            </filters>
+        </abc:string-lowercase>
+
+        <!-- Let's do the scaffolding and create all the needed files and directories -->
+        <internal:ABC.SDK.Scaffolding.Create.Check.Required.Properties />
+        <internal:ABC.SDK.Scaffolding.Create.Extension.Directories />
+        <internal:ABC.SDK.Scaffolding.Create.Extension.Xml />
+        <ac:if>
+            <istrue value="${abc.sdk.scaffolding.create.configure}" />
+            <ac:then>
+                <internal:ABC.SDK.Scaffolding.Create.Configure.Xml />
+            </ac:then>
+        </ac:if>
+        <ac:if>
+            <istrue value="${abc.sdk.scaffolding.create.common}" />
+            <ac:then>
+                <internal:ABC.SDK.Scaffolding.Create.Common.Xml />
+            </ac:then>
+        </ac:if>
+        <ac:if>
+            <istrue value="${abc.sdk.scaffolding.create.properties}" />
+            <ac:then>
+                <internal:ABC.SDK.Scaffolding.Create.Extension.Properties />
+                <ac:if>
+                    <istrue value="${abc.sdk.scaffolding.create.configure}" />
+                    <ac:then>
+                        <internal:ABC.SDK.Scaffolding.Create.Configure.Properties />
+                    </ac:then>
+                </ac:if>
+                <ac:if>
+                    <istrue value="${abc.sdk.scaffolding.create.common}" />
+                    <ac:then>
+                        <internal:ABC.SDK.Scaffolding.Create.Common.Properties />
+                    </ac:then>
+                </ac:if>
+            </ac:then>
+        </ac:if>
+    </target>
+
+    <target name="abc:sdk:scaffolding:create"
+            depends="-ABC:SDK:Scaffolding:Extension:Create" />
+
+    <!--
+        Make sure mandatory properties are set.
+        If those properties are not set the build is failed
+    -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Check.Required.Properties">
+        <sequential>
+            <ac:if>
+                <not>
+                    <isset property="abc.sdk.scaffolding.create.name" />
+                </not>
+                <ac:then>
+                    <fail message="You need to specify an 'abc.sdk.scaffolding.create.name' in order to create an extension." />
+                </ac:then>
+            </ac:if>
+
+            <ac:if>
+                <not>
+                    <contains string="${abc.sdk.scaffolding.create.name}"
+                              substring=":" />
+                </not>
+                <ac:then>
+                    <fail message="The provided extension name must contain at least one namespace segment (seperated by ':')." />
+                </ac:then>
+            </ac:if>
+
+            <ac:if>
+                <not>
+                    <isset property="abc.sdk.scaffolding.create.directory" />
+                </not>
+                <ac:then>
+                    <fail message="No 'project.extensions.directory' specified. You need to specify an 'abc.sdk.scaffolding.create.directory' in order to create an extension." />
+                </ac:then>
+            </ac:if>
+        </sequential>
+    </internal:macrodef>
+
+    <!-- Create all the required directories for the requested scaffolding operation -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Extension.Directories">
+        <sequential>
+            <!-- Check if directory already exists -->
+            <ac:if>
+                <and>
+                    <available file="${-ABC.SDK.Scaffolding.Create.Target.Directory}"
+                               type="dir" />
+                    <not>
+                        <and>
+                            <isset property="abc.sdk.scaffolding.create.overwrite" />
+                            <istrue value="${abc.sdk.scaffolding.create.overwrite}" />
+                        </and>
+                    </not>
+                </and>
+                <ac:then>
+                    <fail message="The target directory '${-ABC.SDK.Scaffolding.Create.Target.Directory}' for the scaffolding operation does exist. If you really want to overwrite it, you may set abc.sdk.scaffolding.create.overwrite to 'true'." />
+                </ac:then>
+            </ac:if>
+
+            <!-- Create directory and optionally the resources folder -->
+            <mkdir dir="${-ABC.SDK.Scaffolding.Create.Target.Directory}" />
+            <ac:if>
+                <istrue value="${abc.sdk.scaffolding.create.resources}" />
+                <ac:then>
+                    <mkdir dir="${-ABC.SDK.Scaffolding.Create.Target.Directory}/Resources" />
+                </ac:then>
+            </ac:if>
+        </sequential>
+    </internal:macrodef>
+
+    <!-- Create a basic Extension.xml -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Extension.Xml">
+        <sequential>
+            <abc:string-lowercase input="${abc.sdk.scaffolding.create.name}"
+                                  property="-ABC.SDK.Scaffolding.Create.Public.Entrypoint.Name">
+               <filters>
+                   <replacestring from=":" to="." />
+               </filters>
+            </abc:string-lowercase>
+            <copy taskname="Extension.xml"
+                  file="${abc.sdk.scaffolding.create.extension.xml.template}"
+                  tofile="${-ABC.SDK.Scaffolding.Create.Target.Directory}${file.separator}Extension.xml"
+                  overwrite="true"
+                  verbose="false">
+                <filterset begintoken="#{" endtoken="}">
+                    <filter token="abc.sdk.scaffolding.create.name"
+                            value="${abc.sdk.scaffolding.create.name}" />
+                    <filter token="abc.sdk.scaffolding.create.resources"
+                            value="${abc.sdk.scaffolding.create.resources}" />
+                    <filter token="-ABC.SDK.Scaffolding.Create.Public.Entrypoint.Name"
+                            value="${-ABC.SDK.Scaffolding.Create.Public.Entrypoint.Name}" />
+                </filterset>
+            </copy>
+        </sequential>
+    </internal:macrodef>
+
+    <!-- Create a basic Configure.xml -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Configure.Xml">
+        <sequential>
+            <copy taskname="Configure.xml"
+                  file="${abc.sdk.scaffolding.create.configure.xml.template}"
+                  tofile="${-ABC.SDK.Scaffolding.Create.Target.Directory}${file.separator}Configure.xml"
+                  overwrite="true"
+                  verbose="false">
+                <filterset begintoken="#{" endtoken="}">
+                    <filter token="abc.sdk.scaffolding.create.name"
+                            value="${abc.sdk.scaffolding.create.name}" />
+                    <filter token="abc.sdk.scaffolding.create.resources"
+                            value="${abc.sdk.scaffolding.create.resources}" />
+                </filterset>
+            </copy>
+        </sequential>
+    </internal:macrodef>
+
+    <!-- Create a basic Common.xml -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Common.Xml">
+        <sequential>
+            <copy taskname="Common.xml"
+                  file="${abc.sdk.scaffolding.create.common.xml.template}"
+                  tofile="${-ABC.SDK.Scaffolding.Create.Target.Directory}${file.separator}Common.xml"
+                  overwrite="true"
+                  verbose="false">
+                <filterset begintoken="#{" endtoken="}">
+                    <filter token="abc.sdk.scaffolding.create.name"
+                            value="${abc.sdk.scaffolding.create.name}" />
+                </filterset>
+            </copy>
+        </sequential>
+    </internal:macrodef>
+
+    <!-- Create a basic Extension.properties -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Extension.Properties">
+        <sequential>
+            <copy taskname="Extension.properties"
+                  file="${abc.sdk.scaffolding.create.extension.properties.template}"
+                  tofile="${-ABC.SDK.Scaffolding.Create.Target.Directory}${file.separator}Extension.properties"
+                  overwrite="true"
+                  verbose="false">
+                <filterset begintoken="#{" endtoken="}">
+                    <filter token="abc.sdk.scaffolding.create.name"
+                            value="${abc.sdk.scaffolding.create.name}" />
+                    <filter token="-ABC.SDK.Scaffolding.Create.Public.Property.Name"
+                            value="${-ABC.SDK.Scaffolding.Create.Public.Property.Name}" />
+                </filterset>
+            </copy>
+        </sequential>
+    </internal:macrodef>
+
+    <!-- Create a basic Configure.properties -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Configure.Properties">
+        <sequential>
+            <copy taskname="Configure.properties"
+                  file="${abc.sdk.scaffolding.create.configure.properties.template}"
+                  tofile="${-ABC.SDK.Scaffolding.Create.Target.Directory}${file.separator}Configure.properties"
+                  overwrite="true"
+                  verbose="false">
+                <filterset begintoken="#{" endtoken="}">
+                    <filter token="abc.sdk.scaffolding.create.name"
+                            value="${abc.sdk.scaffolding.create.name}" />
+                    <filter token="-ABC.SDK.Scaffolding.Create.Public.Property.Name"
+                            value="${-ABC.SDK.Scaffolding.Create.Public.Property.Name}" />
+                </filterset>
+            </copy>
+        </sequential>
+    </internal:macrodef>
+
+    <!-- Create a basic Common.properties -->
+    <internal:macrodef name="ABC.SDK.Scaffolding.Create.Common.Properties">
+        <sequential>
+            <copy taskname="Common.properties"
+                  file="${abc.sdk.scaffolding.create.common.properties.template}"
+                  tofile="${-ABC.SDK.Scaffolding.Create.Target.Directory}${file.separator}Common.properties"
+                  overwrite="true"
+                  verbose="false">
+                <filterset begintoken="#{" endtoken="}">
+                    <filter token="abc.sdk.scaffolding.create.name"
+                            value="${abc.sdk.scaffolding.create.name}" />
+                    <filter token="-ABC.SDK.Scaffolding.Create.Public.Property.Name"
+                            value="${-ABC.SDK.Scaffolding.Create.Public.Property.Name}" />
+                </filterset>
+            </copy>
+        </sequential>
+    </internal:macrodef>
+</project>

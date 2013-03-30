@@ -1,0 +1,54 @@
+ABC:SDK:Scaffolding Extension Help
+
+The Scaffolding Extension assists any user in creating new Extensions for the
+ABC build system.
+
+It is capable of creating the basic structure for a new module/extension, which
+then simply needs to be filled with some functionality.
+
+Serveral special targets exist, which may be called to initiate scaffolding:
+
+abc.sdk.scaffolding.extension.create:
+  Create a new extension with a default template.
+
+  Different properties may be set during creation, to specify name and location
+  of the extension:
+
+  abc.sdk.scaffolding.create.name:
+    Name of the extension to create (eg. ABC:PHP:Testing:PHPUnit:Test)
+
+  abc.sdk.scaffolding.create.directory:
+    Target directory for the extension to be created in.
+    (The default is the configured project extension directory if it exists.)
+
+  abc.sdk.scaffolding.create.configure:
+    Boolean value indicating, weather a configure step should be created.
+    (The default is "true", as it is safe in general to have such a step,
+    even though it is not utilized.)
+
+  abc.sdk.scaffolding.create.common:
+    Boolean value indicating, weather a common.xml should be created.
+    (The default is "false", as it will not be needed in most situations.)
+
+  abc.sdk.scaffolding.create.properties:
+    Boolean value indicating, weather the extension is supposed to be created
+    with '.properties' files for each of its phases.
+    (The default is "true", as it is no problem at all to provide empty property
+    files)
+
+  abc.sdk.scaffolding.create.resources:
+    Boolean value indicating, weather the extension is supposed to have a
+    resources directory.
+    (The default is "false", as it will not be needed in most situations.)
+
+
+All the defined properties are specified on the commandline, while executing the
+ant target using the '-D' commandline switch.
+
+Example for a simple extension scaffolding:
+
+ant -Dabc.sdk.scaffolding.create.name=MY:Namespace:My:Functionality \
+  abc.sdk.scaffolding.create
+
+This commandline will create a new extension in the projects extension directory
+ready for you to fill it with functionality.

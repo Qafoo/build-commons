@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    #{abc.sdk.scaffolding.create.name} Shared Resources
+
+    All resources defined in this file will be shared between the Extensions
+    runtime and configure time phases.
+-->
+<project name="#{abc.sdk.scaffolding.create.name}:Common"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <!-- In most situations only macros will be defined here. It is however
+         possible to provide targets as well. -->
+
+    <!-- For definition of macros use the abc:macrodef and internal:macrodef
+         augmentations. Furthermore make sure you adhere to the naming
+         guidelines -->
+
+</project>

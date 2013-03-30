@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    #{abc.sdk.scaffolding.create.name} Extension
+
+    This extension does some awesome stuff
+-->
+<project name="#{abc.sdk.scaffolding.create.name}:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="#{abc.sdk.scaffolding.create.name}:Extension"
+                        has-resources="#{abc.sdk.scaffolding.create.resources}" />
+
+    <target name="-#{abc.sdk.scaffolding.create.name}:Extension"
+            depends="-ABC:SDK:Core:Extension"
+            extensionOf="-compile:main~hook">
+
+        <!-- The extensionOf property most likely needs to be adapted for the
+             usecase of this extension -->
+
+        <!-- If one or more environments are needed for this Extension those
+             need to be listed in the depends property -->
+
+
+        <!-- TODO: Do some awesome stuff in here -->
+
+    </target>
+
+    <!--
+        Public entrypoint into the extension
+
+        This entrypoint allows the extension to be called from the outside of
+        the software lifecylce, by specificly requesting it by name.
+    -->
+    <target name="#{-ABC.SDK.Scaffolding.Create.Public.Entrypoint.Name}"
+            depends="-#{abc.sdk.scaffolding.create.name}:Extension" />
+</project>

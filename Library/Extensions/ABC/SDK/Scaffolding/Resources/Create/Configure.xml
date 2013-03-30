@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    #{abc.sdk.scaffolding.create.name} Configure Configuration
+
+    This extension needs certain configure time dependencies
+-->
+<project name="#{abc.sdk.scaffolding.create.name}:Configure"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:configure-init name="#{abc.sdk.scaffolding.create.name}:Configure"
+                        has-resources="#{abc.sdk.scaffolding.create.resources}" />
+
+    <target name="-#{abc.sdk.scaffolding.create.name}:Configure"
+            extensionOf="-configure:main~hook">
+
+        <!-- If one or more environments are needed for this Extension those
+             need to be listed in the depends property. Otherwise the system may
+             not install and prepare the needed depdencies. -->
+
+        <!-- If your extension needs certain special operation to be executed
+             during configure time, this is the place to put this
+             functionality. -->
+
+    </target>
+</project>

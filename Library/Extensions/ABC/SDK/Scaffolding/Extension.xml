@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Scaffolding tools and targets to create new extensions for the
+    ABC build system
+
+    Warning: As this is a core extension it does not completely adhere to the
+    structure and rules layed out by the system. A normal extension is usually
+    not supposed to have more than one entrypoint. In this case the extension
+    should usually be divided into multiple extensions.
+-->
+<project name="ABC:SDK:Scaffolding:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="ABC:SDK:Scaffolding:Extension"
+                        has-resources="true" />
+
+    <import file="${abc.sdk.scaffolding.directory}/Create.xml" />
+
+    <!-- Extension entry point displaying some help -->
+    <target name="-ABC:SDK:Scaffolding:Extension"
+            depends="-ABC:SDK:Core:Extension">
+
+        <concat taskname="help"
+                fixlastline="true">
+            <file file="${abc.sdk.scaffolding.resources.directory}/help.txt" />
+        </concat>
+    </target>
+
+    <target name="abc:sdk:scaffolding"
+            depends="-ABC:SDK:Scaffolding:Extension" />
+
+    <target name="abc:sdk:scaffolding.help"
+            depends="-ABC:SDK:Scaffolding:Extension" />
+
+
+</project>
