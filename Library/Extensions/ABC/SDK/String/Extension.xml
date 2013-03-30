@@ -42,6 +42,7 @@
     <abc:macrodef name="string-lowercase">
         <attribute name="input" />
         <attribute name="property" />
+        <element name="filters" optional="true" />
         <sequential>
             <abc:string-filter input="@{input}"
                                property="@{property}">
@@ -71,6 +72,7 @@
                 <replacestring from="X" to="x" />
                 <replacestring from="Y" to="y" />
                 <replacestring from="Z" to="z" />
+                <filters />
             </abc:string-filter>
         </sequential>
     </abc:macrodef>
