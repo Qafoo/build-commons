@@ -4,13 +4,14 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:extension-init name="ABC:SDK:Changes:Extension" />
+
     <abc:macrodef name="changed-fileset">
         <attribute name="id" />
         <attribute name="dir" default="${project.directory}"/>
         <element name="restrictions" implicit="yes" />
 
         <sequential>
-            <abc:extension-init name="ABC:SDK:Changes:Extension" />
 
             <!-- Remove the Build directory from the changeset -->
             <pathconvert property="-ABC.SDK.Changes.Project.Build.Directory.Relative#@{id}">

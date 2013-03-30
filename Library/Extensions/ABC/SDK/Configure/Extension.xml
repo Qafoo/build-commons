@@ -5,12 +5,12 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:extension-init name="ABC:SDK:Configure:Extension"
+                        has-resources="true" />
+
     <target name="-ABC:SDK:Configure:Extension"
             depends="-ABC:SDK:Core:Extension"
 			extensionOf="-configure:hamburger:with:fries~hook [">
-
-        <abc:extension-init name="ABC:SDK:Configure:Extension"
-                            has-resources="true" />
 
         <abc:tempfile property="-ABC.SDK.Configure.Enabled-Profiles.File"
                       suffix=".xml" />

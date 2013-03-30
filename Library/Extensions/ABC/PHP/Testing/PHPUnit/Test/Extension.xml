@@ -3,10 +3,11 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:extension-init name="ABC:PHP:Testing:PHPUnit:Test:Extension" />
+
     <target name="-ABC:PHP:Testing:PHPUnit:Test:Extension"
             depends="-ABC:Environment:PHP:PHPUnit:Extension"
             extensionOf="-test:main~hook">
-        <abc:extension-init name="ABC:PHP:Testing:PHPUnit:Test:Extension" />
 
         <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}">
             <paths>

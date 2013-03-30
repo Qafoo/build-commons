@@ -3,10 +3,10 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:configure-init name="ABC:Environment:PHP:PHPUnit:Configure" />
+
     <target name="-ABC:Environment:PHP:PHPUnit:Configure"
             depends="-ABC:Environment:PHP:Composer:Configure">
-
-        <abc:configure-init name="ABC:Environment:PHP:PHPUnit:Configure" />
 
         <mkdir dir="${abc.environment.php.phpunit.application.directory}" />
 

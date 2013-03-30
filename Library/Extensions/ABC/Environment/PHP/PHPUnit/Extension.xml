@@ -4,10 +4,10 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:extension-init name="ABC:Environment:PHP:PHPUnit:Extension" />
+
     <target name="-ABC:Environment:PHP:PHPUnit:Extension"
-            depends="-ABC:Environment:PHP:Composer:Extension">
-        <abc:extension-init name="ABC:Environment:PHP:PHPUnit:Extension" />
-    </target>
+            depends="-ABC:Environment:PHP:Composer:Extension" />
 
     <!--
         Raw execution of phpunit with arbitrary arguments passed to it

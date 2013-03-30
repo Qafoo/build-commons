@@ -3,10 +3,11 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:extension-init name="ABC:PHP:Analysis:Linter:phpl:Extension" />
+
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
             depends="-ABC:SDK:Core:Extension"
             extensionOf="-compile:before~hook">
-        <abc:extension-init name="ABC:PHP:Analysis:Linter:phpl:Extension" />
 
         <abc:changed-fileset id="-ABC.PHP.Analysis.Linter.phpl.fileset"
                              dir="${abc.source.php.directory}">

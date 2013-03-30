@@ -3,7 +3,10 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:extension-init name="ABC:Environment:PHP:Composer:Extension" />
+
     <target name="-ABC:Environment:PHP:Composer:Extension">
-        <abc:extension-init name="ABC:Environment:PHP:Composer:Extension" />
+        <!-- Empty configure, just to signal ABC, that a configure step exists,
+             which in turn used the Common.xml -->
     </target>
 </project>

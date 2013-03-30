@@ -3,10 +3,10 @@
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
+    <abc:configure-init name="ABC:PHP:Testing:PHPUnit:Test:Configure" />
+
     <target name="-ABC:PHP:Testing:PHPUnit:Test:Configure"
             depends="-ABC:Environment:PHP:PHPUnit:Configure"
-            extensionOf="-configure:main~hook">
-        <abc:configure-init name="ABC:PHP:Testing:PHPUnit:Test:Configure" />
-    </target>
+            extensionOf="-configure:main~hook" />
 
 </project>
