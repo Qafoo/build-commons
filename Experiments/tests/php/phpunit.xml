@@ -5,7 +5,8 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false">
+         syntaxCheck="false"
+         bootstrap="../../source/php/autoload.php">
 
     <filter>
       <whitelist>

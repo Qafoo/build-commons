@@ -19,9 +19,9 @@
         <echoproperties />
     </target>
 
-    <compositemapper id="abc.php.testing.phpunit.test.changes.mapper">
+<!--    <compositemapper id="abc.php.testing.phpunit.test.changes.mapper">
         <globmapper from="${abc.source.php.directory}/*.php"
                     to="${abc.test.php.directory}/*Test.php" />
-    </compositemapper>
+    </compositemapper>-->
 
 </project>
