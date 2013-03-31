@@ -12,6 +12,16 @@
         <element name="restrictions" implicit="yes" />
 
         <sequential>
+            <!-- Allow the changes match to be disabled -->
+            <ac:if>
+                <istrue value="${abc.sdk.changes.disabled}" />
+                <ac:then>
+                    <delete taskname="Changes"
+                            file="${abc.sdk.changes.metadata.directory}/@{id}.properties"
+                            failonerror="false"
+                            quiet="true" />
+                </ac:then>
+            </ac:if>
 
             <!-- Remove the Build directory from the changeset -->
             <pathconvert property="-ABC.SDK.Changes.Project.Build.Directory.Relative#@{id}">
