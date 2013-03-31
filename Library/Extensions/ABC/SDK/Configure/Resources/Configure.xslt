@@ -109,6 +109,8 @@
                                     <include name="**/Configuration.xml"/>
                                 </xsl:otherwise>
                             </xsl:choose>
+                            <!-- Exclude anything below the Resources directory -->
+                            <exclude name="**/Resources/**" />
                         </fileset>
                     </import>
                 </echoxml>
