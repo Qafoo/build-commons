@@ -53,7 +53,8 @@
              If anyone knows a way how to do this on the commandline I would appreciate a hint.
              Another solution would be to generate a custom suite here and run it, but this does not seem
              practical :(.-->
-        <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}">
+        <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}"
+                                 dir="${abc.php.testing.phpunit.test.run.directory}">
             <paths>
                 <path refid="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection" />
             </paths>

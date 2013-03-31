@@ -45,7 +45,7 @@
     -->
     <abc:macrodef name="environment-phpunit">
         <attribute name="dir" default="${abc.test.php.directory}"/>
-        <attribute name="configuration" default="${abc.test.php.directory}/phpunit.xml" />
+        <attribute name="configuration" default="" />
         <element name="arguments" optional="true" />
         <element name="paths" />
 
@@ -58,14 +58,27 @@
                 <paths />
             </pathconvert>
 
+            <ac:var name="-ABC.Environment.PHP.PHPUnit.Execution.Configuration.Line"
+                    unset="true" />
+            <ac:if>
+                <equals arg1="@{configuration}" arg2="" />
+                <ac:then>
+                    <property name="-ABC.Environment.PHP.PHPUnit.Execution.Configuration.Line"
+                              value="" />
+                </ac:then>
+                <ac:else>
+                    <property name="-ABC.Environment.PHP.PHPUnit.Execution.Configuration.Line"
+                              value="--configuration '@{configuration}'" />
+                </ac:else>
+            </ac:if>
+
             <!-- Execute phpunit only, if there is at least something in the target
                  fileset -->
             <ac:if>
                 <isset property="-ABC.Environment.PHP.PHPUnit.Execution.Paths" />
                 <ac:then>
                     <abc:environment-phpunit-exec>
-                        <arg value="--configuration" />
-                        <arg value="@{configuration}" />
+                        <arg line="${-ABC.Environment.PHP.PHPUnit.Execution.Configuration.Line}" />
                         <arguments />
                         <arg line="'${-ABC.Environment.PHP.PHPUnit.Execution.Paths}'" />
                     </abc:environment-phpunit-exec>
