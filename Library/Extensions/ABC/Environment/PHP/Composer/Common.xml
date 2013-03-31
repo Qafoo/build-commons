@@ -21,8 +21,9 @@
             </abc:environment-composer>
 
             <abc:environment-composer dir="@{dir}">
-                <arg value="install" />
+                <arg value="update" />
             </abc:environment-composer>
+
         </sequential>
     </abc:macrodef>
 
