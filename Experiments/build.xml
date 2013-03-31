@@ -19,9 +19,18 @@
         <echoproperties />
     </target>
 
-    <compositemapper id="abc.php.testing.phpunit.test.changes.mapper">
+    <!-- Enable changes based phpunit tests -->
+    <chainedmapper id="abc.php.testing.phpunit.test.source-to-test-file.mapper">
         <globmapper from="${abc.source.php.directory}/*.php"
                     to="${abc.test.php.directory}/*Test.php" />
-    </compositemapper>
+    </chainedmapper>
 
+    <chainedmapper id="abc.php.testing.phpunit.test.test-file-to-test.mapper">
+        <globmapper from="${abc.test.php.directory}/*.php"
+                    to="*" />
+        <filtermapper>
+            <replacestring from="/"
+                           to="\" />
+        </filtermapper>
+    </chainedmapper>
 </project>

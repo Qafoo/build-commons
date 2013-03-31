@@ -8,5 +8,6 @@ class FooTest extends  \PHPUnit_Framework_TestCase
         $foo = new Foo();
 
         $this->assertEquals(42, $foo->doSomething());
+
     }
 }

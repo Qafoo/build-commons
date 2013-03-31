@@ -11,13 +11,12 @@
             extensionOf="-test:main~hook">
 
         <!-- Support for changes based phpunit test runs.
-             To enable this a corresponding compositemapper needs to be defined
-             for each project, which maps src file paths to test file and/or
-             directory paths -->
-        <ac:if>
-            <isreference refid="abc.php.testing.phpunit.test.changes.mapper"
-                         type="compositemapper" />
-            <ac:then>
+             To enable this corresponding compositemappers need to be defined
+             for each project, which map src file paths to test file and/or
+             directory paths, as well as test file names to Test class names -->
+        <internal:ABC.PHP.Testing.PHPUnit.Test.If.Changes.Enabled>
+            <then>
+                <!-- Pull in changed files -->
                 <abc:changed-fileset id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset"
                                      dir="${abc.source.php.directory}">
                     <include name="**/*.php" />
@@ -27,47 +26,81 @@
                     <include name="**/*.php" />
                 </abc:changed-fileset>
 
-                <pathconvert property="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset.Converted"
-                             refid="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset">
-                    <mapper refid="abc.php.testing.phpunit.test.changes.mapper" />
+                <pathconvert property="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Based.Tests"
+                             refid="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset"
+                             pathsep="|">
+                    <chainedmapper>
+                        <mapper refid="abc.php.testing.phpunit.test.source-to-test-file.mapper" />
+                        <mapper refid="abc.php.testing.phpunit.test.test-file-to-test.mapper" />
+                        <filtermapper>
+                            <replacestring from="\"
+                                           to="\\" />
+                        </filtermapper>
+                    </chainedmapper>
                 </pathconvert>
 
-                <path id="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection">
-                    <pathelement path="${-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset.Converted}" />
-                    <fileset refid="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset" />
-                </path>
-            </ac:then>
-            <ac:else>
-                <path id="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection">
-                    <pathelement location="${abc.test.php.directory}" />
-                </path>
-            </ac:else>
-        </ac:if>
+                <pathconvert property="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Based.Tests"
+                             refid="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset"
+                             pathsep="|">
+                    <chainedmapper>
+                        <mapper refid="abc.php.testing.phpunit.test.test-file-to-test.mapper" />
+                        <filtermapper>
+                            <replacestring from="\"
+                                           to="\\" />
+                        </filtermapper>
+                    </chainedmapper>
+                </pathconvert>
+            </then>
+        </internal:ABC.PHP.Testing.PHPUnit.Test.If.Changes.Enabled>
 
         <!-- Run PHPUnit with the proper configuration and fileset -->
-
-        <!-- TODO: This does not work yet with a full set of test.php files to execute
-             Unfortunately there does not seem to be a way to provide PHPUnit with a bunch of files
-             to execute. It is possible to supply it with ONE file or ONE directory to treat as a suite,
-             but not with a list of files :(.
-             If anyone knows a way how to do this on the commandline I would appreciate a hint.
-             Another solution would be to generate a custom suite here and run it, but this does not seem
-             practical :(.-->
-        <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}"
-                                 dir="${abc.php.testing.phpunit.test.run.directory}">
-        </abc:environment-phpunit>
+        <internal:ABC.PHP.Testing.PHPUnit.Test.If.Changes.Enabled>
+            <then>
+                <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}"
+                                         dir="${abc.php.testing.phpunit.test.run.directory}">
+                    <arguments>
+                        <arg line="--filter '(^(${-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Based.Tests}|${-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Based.Tests})::)'" />
+                    </arguments>
+                </abc:environment-phpunit>
+            </then>
+            <else>
+                <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}"
+                                         dir="${abc.php.testing.phpunit.test.run.directory}" />
+            </else>
+        </internal:ABC.PHP.Testing.PHPUnit.Test.If.Changes.Enabled>
 
         <!-- If changes based execution is enabled we need to commit the change
              sets after a successful phpunit run -->
-        <ac:if>
-            <isreference refid="abc.php.testing.phpunit.test.changes.mapper"
-                         type="compositemapper" />
-            <ac:then>
+        <internal:ABC.PHP.Testing.PHPUnit.Test.If.Changes.Enabled>
+            <then>
                 <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset" />
                 <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset" />
-            </ac:then>
-        </ac:if>
+            </then>
+        </internal:ABC.PHP.Testing.PHPUnit.Test.If.Changes.Enabled>
     </target>
+
+    <!-- Condition to check of changes handling is enabled -->
+    <internal:macrodef name="ABC.PHP.Testing.PHPUnit.Test.If.Changes.Enabled">
+        <element name="then" />
+        <element name="else" optional="true" />
+
+        <sequential>
+            <ac:if>
+                <and>
+                    <isreference refid="abc.php.testing.phpunit.test.source-to-test-file.mapper"
+                                 type="chainedmapper" />
+                    <isreference refid="abc.php.testing.phpunit.test.test-file-to-test.mapper"
+                                 type="chainedmapper" />
+                </and>
+                <ac:then>
+                    <then />
+                </ac:then>
+                <ac:else>
+                    <else />
+                </ac:else>
+            </ac:if>
+        </sequential>
+    </internal:macrodef>
 
     <target name="abc:php:testing:phpunit:test"
             depends="-ABC:PHP:Testing:PHPUnit:Test:Extension" />
