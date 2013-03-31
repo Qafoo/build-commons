@@ -44,12 +44,15 @@
             </ac:else>
         </ac:if>
 
-        <!-- Run PHPUnit with the proper conifguration and fileset -->
+        <!-- Run PHPUnit with the proper configuration and fileset -->
 
         <!-- TODO: This does not work yet with a full set of test.php files to execute
-                   I am not sure why. How do we need to call phpunit, to simply execute tests defined
-                   in a bunch of test files? -->
-
+             Unfortunately there does not seem to be a way to provide PHPUnit with a bunch of files
+             to execute. It is possible to supply it with ONE file or ONE directory to treat as a suite,
+             but not with a list of files :(.
+             If anyone knows a way how to do this on the commandline I would appreciate a hint.
+             Another solution would be to generate a custom suite here and run it, but this does not seem
+             practical :(.-->
         <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}">
             <paths>
                 <path refid="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection" />
@@ -58,8 +61,14 @@
 
         <!-- If changes based execution is enabled we need to commit the change
              sets after a successful phpunit run -->
-        <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset" />
-        <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset" />
+        <ac:if>
+            <isreference refid="abc.php.testing.phpunit.test.changes.mapper"
+                         type="compositemapper" />
+            <ac:then>
+                <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset" />
+                <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset" />
+            </ac:then>
+        </ac:if>
     </target>
 
     <target name="abc:php:testing:phpunit:test"
