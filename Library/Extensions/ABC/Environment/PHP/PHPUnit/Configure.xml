@@ -12,8 +12,8 @@
 
         <abc:environment-composer-single-install
             dir="${abc.environment.php.phpunit.application.directory}"
-            package="phpunit/phpunit"
-            version="3.7.x" />
+            package="${abc.environment.php.phpunit.package}"
+            version="${abc.environment.php.phpunit.version}" />
     </target>
 
 </project>
