@@ -30,34 +30,33 @@
     <!--
         Encapsulated convenience call to phpunit executions
 
-        This macro takes an optional configuration attribute, as well as two nested
-        element sets:
+        This macro takes the following attributes:
 
-        <arguments>:
-          Optionally further commandline arguments to be supplied to phpunit
+        dir:
+          The directory to run phpunit in. By default this is the php test dir
 
-        <paths>:
-          Arbitrary resourcesets, which contain a list of files/directories, to pass
-          to phpunit for execution.
+        configuration:
+          Full path to the configuration file (phpunit.xml) to use for execution
 
-          The usual rules of phpunit executing given directories recursively does apply
-          here of course
+          If the attribute is not specified, or set to an empty string. The phpunit
+          default will be used (Search for a phpunit.xml.dist inside the working dir.
+          If that one is not found search for a phpunit.xml in there.)
+
+        testpath:
+          Fullpath to the directory or testfile to execute as a starting point.
+
+          By default this simply is the php test directory.
+
+        Furthermore an optional element called <arguments> is supported, which
+        may contain further <arg> elements to be passed to phpunit.
     -->
     <abc:macrodef name="environment-phpunit">
         <attribute name="dir" default="${abc.test.php.directory}"/>
         <attribute name="configuration" default="" />
+        <attribute name="testpath" default="${abc.test.php.directory}" />
         <element name="arguments" optional="true" />
-        <element name="paths" />
 
         <sequential>
-            <ac:var name="-ABC.Environment.PHP.PHPUnit.Execution.Paths"
-                    unset="true" />
-            <pathconvert property="-ABC.Environment.PHP.PHPUnit.Execution.Paths"
-                         pathsep="' '"
-                         setonempty="false">
-                <paths />
-            </pathconvert>
-
             <ac:var name="-ABC.Environment.PHP.PHPUnit.Execution.Configuration.Line"
                     unset="true" />
             <ac:if>
@@ -72,18 +71,11 @@
                 </ac:else>
             </ac:if>
 
-            <!-- Execute phpunit only, if there is at least something in the target
-                 fileset -->
-            <ac:if>
-                <isset property="-ABC.Environment.PHP.PHPUnit.Execution.Paths" />
-                <ac:then>
-                    <abc:environment-phpunit-exec>
-                        <arg line="${-ABC.Environment.PHP.PHPUnit.Execution.Configuration.Line}" />
-                        <arguments />
-                        <arg line="'${-ABC.Environment.PHP.PHPUnit.Execution.Paths}'" />
-                    </abc:environment-phpunit-exec>
-                </ac:then>
-            </ac:if>
+            <abc:environment-phpunit-exec>
+                <arg line="${-ABC.Environment.PHP.PHPUnit.Execution.Configuration.Line}" />
+                <arguments />
+                <arg value="@{testpath}" />
+            </abc:environment-phpunit-exec>
         </sequential>
 
     </abc:macrodef>

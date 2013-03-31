@@ -55,9 +55,6 @@
              practical :(.-->
         <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}"
                                  dir="${abc.php.testing.phpunit.test.run.directory}">
-            <paths>
-                <path refid="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection" />
-            </paths>
         </abc:environment-phpunit>
 
         <!-- If changes based execution is enabled we need to commit the change
