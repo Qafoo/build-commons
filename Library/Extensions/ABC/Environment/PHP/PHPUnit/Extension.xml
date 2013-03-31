@@ -53,15 +53,24 @@
             <ac:var name="-ABC.Environment.PHP.PHPUnit.Execution.Paths"
                     unset="true" />
             <pathconvert property="-ABC.Environment.PHP.PHPUnit.Execution.Paths"
-                         pathsep="' '">
+                         pathsep="' '"
+                         setonempty="false">
                 <paths />
             </pathconvert>
-            <abc:environment-phpunit-exec>
-                <arg value="--configuration" />
-                <arg value="@{configuration}" />
-                <arguments />
-                <arg line="'${-ABC.Environment.PHP.PHPUnit.Execution.Paths}'" />
-            </abc:environment-phpunit-exec>
+
+            <!-- Execute phpunit only, if there is at least something in the target
+                 fileset -->
+            <ac:if>
+                <isset property="-ABC.Environment.PHP.PHPUnit.Execution.Paths" />
+                <ac:then>
+                    <abc:environment-phpunit-exec>
+                        <arg value="--configuration" />
+                        <arg value="@{configuration}" />
+                        <arguments />
+                        <arg line="'${-ABC.Environment.PHP.PHPUnit.Execution.Paths}'" />
+                    </abc:environment-phpunit-exec>
+                </ac:then>
+            </ac:if>
         </sequential>
 
     </abc:macrodef>

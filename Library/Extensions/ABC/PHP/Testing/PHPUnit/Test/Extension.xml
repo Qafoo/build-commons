@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ABC:PHP:Testing:PHPUnit:Test:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
          xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
          xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
 
@@ -9,11 +10,56 @@
             depends="-ABC:Environment:PHP:PHPUnit:Extension"
             extensionOf="-test:main~hook">
 
+        <!-- Support for changes based phpunit test runs.
+             To enable this a corresponding compositemapper needs to be defined
+             for each project, which maps src file paths to test file and/or
+             directory paths -->
+        <ac:if>
+            <isreference refid="abc.php.testing.phpunit.test.changes.mapper"
+                         type="compositemapper" />
+            <ac:then>
+                <abc:changed-fileset id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset"
+                                     dir="${abc.source.php.directory}">
+                    <include name="**/*.php" />
+                </abc:changed-fileset>
+                <abc:changed-fileset id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset"
+                                     dir="${abc.test.php.directory}">
+                    <include name="**/*.php" />
+                </abc:changed-fileset>
+
+                <pathconvert property="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset.Converted"
+                             refid="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset">
+                    <mapper refid="abc.php.testing.phpunit.test.changes.mapper" />
+                </pathconvert>
+
+                <path id="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection">
+                    <pathelement path="${-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset.Converted}" />
+                    <fileset refid="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset" />
+                </path>
+            </ac:then>
+            <ac:else>
+                <path id="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection">
+                    <pathelement location="${abc.test.php.directory}" />
+                </path>
+            </ac:else>
+        </ac:if>
+
+        <!-- Run PHPUnit with the proper conifguration and fileset -->
+
+        <!-- TODO: This does not work yet with a full set of test.php files to execute
+                   I am not sure why. How do we need to call phpunit, to simply execute tests defined
+                   in a bunch of test files? -->
+
         <abc:environment-phpunit configuration="${abc.php.testing.phpunit.test.configuration.file}">
             <paths>
-                <propertyresource name="abc.test.php.directory" />
+                <path refid="-ABC.PHP.Testing.PHPUnit.Test.Path.Selection" />
             </paths>
         </abc:environment-phpunit>
+
+        <!-- If changes based execution is enabled we need to commit the change
+             sets after a successful phpunit run -->
+        <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Source.Fileset" />
+        <abc:commit-changes id="-ABC.PHP.Testing.PHPUnit.Test.Changes.Test.Fileset" />
     </target>
 
     <target name="abc:php:testing:phpunit:test"
