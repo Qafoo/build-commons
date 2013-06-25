@@ -116,6 +116,19 @@
     </target>
 
     <!--
+         Main entrypoint for manual calling
+    -->
+    <target name="composer:composer"
+            depends="composer:is-enabled"
+            if="-composer:is.enabled">
+
+        <antcall target="composer:dependencies-install-or-update"
+                 inheritAll="true"
+                 inheritRefs="true" />
+
+    </target>
+
+    <!--
         EXTENSION POINTS UTILIZED BY THIS MODULE
     -->
 
@@ -124,12 +137,6 @@
         target into the main INITIALIZE build-step
     -->
     <target name="-composer:initialize:main~hooked"
-            depends="composer:is-enabled"
-            if="-composer:is.enabled"
-            extensionOf="-initialize:main~hook">
-
-        <antcall target="composer:dependencies-install-or-update"
-                 inheritAll="true"
-                 inheritRefs="true" />
-    </target>
+            depends="composer:composer"
+            extensionOf="-initialize:main~hook" />
 </project>
