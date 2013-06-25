@@ -206,6 +206,11 @@
 <fileset dir="${subproject.basedir}" includes="*/build.xml"/>
 </subant>
 </target>
+<target name="composer:composer">
+<subant target="composer:composer" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
 <target name="db:help">
 <subant target="db:help" inheritall="true" inheritrefs="true">
 <fileset dir="${subproject.basedir}" includes="*/build.xml"/>
