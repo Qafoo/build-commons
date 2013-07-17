@@ -38,18 +38,29 @@
             depends="-composer:dependencies-lock-up2date"
             unless="-composer:dependencies.lock.up2date">
 
+        <condition property="-composer:dependencies.install.dev" value="" else="--no-dev">
+            <contains string=",${composer.dev.environments},"
+                      substring="${commons.env}" />
+        </condition>
+
         <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="${composer.executable}" />
             <arg value="install" />
+            <arg line="${-composer:dependencies.install.dev}" />
         </exec>
 
         <touch file="${composer.up2date.file}" />
     </target>
 
     <target name="-composer:dependencies-lock-up2date">
-        <uptodate property="-composer:dependencies.lock.up2date"
-                  srcfile="${composer.dependency.lock}"
-                  targetfile="${composer.up2date.file}" />
+        <condition property="-composer:dependencies.lock.up2date">
+            <and>
+                <uptodate srcfile="${composer.dependency.lock}"
+                          targetfile="${composer.up2date.file}" />
+                <available file="${composer.vendor.dir}"
+                           type="dir" />
+            </and>
+        </condition>
     </target>
 
     <target name="composer:is-enabled"
