@@ -1,934 +1,904 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant-build-commons-archtype-multiple-project" basedir=".">
-    <property name="subproject.basedir" value="${basedir}" />
-    <target name="help">
-        <subant target="help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="commons:help">
-        <subant target="commons:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="commons:fail-build-on-error">
-        <subant target="commons:fail-build-on-error" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="bundle">
-        <subant target="bundle" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="bundle:bundle">
-        <subant target="bundle:bundle" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="clean"
-            description="-&gt;  Removes all temporary artifacts from previous builds">
-        <subant target="clean" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="clean:clean">
-        <subant target="clean:clean" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="compile"
-            description="-&gt;  Performs a static syntax check of the project.">
-        <subant target="compile" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="compile:compile">
-        <subant target="compile:compile" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="deploy"
-            description="-&gt;  Starts a remote deployment of the project build">
-        <subant target="deploy" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="deploy:deploy">
-        <subant target="deploy:deploy" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="ant:test:help">
-        <subant target="ant:test:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="ant:test">
-        <subant target="ant:test" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="ant:test:unit">
-        <subant target="ant:test:unit" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="ant:test:integration">
-        <subant target="ant:test:integration" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="ant:test:regression">
-        <subant target="ant:test:regression" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="ant:test:run">
-        <subant target="ant:test:run" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="ant:test:assertFileExists">
-        <subant target="ant:test:assertFileExists" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="archive:help">
-        <subant target="archive:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="archive">
-        <subant target="archive" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="archive:archive">
-        <subant target="archive:archive" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="availability:availability">
-        <subant target="availability:availability" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="availability:php-srcdir-is-available">
-        <subant target="availability:php-srcdir-is-available" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="availability:js-srcdir-is-available">
-        <subant target="availability:js-srcdir-is-available" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="availability:php-testdir-is-available">
-        <subant target="availability:php-testdir-is-available" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="availability:js-testdir-is-available">
-        <subant target="availability:js-testdir-is-available" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="changes:help">
-        <subant target="changes:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="changes:log">
-        <subant target="changes:log" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="changes:manifest">
-        <subant target="changes:manifest" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="changes:site">
-        <subant target="changes:site" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="codesniffer">
-        <subant target="codesniffer" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="codesniffer:codesniffer">
-        <subant target="codesniffer:codesniffer" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:dependencies-install-or-update">
-        <subant target="composer:dependencies-install-or-update"
-                inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:dependencies-install">
-        <subant target="composer:dependencies-install" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:dependencies-update">
-        <subant target="composer:dependencies-update" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:dependencies-lock-exists">
-        <subant target="composer:dependencies-lock-exists" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:is-enabled">
-        <subant target="composer:is-enabled" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:phar-install-or-update">
-        <subant target="composer:phar-install-or-update" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:phar-install">
-        <subant target="composer:phar-install" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:phar-update">
-        <subant target="composer:phar-update" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="composer:phar-exists">
-        <subant target="composer:phar-exists" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="db:help">
-        <subant target="db:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="db:initialize">
-        <subant target="db:initialize" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="db:drop">
-        <subant target="db:drop" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="db:reset">
-        <subant target="db:reset" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="dbdeploy">
-        <subant target="dbdeploy" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="dbdeploy:dbdeploy">
-        <subant target="dbdeploy:dbdeploy" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="dbdeploy:init">
-        <subant target="dbdeploy:init" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="dbdeploy:generate">
-        <subant target="dbdeploy:generate" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="dbdeploy:migrate">
-        <subant target="dbdeploy:migrate" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="dbdeploy:rollback">
-        <subant target="dbdeploy:rollback" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="dbdeploy:drop">
-        <subant target="dbdeploy:drop" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="docbook:help">
-        <subant target="docbook:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="docbook">
-        <subant target="docbook" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="docbook:docbook">
-        <subant target="docbook:docbook" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jshint">
-        <subant target="jshint" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jshint:jshint">
-        <subant target="jshint:jshint" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jslint">
-        <subant target="jslint" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jslint:jslint">
-        <subant target="jslint:jslint" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jstestdriver">
-        <subant target="jstestdriver" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jstestdriver:jstestdriver">
-        <subant target="jstestdriver:jstestdriver" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jstestdriver:server">
-        <subant target="jstestdriver:server" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="jstestdriver:coverage">
-        <subant target="jstestdriver:coverage" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="npm:initialize">
-        <subant target="npm:initialize" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="npm:install">
-        <subant target="npm:install" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="npm:upgrade">
-        <subant target="npm:upgrade" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="common-npm-install-remote">
-        <subant target="common-npm-install-remote" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="common-npm-install-local">
-        <subant target="common-npm-install-local" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pdepend">
-        <subant target="pdepend" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pdepend:pdepend">
-        <subant target="pdepend:pdepend" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pear:help">
-        <subant target="pear:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pear:manifest">
-        <subant target="pear:manifest" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pear:initialize">
-        <subant target="pear:initialize" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pear:install">
-        <subant target="pear:install" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pear:upgrade">
-        <subant target="pear:upgrade" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pear:channel-discover">
-        <subant target="pear:channel-discover" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="common-pear-channel-discover">
-        <subant target="common-pear-channel-discover" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="common-pear-install-remote">
-        <subant target="common-pear-install-remote" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="common-pear-install-local">
-        <subant target="common-pear-install-local" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpab">
-        <subant target="phpab" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpab:phpab">
-        <subant target="phpab:phpab" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpab:clean">
-        <subant target="phpab:clean" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpcb">
-        <subant target="phpcb" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpcb:phpcb">
-        <subant target="phpcb:phpcb" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpcpd">
-        <subant target="phpcpd" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpcpd:phpcpd">
-        <subant target="phpcpd:phpcpd" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phplint">
-        <subant target="phplint" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phplint:phplint">
-        <subant target="phplint:phplint" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phploc">
-        <subant target="phploc" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phploc:phploc">
-        <subant target="phploc:phploc" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpmd">
-        <subant target="phpmd" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpmd:phpmd">
-        <subant target="phpmd:phpmd" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpunit">
-        <subant target="phpunit" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpunit:phpunit">
-        <subant target="phpunit:phpunit" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpunit:unit">
-        <subant target="phpunit:unit" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpunit:integration">
-        <subant target="phpunit:integration" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpunit:regression">
-        <subant target="phpunit:regression" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="phpunit:coverage">
-        <subant target="phpunit:coverage" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pirum">
-        <subant target="pirum" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="pirum:deploy">
-        <subant target="pirum:deploy" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="remote:execute">
-        <subant target="remote:execute" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="remote:copy">
-        <subant target="remote:copy" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="requirejs:bootstrap">
-        <subant target="requirejs:bootstrap" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="requirejs:bundle">
-        <subant target="requirejs:bundle" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="requirejs">
-        <subant target="requirejs" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="requirejs:help">
-        <subant target="requirejs:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:ext:update">
-        <subant target="scm:ext:update" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:ext:update-light">
-        <subant target="scm:ext:update-light" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:git:help">
-        <subant target="scm:git:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:git:commit">
-        <subant target="scm:git:commit" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:git:update">
-        <subant target="scm:git:update" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:git:update-light">
-        <subant target="scm:git:update-light" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:git:tag">
-        <subant target="scm:git:tag" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:svn:help">
-        <subant target="scm:svn:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:svn:commit">
-        <subant target="scm:svn:commit" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:svn:update">
-        <subant target="scm:svn:update" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:svn:update-light">
-        <subant target="scm:svn:update-light" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:svn:tag">
-        <subant target="scm:svn:tag" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:help">
-        <subant target="scm:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:commit">
-        <subant target="scm:commit" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:update">
-        <subant target="scm:update" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:update-light">
-        <subant target="scm:update-light" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="scm:tag">
-        <subant target="scm:tag" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="sonar:help">
-        <subant target="sonar:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="sonar">
-        <subant target="sonar" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="sonar:sonar">
-        <subant target="sonar:sonar" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="vagrant:help">
-        <subant target="vagrant:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="vagrant:halt">
-        <subant target="vagrant:halt" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="vagrant:up">
-        <subant target="vagrant:up" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="vagrant:provision">
-        <subant target="vagrant:provision" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="vagrant:restart">
-        <subant target="vagrant:restart" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="vagrant:exec">
-        <subant target="vagrant:exec" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="vagrant:abc">
-        <subant target="vagrant:abc" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="version:help">
-        <subant target="version:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="version">
-        <subant target="version" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="version:version">
-        <subant target="version:version" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="wro4j:minifier">
-        <subant target="wro4j:minifier" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="initialize"
-            description="-&gt;  Initializes the project build environment.">
-        <subant target="initialize" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="initialize:initialize">
-        <subant target="initialize:initialize" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="initialize:environment">
-        <subant target="initialize:environment" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="install" description="-&gt;  Installs the project local.">
-        <subant target="install" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="install:install">
-        <subant target="install:install" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="integration-test"
-            description="-&gt;  Runs all tests for the project.">
-        <subant target="integration-test" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="integration-test:integration-test">
-        <subant target="integration-test:integration-test" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="package"
-            description="-&gt;  Generates distributable packages of the project.">
-        <subant target="package" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="package:package">
-        <subant target="package:package" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="package:release">
-        <subant target="package:release" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="package:phar">
-        <subant target="package:phar" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="package:pear">
-        <subant target="package:pear" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="do-copy-files-for-xyz-archive">
-        <subant target="do-copy-files-for-xyz-archive" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="copy-optional-dirs">
-        <subant target="copy-optional-dirs" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="copy-library-dir-if-exists">
-        <subant target="copy-library-dir-if-exists" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="test-library-dir-exists">
-        <subant target="test-library-dir-exists" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="copy-library-dir">
-        <subant target="copy-library-dir" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="copy-docs-dir-if-exists">
-        <subant target="copy-docs-dir-if-exists" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="test-docs-dir-exists">
-        <subant target="test-docs-dir-exists" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="copy-docs-dir">
-        <subant target="copy-docs-dir" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="profile"
-            description="-&gt;  Performs a profiling of the project application.">
-        <subant target="profile" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="profile:profile">
-        <subant target="profile:profile" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="project:help">
-        <subant target="project:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="project:create">
-        <subant target="project:create" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="site:help">
-        <subant target="site:help" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="site"
-            description="-&gt;  Generate a site for a single project.">
-        <subant target="site" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="site:site">
-        <subant target="site:site" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="site:run">
-        <subant target="site:run" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="site:zip">
-        <subant target="site:zip" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="site:deploy">
-        <subant target="site:deploy" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="site:initialize-directories">
-        <subant target="site:initialize-directories" inheritall="true"
-                inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="test"
-            description="-&gt;  Runs the unit tests for the project.">
-        <subant target="test" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="test:test">
-        <subant target="test:test" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="validate"
-            description="-&gt;  Validates the project configuration.">
-        <subant target="validate" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="validate:validate">
-        <subant target="validate:validate" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="verify"
-            description="-&gt;  Verifies that the source is valid and meets quality criterias.">
-        <subant target="verify" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="verify:verify">
-        <subant target="verify:verify" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
-    <target name="verify:backdoor">
-        <subant target="verify:backdoor" inheritall="true" inheritrefs="true">
-            <fileset dir="${subproject.basedir}" includes="*/build.xml" />
-        </subant>
-    </target>
+<property name="subproject.basedir" value="${basedir}"/>
+<target name="help">
+<subant target="help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="commons:help">
+<subant target="commons:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="commons:fail-build-on-error">
+<subant target="commons:fail-build-on-error" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="bundle">
+<subant target="bundle" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="bundle:bundle">
+<subant target="bundle:bundle" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="clean" description="-&gt;  Removes all temporary artifacts from previous builds">
+<subant target="clean" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="clean:clean">
+<subant target="clean:clean" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="compile" description="-&gt;  Performs a static syntax check of the project.">
+<subant target="compile" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="compile:compile">
+<subant target="compile:compile" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="deploy" description="-&gt;  Starts a remote deployment of the project build">
+<subant target="deploy" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="deploy:deploy">
+<subant target="deploy:deploy" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="ant:test:help">
+<subant target="ant:test:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="ant:test">
+<subant target="ant:test" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="ant:test:unit">
+<subant target="ant:test:unit" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="ant:test:integration">
+<subant target="ant:test:integration" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="ant:test:regression">
+<subant target="ant:test:regression" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="ant:test:run">
+<subant target="ant:test:run" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="ant:test:assertFileExists">
+<subant target="ant:test:assertFileExists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="archive:help">
+<subant target="archive:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="archive">
+<subant target="archive" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="archive:archive">
+<subant target="archive:archive" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="availability:availability">
+<subant target="availability:availability" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="availability:php-srcdir-is-available">
+<subant target="availability:php-srcdir-is-available" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="availability:js-srcdir-is-available">
+<subant target="availability:js-srcdir-is-available" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="availability:php-testdir-is-available">
+<subant target="availability:php-testdir-is-available" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="availability:js-testdir-is-available">
+<subant target="availability:js-testdir-is-available" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="changes:help">
+<subant target="changes:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="changes:log">
+<subant target="changes:log" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="changes:manifest">
+<subant target="changes:manifest" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="changes:site">
+<subant target="changes:site" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="codesniffer">
+<subant target="codesniffer" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="codesniffer:codesniffer">
+<subant target="codesniffer:codesniffer" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:dependencies-install-or-update">
+<subant target="composer:dependencies-install-or-update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:dependencies-install">
+<subant target="composer:dependencies-install" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:dependencies-update">
+<subant target="composer:dependencies-update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:dependencies-lock-exists">
+<subant target="composer:dependencies-lock-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:is-enabled">
+<subant target="composer:is-enabled" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:phar-install-or-update">
+<subant target="composer:phar-install-or-update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:phar-install">
+<subant target="composer:phar-install" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:phar-update">
+<subant target="composer:phar-update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:phar-exists">
+<subant target="composer:phar-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="composer:composer">
+<subant target="composer:composer" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="db:help">
+<subant target="db:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="db:initialize">
+<subant target="db:initialize" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="db:drop">
+<subant target="db:drop" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="db:reset">
+<subant target="db:reset" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="dbdeploy">
+<subant target="dbdeploy" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="dbdeploy:dbdeploy">
+<subant target="dbdeploy:dbdeploy" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="dbdeploy:init">
+<subant target="dbdeploy:init" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="dbdeploy:generate">
+<subant target="dbdeploy:generate" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="dbdeploy:migrate">
+<subant target="dbdeploy:migrate" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="dbdeploy:rollback">
+<subant target="dbdeploy:rollback" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="dbdeploy:drop">
+<subant target="dbdeploy:drop" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="docbook:help">
+<subant target="docbook:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="docbook">
+<subant target="docbook" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="docbook:docbook">
+<subant target="docbook:docbook" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jshint">
+<subant target="jshint" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jshint:jshint">
+<subant target="jshint:jshint" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jslint">
+<subant target="jslint" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jslint:jslint">
+<subant target="jslint:jslint" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jstestdriver">
+<subant target="jstestdriver" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jstestdriver:jstestdriver">
+<subant target="jstestdriver:jstestdriver" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jstestdriver:server">
+<subant target="jstestdriver:server" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="jstestdriver:coverage">
+<subant target="jstestdriver:coverage" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="npm:initialize">
+<subant target="npm:initialize" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="npm:install">
+<subant target="npm:install" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="npm:upgrade">
+<subant target="npm:upgrade" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="common-npm-install-remote">
+<subant target="common-npm-install-remote" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="common-npm-install-local">
+<subant target="common-npm-install-local" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pdepend">
+<subant target="pdepend" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pdepend:pdepend">
+<subant target="pdepend:pdepend" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pear:help">
+<subant target="pear:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pear:manifest">
+<subant target="pear:manifest" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pear:initialize">
+<subant target="pear:initialize" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pear:install">
+<subant target="pear:install" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pear:upgrade">
+<subant target="pear:upgrade" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pear:channel-discover">
+<subant target="pear:channel-discover" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="common-pear-channel-discover">
+<subant target="common-pear-channel-discover" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="common-pear-install-remote">
+<subant target="common-pear-install-remote" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="common-pear-install-local">
+<subant target="common-pear-install-local" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpab">
+<subant target="phpab" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpab:phpab">
+<subant target="phpab:phpab" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpab:clean">
+<subant target="phpab:clean" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpcb">
+<subant target="phpcb" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpcb:phpcb">
+<subant target="phpcb:phpcb" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpcpd">
+<subant target="phpcpd" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpcpd:phpcpd">
+<subant target="phpcpd:phpcpd" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phplint">
+<subant target="phplint" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phplint:phplint">
+<subant target="phplint:phplint" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phploc">
+<subant target="phploc" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phploc:phploc">
+<subant target="phploc:phploc" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpmd">
+<subant target="phpmd" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpmd:phpmd">
+<subant target="phpmd:phpmd" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpunit">
+<subant target="phpunit" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpunit:phpunit">
+<subant target="phpunit:phpunit" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpunit:unit">
+<subant target="phpunit:unit" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpunit:integration">
+<subant target="phpunit:integration" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpunit:regression">
+<subant target="phpunit:regression" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="phpunit:coverage">
+<subant target="phpunit:coverage" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pirum">
+<subant target="pirum" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="pirum:deploy">
+<subant target="pirum:deploy" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="remote:execute">
+<subant target="remote:execute" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="remote:copy">
+<subant target="remote:copy" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="requirejs:bootstrap">
+<subant target="requirejs:bootstrap" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="requirejs:bundle">
+<subant target="requirejs:bundle" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="requirejs">
+<subant target="requirejs" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="requirejs:help">
+<subant target="requirejs:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:ext:update">
+<subant target="scm:ext:update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:ext:update-light">
+<subant target="scm:ext:update-light" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:git:help">
+<subant target="scm:git:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:git:commit">
+<subant target="scm:git:commit" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:git:update">
+<subant target="scm:git:update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:git:update-light">
+<subant target="scm:git:update-light" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:git:tag">
+<subant target="scm:git:tag" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:svn:help">
+<subant target="scm:svn:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:svn:commit">
+<subant target="scm:svn:commit" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:svn:update">
+<subant target="scm:svn:update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:svn:update-light">
+<subant target="scm:svn:update-light" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:svn:tag">
+<subant target="scm:svn:tag" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:help">
+<subant target="scm:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:commit">
+<subant target="scm:commit" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:update">
+<subant target="scm:update" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:update-light">
+<subant target="scm:update-light" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="scm:tag">
+<subant target="scm:tag" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="sonar:help">
+<subant target="sonar:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="sonar">
+<subant target="sonar" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="sonar:sonar">
+<subant target="sonar:sonar" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="vagrant:help">
+<subant target="vagrant:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="vagrant:halt">
+<subant target="vagrant:halt" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="vagrant:up">
+<subant target="vagrant:up" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="vagrant:provision">
+<subant target="vagrant:provision" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="vagrant:restart">
+<subant target="vagrant:restart" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="vagrant:exec">
+<subant target="vagrant:exec" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="vagrant:abc">
+<subant target="vagrant:abc" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="version:help">
+<subant target="version:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="version">
+<subant target="version" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="version:version">
+<subant target="version:version" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="wro4j:minifier">
+<subant target="wro4j:minifier" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="initialize" description="-&gt;  Initializes the project build environment.">
+<subant target="initialize" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="initialize:initialize">
+<subant target="initialize:initialize" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="initialize:directories">
+<subant target="initialize:directories" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="initialize:environment">
+<subant target="initialize:environment" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="install" description="-&gt;  Installs the project local.">
+<subant target="install" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="install:install">
+<subant target="install:install" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="integration-test" description="-&gt;  Runs all tests for the project.">
+<subant target="integration-test" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="integration-test:integration-test">
+<subant target="integration-test:integration-test" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="package" description="-&gt;  Generates distributable packages of the project.">
+<subant target="package" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="package:package">
+<subant target="package:package" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="package:release">
+<subant target="package:release" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="package:phar">
+<subant target="package:phar" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="package:pear">
+<subant target="package:pear" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="do-copy-files-for-xyz-archive">
+<subant target="do-copy-files-for-xyz-archive" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="copy-optional-dirs">
+<subant target="copy-optional-dirs" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="copy-library-dir-if-exists">
+<subant target="copy-library-dir-if-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="test-library-dir-exists">
+<subant target="test-library-dir-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="copy-library-dir">
+<subant target="copy-library-dir" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="copy-vendor-dir-if-exists">
+<subant target="copy-vendor-dir-if-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="test-vendor-dir-exists">
+<subant target="test-vendor-dir-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="copy-vendor-dir">
+<subant target="copy-vendor-dir" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="copy-docs-dir-if-exists">
+<subant target="copy-docs-dir-if-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="test-docs-dir-exists">
+<subant target="test-docs-dir-exists" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="copy-docs-dir">
+<subant target="copy-docs-dir" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="profile" description="-&gt;  Performs a profiling of the project application.">
+<subant target="profile" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="profile:profile">
+<subant target="profile:profile" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="project:help">
+<subant target="project:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="project:create">
+<subant target="project:create" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="site:help">
+<subant target="site:help" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="site" description="-&gt;  Generate a site for a single project.">
+<subant target="site" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="site:site">
+<subant target="site:site" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="site:run">
+<subant target="site:run" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="site:zip">
+<subant target="site:zip" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="site:deploy">
+<subant target="site:deploy" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="site:initialize-directories">
+<subant target="site:initialize-directories" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="test" description="-&gt;  Runs the unit tests for the project.">
+<subant target="test" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="test:test">
+<subant target="test:test" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="validate" description="-&gt;  Validates the project configuration.">
+<subant target="validate" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="validate:validate">
+<subant target="validate:validate" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="verify" description="-&gt;  Verifies that the source is valid and meets quality criterias.">
+<subant target="verify" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="verify:verify">
+<subant target="verify:verify" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
+<target name="verify:backdoor">
+<subant target="verify:backdoor" inheritall="true" inheritrefs="true">
+<fileset dir="${subproject.basedir}" includes="*/build.xml"/>
+</subant>
+</target>
 </project>

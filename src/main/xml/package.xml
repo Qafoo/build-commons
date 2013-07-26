@@ -98,6 +98,10 @@
             <param name="output.dir" value="${-package:phar:builddir}" />
         </antcall>
 
+        <antcall target="copy-vendor-dir-if-exists">
+            <param name="output.dir" value="${-package:phar:builddir}" />
+        </antcall>
+
         <antcall target="do-copy-files-for-xyz-archive">
             <param name="output.dir" value="${-package:phar:builddir}" />
         </antcall>
@@ -295,7 +299,10 @@
         Parameters:
             output.dir      Output directory for the temporary build tree.
     -->
-    <target name="copy-optional-dirs" depends="copy-library-dir-if-exists,copy-docs-dir-if-exists" />
+    <target name="copy-optional-dirs"
+            depends="copy-library-dir-if-exists,
+                     copy-vendor-dir-if-exists,
+                     copy-docs-dir-if-exists" />
 
     <!--
         Optionally copies a library directory into a temporary build tree.
@@ -303,7 +310,9 @@
         Parameters:
             output.dir      Output directory for the temporary build tree.
     -->
-    <target name="copy-library-dir-if-exists" depends="test-library-dir-exists,copy-library-dir" />
+    <target name="copy-library-dir-if-exists"
+            depends="test-library-dir-exists,
+                     copy-library-dir" />
 
     <!--
         Checks if the current project contains a library folder with external
@@ -339,6 +348,48 @@
     </target>
 
     <!--
+        Optionally copies a vendor directory into a temporary build tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-vendor-dir-if-exists"
+            depends="test-vendor-dir-exists,copy-vendor-dir" />
+
+    <!--
+        Checks if the current project contains a vendor folder with external
+        dependencies.
+    -->
+    <target name="test-vendor-dir-exists">
+        <available file="${basedir}/vendor" property="vendor-dir-exists" />
+    </target>
+
+    <!--
+        Copies the vendor directory of the current project into a temporary
+        build source tree.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+    -->
+    <target name="copy-vendor-dir" if="vendor-dir-exists">
+        <property name="vendor.dir" value="${output.dir}/vendor" />
+
+        <antcall target="~copy-vendor-dir-before">
+            <param name="output.dir" value="${output.dir}" />
+            <param name="vendor.dir" value="${vendor.dir}" />
+        </antcall>
+
+        <copy todir="${output.dir}/vendor">
+            <fileset dir="${basedir}/vendor" />
+        </copy>
+
+        <antcall target="~copy-vendor-dir-after">
+            <param name="output.dir" value="${output.dir}" />
+            <param name="vendor.dir" value="${vendor.dir}" />
+        </antcall>
+    </target>
+
+    <!--
         Hook that will be called before we copy the project's library directory.
 
         Parameters:
@@ -356,6 +407,25 @@
             library.dir     The library directory in the temporary build tree.
     -->
     <target name="~copy-library-dir-after" />
+
+    <!--
+        Hook that will be called before we copy the project's vendor directory.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+            vendor.dir     The vendor directory in the temporary build tree.
+    -->
+    <target name="~copy-vendor-dir-before" />
+
+    <!--
+        Hook that will be called after we have copied the project's vendor
+        directory.
+
+        Parameters:
+            output.dir      Output directory for the temporary build tree.
+            vendor.dir     The vendor directory in the temporary build tree.
+    -->
+    <target name="~copy-vendor-dir-after" />
 
     <!--
         Optionally copies a documentation directory into a temporary build

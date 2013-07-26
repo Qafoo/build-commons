@@ -70,6 +70,12 @@
     </target>
 
     <!--
+         Public entrypoint to create abc directory structure
+    -->
+    <target name="initialize:directories"
+            depends="-initialize:directories" />
+
+    <!--
         Creates all directories required for a project build.
     -->
     <target name="-initialize:directories">

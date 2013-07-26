@@ -7,6 +7,7 @@
     <xsl:output standalone="yes" method="text" />
 
     <xsl:include href="chunker.xsl" />
+    <xsl:include href="util.xsl" />
     <xsl:include href="rst.xsl" />
 
     <xsl:param name="changes.scm.uri" select="'http://scm.example.com'" />
@@ -432,6 +433,13 @@
                 <xsl:choose>
                     <xsl:when test="@system = 'pivotaltracker'">
                         <xsl:text>https://www.pivotaltracker.com/story/show/</xsl:text>
+                        <xsl:value-of select="@issue" />
+                    </xsl:when>
+                    <xsl:when test="@system = 'github'">
+                        <xsl:call-template name="dirname">
+                            <xsl:with-param name="path" select="$changes.scm.uri" />
+                        </xsl:call-template>
+                        <xsl:text>issues/</xsl:text>
                         <xsl:value-of select="@issue" />
                     </xsl:when>
                     <xsl:otherwise>
