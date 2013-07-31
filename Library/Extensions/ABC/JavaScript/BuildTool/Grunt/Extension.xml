@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:JavaScript:BuildTool:Grunt Extension
+
+    This extension does some awesome stuff
+-->
+<project name="ABC:JavaScript:BuildTool:Grunt:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="ABC:JavaScript:BuildTool:Grunt:Extension"
+                        has-resources="false" />
+
+    <!--
+        Macro dispatching to configurable grunt task(s)
+    -->
+    <internal:macrodef name="ABC.JavaScript.BuildTool.Grunt.Dispatch">
+        <attribute name="target" />
+        <sequential>
+            <ac:if>
+                <not>
+                    <equals arg1="${abc.javascript.buildtool.grunt.hook.@{target}}"
+                            arg2=""
+                            trim="true" />
+                </not>
+                <ac:then>
+                    <abc:environment-grunt-task task="${abc.javascript.buildtool.grunt.hook.@{target}}"
+                                                dir="${abc.javascript.buildtool.grunt.base.directory}" />
+                </ac:then>
+            </ac:if>
+        </sequential>
+    </internal:macrodef>
+
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            depends="-ABC:SDK:Core:Extension,
+                     -ABC:Environment:JavaScript:Grunt:Extension,
+                     -ABC:JavaScript:Packages:Npm:Extension" />
+
+    <!--
+        Due to the buildtool nature of grunt this extension allows to hook arbitrary
+        grunt targets into each step of the lifecycle. Targets are specified using
+        properties.
+    -->
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Clean:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-clean:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="clean.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Clean"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-clean:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="clean" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Clean:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-clean:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="clean.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Validate:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-validate:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="validate.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Validate"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-validate:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="validate" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Validate:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-validate:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="validate.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Initialize:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-initialize:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="initialize.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Initialize"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-initialize:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="initialize" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Initialize:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-initialize:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="initialize.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Compile:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-compile:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="compile.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Compile"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-compile:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="compile" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Compile:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-compile:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="compile.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Link:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-link:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="link.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Link"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-link:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="link" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Link:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-link:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="link.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Test:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-test:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="test.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Test"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-test:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="test" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Test:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-test:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="test.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Package:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-package:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="package.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Package"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-package:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="package" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Package:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-package:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="package.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Integration-Test:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-integration-test:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="integration-test.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Integration-Test"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-integration-test:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="integration-test" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Integration-Test:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-integration-test:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="integration-test.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Verify:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-verify:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="verify.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Verify"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-verify:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="verify" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Verify:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-verify:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="verify.after" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Deploy:Before"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-deploy:before~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="deploy.before" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Deploy"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-deploy:main~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="deploy" />
+    </target>
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Deploy:After"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension"
+            extensionOf="-deploy:after~hook">
+        <internal:ABC.JavaScript.BuildTool.Grunt.Dispatch target="deploy.after" />
+    </target>
+
+    <!--
+        Public entrypoint into the extension
+
+        This entrypoint allows the extension to be called from the outside of
+        the software lifecylce, by specificly requesting it by name.
+    -->
+    <target name="abc:javascript:buildtool:grunt"
+            depends="-ABC:JavaScript:BuildTool:Grunt:Extension,
+                     -ABC:JavaScript:BuildTool:Grunt:Clean:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Clean,
+                     -ABC:JavaScript:BuildTool:Grunt:Clean:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Validate:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Validate,
+                     -ABC:JavaScript:BuildTool:Grunt:Validate:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Initialize:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Initialize,
+                     -ABC:JavaScript:BuildTool:Grunt:Initialize:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Compile:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Compile,
+                     -ABC:JavaScript:BuildTool:Grunt:Compile:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Link:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Link,
+                     -ABC:JavaScript:BuildTool:Grunt:Link:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Test:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Test,
+                     -ABC:JavaScript:BuildTool:Grunt:Test:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Package:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Package,
+                     -ABC:JavaScript:BuildTool:Grunt:Package:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Integration-Test:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Integration-Test,
+                     -ABC:JavaScript:BuildTool:Grunt:Integration-Test:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Verify:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Verify,
+                     -ABC:JavaScript:BuildTool:Grunt:Verify:After,
+                     -ABC:JavaScript:BuildTool:Grunt:Deploy:Before,
+                     -ABC:JavaScript:BuildTool:Grunt:Deploy,
+                     -ABC:JavaScript:BuildTool:Grunt:Deploy:After" />
+</project>

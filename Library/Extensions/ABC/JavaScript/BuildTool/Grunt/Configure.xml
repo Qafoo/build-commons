@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:JavaScript:BuildTool:Grunt Configure Configuration
+
+    This extension needs certain configure time dependencies
+-->
+<project name="ABC:JavaScript:BuildTool:Grunt:Configure"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:configure-init name="ABC:JavaScript:BuildTool:Grunt:Configure"
+                        has-resources="false" />
+
+    <target name="-ABC:JavaScript:BuildTool:Grunt:Configure"
+            depends="-ABC:Environment:JavaScript:Grunt:Configure,
+                     -ABC:JavaScript:Packages:Npm:Configure"
+            extensionOf="-configure:main~hook">
+
+        <!-- If one or more environments are needed for this Extension those
+             need to be listed in the depends property. Otherwise the system may
+             not install and prepare the needed depdencies. -->
+
+        <!-- If your extension needs certain special operation to be executed
+             during configure time, this is the place to put this
+             functionality. -->
+
+    </target>
+</project>
