@@ -15,6 +15,10 @@
         <attribute name="package" />
         <attribute name="version" default="*" />
         <sequential>
+            <!-- Otherwise npm walks up the directory tree searching for a higher
+                 level node_modules folder to install into -->
+            <mkdir dir="@{dir}/node_modules" />
+
             <abc:environment-npm dir="@{dir}">
                 <arg value="install" />
                 <arg value="@{package}@@@@@{version}" />
