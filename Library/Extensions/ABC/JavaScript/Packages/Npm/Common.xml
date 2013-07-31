@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:JavaScript:Packages:Npm Shared Resources
+
+    All resources defined in this file will be shared between the Extensions
+    runtime and configure time phases.
+-->
+<project name="ABC:JavaScript:Packages:Npm:Common"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <internal:macrodef name="ABC.JavaScript.Pacakges.Npm.Install.Or.Update">
+        <attribute name="dir" />
+        <sequential>
+            <abc:environment-npm dir="@{dir}">
+                <arg value="install" />
+            </abc:environment-npm>
+        </sequential>
+    </internal:macrodef>
+</project>

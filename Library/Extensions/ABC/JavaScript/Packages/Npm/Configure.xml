@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:JavaScript:Packages:Npm Configure Configuration
+
+    This extension needs certain configure time dependencies
+-->
+<project name="ABC:JavaScript:Packages:Npm:Configure"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:configure-init name="ABC:JavaScript:Packages:Npm:Configure"
+                        has-resources="false" />
+
+    <target name="-ABC:JavaScript:Packages:Npm:Configure"
+            depends="-ABC:Environment:JavaScript:Npm:Configure"
+            extensionOf="-configure:main~hook">
+
+    </target>
+</project>

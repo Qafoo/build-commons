@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:JavaScript:Packages:Npm Extension
+
+    This extension does some awesome stuff
+-->
+<project name="ABC:JavaScript:Packages:Npm:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="ABC:JavaScript:Packages:Npm:Extension"
+                        has-resources="false" />
+
+    <target name="-ABC:JavaScript:Packages:Npm:Extension"
+            depends="-ABC:SDK:Core:Extension,
+                     -ABC:Environment:JavaScript:Npm:Extension"
+            extensionOf="-initialize:main~hook">
+
+        <internal:ABC.JavaScript.Pacakges.Npm.Install.Or.Update dir="${abc.javascript.packages.npm.base.directory}" />
+    </target>
+
+    <!--
+        Public entrypoint into the extension
+
+        This entrypoint allows the extension to be called from the outside of
+        the software lifecylce, by specificly requesting it by name.
+    -->
+    <target name="abc:javascript:packages:npm"
+            depends="-ABC:JavaScript:Packages:Npm:Extension" />
+</project>
