@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:Environment:JavaScript:Grunt Extension
+
+    This extension does some awesome stuff
+-->
+<project name="ABC:Environment:JavaScript:Grunt:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="ABC:Environment:JavaScript:Grunt:Extension"
+                        has-resources="false" />
+
+    <abc:macrodef name="environment-grunt-task">
+        <attribute name="task" />
+        <attribute name="dir" />
+        <sequential>
+            <abc:environment-grunt dir="@{dir}">
+                <arg value="@{task}" />
+            </abc:environment-grunt>
+        </sequential>
+    </abc:macrodef>
+
+    <abc:macrodef name="environment-grunt">
+        <attribute name="dir" />
+        <element name="arguments" implicit="yes" />
+        <sequential>
+            <abc:exec executable="${abc.environment.javascript.grunt.application.binary}"
+                      failonerror="true"
+                      dir="@{dir}">
+                <arguments />
+            </abc:exec>
+        </sequential>
+    </abc:macrodef>
+
+    <target name="-ABC:Environment:JavaScript:Grunt:Extension" />
+</project>
