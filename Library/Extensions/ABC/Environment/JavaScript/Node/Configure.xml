@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">
 <!--
     ABC:Environment:JavaScript:Node Configure Configuration
 -->
@@ -15,7 +14,8 @@
         <!-- We do not try to install node for now. Maybe this might change in the future -->
         <ac:if>
             <not>
-                <available file="${abc.environment.javascript.node.executable}" />
+                <available file="${abc.environment.javascript.node.executable}"
+                           filepath="${env.PATH}" />
             </not>
             <ac:then>
                 <fail message="nodejs executable could not be found. Set a path to it using $${abc.environment.javascript.node.executable}" />
