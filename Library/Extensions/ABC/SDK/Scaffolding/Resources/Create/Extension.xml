@@ -17,7 +17,8 @@
             extensionOf="-compile:main~hook">
 
         <!-- The extensionOf property most likely needs to be adapted for the
-             usecase of this extension -->
+             usecase of this extension. It specifies at which stage of the software
+             lifecycle this extension is supposed to be called -->
 
         <!-- If one or more environments are needed for this Extension those
              need to be listed in the depends property -->

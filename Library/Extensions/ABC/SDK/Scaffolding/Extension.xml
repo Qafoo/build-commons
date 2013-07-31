@@ -31,7 +31,7 @@
     <target name="abc:sdk:scaffolding"
             depends="-ABC:SDK:Scaffolding:Extension" />
 
-    <target name="abc:sdk:scaffolding.help"
+    <target name="abc:sdk:scaffolding:help"
             depends="-ABC:SDK:Scaffolding:Extension" />
 
 

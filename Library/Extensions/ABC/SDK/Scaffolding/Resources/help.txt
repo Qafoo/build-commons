@@ -48,7 +48,7 @@ ant target using the '-D' commandline switch.
 Example for a simple extension scaffolding:
 
 ant -Dabc.sdk.scaffolding.create.name=MY:Namespace:My:Functionality \
-  abc.sdk.scaffolding.create
+  abc:sdk:scaffolding:create
 
 This commandline will create a new extension in the projects extension directory
 ready for you to fill it with functionality.
