@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:Environment:JavaScript:Npm Extension
+
+    This extension does some awesome stuff
+-->
+<project name="ABC:Environment:JavaScript:Npm:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="ABC:Environment:JavaScript:Npm:Extension"
+                        has-resources="false" />
+
+    <target name="-ABC:Environment:JavaScript:Npm:Extension">
+    </target>
+</project>

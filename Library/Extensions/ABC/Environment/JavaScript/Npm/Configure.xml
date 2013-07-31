@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:Environment:JavaScript:Npm Configure Configuration
+
+    This extension needs certain configure time dependencies
+-->
+<project name="ABC:Environment:JavaScript:Npm:Configure"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:configure-init name="ABC:Environment:JavaScript:Npm:Configure"
+                        has-resources="false" />
+
+    <target name="-ABC:Environment:JavaScript:Npm:Configure"
+            depends="-ABC:Environment:JavaScript:Node:Configure">
+        <!-- We do not try to install npm for now. Maybe this might change in the future -->
+        <ac:if>
+            <not>
+                <available file="${abc.environment.javascript.npm.executable}"
+                           filepath="${env.PATH}" />
+            </not>
+            <ac:then>
+                <fail message="npm executable could not be found. Set a path to it using $${abc.environment.javascript.npm.executable}" />
+            </ac:then>
+        </ac:if>
+    </target>
+</project>
