@@ -7,7 +7,8 @@
     <abc:extension-init name="ABC:Environment:PHP:PHPUnit:Extension" />
 
     <target name="-ABC:Environment:PHP:PHPUnit:Extension"
-            depends="-ABC:Environment:PHP:Composer:Extension" />
+            depends="-ABC:Environment:PHP:Php:Extension,
+                     -ABC:Environment:PHP:Composer:Extension" />
 
     <!--
         Raw execution of phpunit with arbitrary arguments passed to it
@@ -17,13 +18,11 @@
         <element name="arguments" implicit="yes" />
 
         <sequential>
-            <abc:exec executable="${abc.environment.executable.php}"
-                      failonerror="true"
-                      dir="@{dir}">
+            <abc:environment-php dir="@{dir}"
+                                 failonerror="true">
                 <arg value="${abc.environment.php.phpunit.application.binary}" />
-
                 <arguments />
-            </abc:exec>
+            </abc:environment-php>
         </sequential>
     </abc:macrodef>
 

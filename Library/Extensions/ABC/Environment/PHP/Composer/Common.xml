@@ -35,15 +35,14 @@
         <element name="arguments" implicit="yes" />
 
         <sequential>
-            <abc:exec executable="${abc.environment.executable.php}"
-                      failonerror="true"
-                      dir="@{dir}">
+            <abc:environment-php dir="@{dir}"
+                                 failonerror="true">
                 <arg value="${abc.environment.php.composer.application.file}" />
                 <arg value="--no-interaction" />
                 <arg value="--ansi" />
 
                 <arguments />
-            </abc:exec>
+            </abc:environment-php>
         </sequential>
     </abc:macrodef>
 

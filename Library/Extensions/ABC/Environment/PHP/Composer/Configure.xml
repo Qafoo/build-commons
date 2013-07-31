@@ -5,7 +5,8 @@
 
     <abc:configure-init name="ABC:Environment:PHP:Composer:Configure" />
 
-    <target name="-ABC:Environment:PHP:Composer:Configure">
+    <target name="-ABC:Environment:PHP:Composer:Configure"
+            depends="-ABC:Environment:PHP:Php:Configure">
 
         <mkdir taskname="ABC:Environment:PHP:Composer:Configure"
                dir="${abc.environment.php.composer.application.directory}" />
