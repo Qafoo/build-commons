@@ -230,7 +230,7 @@
         This entrypoint allows the extension to be called from the outside of
         the software lifecylce, by specificly requesting it by name.
     -->
-    <target name="abc:javascript:buildtool:grunt"
+    <target name="abc.javascript.buildtool.grunt"
             depends="-ABC:JavaScript:BuildTool:Grunt:Extension,
                      -ABC:JavaScript:BuildTool:Grunt:Clean:Before,
                      -ABC:JavaScript:BuildTool:Grunt:Clean,
