@@ -15,10 +15,9 @@
         <attribute name="package" />
         <attribute name="version" default="*" />
         <sequential>
-            <abc:environment-npm dir="@{dir}"
-                                 failonerror="true">
+            <abc:environment-npm dir="@{dir}">
                 <arg value="install" />
-                <arg value="@{package}@@@{version}" />
+                <arg value="@{package}@@@@@{version}" />
             </abc:environment-npm>
         </sequential>
     </abc:macrodef>
@@ -29,6 +28,8 @@
         <sequential>
             <abc:exec executable="${abc.environment.javascript.npm.executable}"
                       failonerror="true"
+                      fail-on-non-empty-stderr="false"
+                      visible-stderr="false"
                       dir="@{dir}">
                 <arguments />
             </abc:exec>
