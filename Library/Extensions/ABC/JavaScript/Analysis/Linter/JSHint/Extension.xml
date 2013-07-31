@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:JavaScript:Analysis:Linter:JSHint:Extension"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="ABC:JavaScript:Analysis:Linter:JSHint:Extension" />
+
+    <target name="-ABC:JavaScript:Analysis:Linter:JSHint:Extension"
+            depends="-ABC:SDK:Core:Extension,
+                     -ABC:Environment:JavaScript:JSHint:Extension"
+            extensionOf="-compile:before~hook">
+
+        <abc:changed-fileset id="-ABC.JavaScript.Analysis.Linter.JSHint.fileset"
+                             dir="${abc.source.javascript.directory}">
+            <include name="**/*.js" />
+        </abc:changed-fileset>
+
+        <abc:environment-jshint-apply dir="${abc.source.javascript.directory}"
+                                      configuration="${abc.javascript.analysis.linter.jshint.configuration}">
+            <fileset refid="-ABC.JavaScript.Analysis.Linter.JSHint.fileset" />
+        </abc:environment-jshint-apply>
+
+        <abc:commit-changes id="-ABC.JavaScript.Analysis.Linter.JSHint.fileset" />
+    </target>
+
+    <!-- Public execution alias -->
+    <target name="javascript:analysis:linter:jshint"
+            depends="-ABC:JavaScript:Analysis:Linter:JSHint:Extension" />
+</project>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ABC:JavaScript:Analysis:Linter:JSHint:Configure">
+
+    <target name="-ABC:JavaScript:Analysis:Linter:JSHint:Configure"
+            depends="-ABC:Environment:JavaScript:JSHint:Configure"
+            extensionOf="-configure:main~hook">
+    </target>
+</project>
