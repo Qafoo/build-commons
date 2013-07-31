@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ant-build-commons-extensions-sahi" basedir="." default="sahi:help">
+
+    <!--
+        Import module specific default properties
+    -->
+    <property file="${resourcedir}/extensions/sahi/sahi.properties" />
+
+    <target name="sahi:help">
+        <echo taskname="help">
+The Sahi extension integrates the browser test framework Sahi into
+Ant-Build-Commons.
+&#x00A0;
+sahi:help
+  Displays the help text for this extension.
+&#x00A0;
+sahi:start
+  Starts the Sahi server process in background. This target can be
+  customized with a bunch of properties.
+&#x00A0;
+    - $${sahi.executable} The platform specific Sahi binary.
+    - $${sahi.bin.dir} The "bin/" directory with Sahi's binaries
+    - $${sahi.userdata.dir} Directory where sahi will store the browser profile.
+        </echo>
+    </target>
+
+    <!--
+        Starts Sahi as a background daemon.
+    -->
+    <target name="sahi:start" depends="sahi:configure">
+
+        <exec executable="${sahi.executable}"
+              spawn="true"
+              failonerror="false"
+              dir="${sahi.bin.dir}">
+
+            <env key="SAHI_USERDATA_DIR" value="${sahi.userdata.dir}" />
+        </exec>
+    </target>
+
+    <!--
+        Let's Ant wait until the Sahi service is up and running.
+    -->
+    <target name="sahi:wait">
+        <waitfor maxwait="1" maxwaitunit="minute" checkevery="100">
+            <http url="http://${sahi.proxy.host}:${sahi.proxy.port}${sahi.uri.ping}"/>
+        </waitfor>
+
+        <echo>SAHI is listening under: ${sahi.proxy.host}:${sahi.proxy.port}</echo>
+    </target>
+
+    <!--
+        Stops a running Sahi background daemon.
+    -->
+    <target name="sahi:stop">
+        <waitfor maxwait="1" maxwaitunit="minute" checkevery="500">
+            <not>
+                <http url="http://${sahi.proxy.host}:${sahi.proxy.port}${sahi.uri.stop}"/>
+            </not>
+        </waitfor>
+        <echo>http://${sahi.proxy.host}:${sahi.proxy.port}${sahi.uri.stop}</echo>
+    </target>
+
+    <!--
+        Configures a temporary sahi environment with a custom proxy port for
+        the current project.
+    -->
+    <target name="sahi:configure">
+        <mkdir dir="${sahi.userdata.dir}" />
+
+        <delete>
+            <fileset dir="${sahi.userdata.dir}/">
+                <include name="browser/ff/profiles/sahi*/prefs.js" />
+                <include name="config/browser_types.xml" />
+                <include name="config/userdata.properties" />
+            </fileset>
+        </delete>
+
+        <copy todir="${sahi.userdata.dir}">
+            <fileset dir="${sahi.userdata.template.dir}">
+                <include name="**/*.*" />
+                <exclude name="browser/ff/profiles/sahi*" />
+            </fileset>
+
+            <filterchain>
+                <tokenfilter>
+                    <replacestring from='user_pref("network.proxy.http_port", 9999)'
+                                   to='user_pref("network.proxy.http_port", ${sahi.proxy.port})' />
+                    <replacestring from='user_pref("network.proxy.ssl_port", 9999)'
+                                   to='user_pref("network.proxy.ssl_port", ${sahi.proxy.port})' />
+                    <replacestring from='user_pref("network.proxy.http", "localhost")'
+                                   to='user_pref("network.proxy.http", "${sahi.proxy.host}")' />
+                    <replacestring from='user_pref("network.proxy.ssl", "localhost")'
+                                   to='user_pref("network.proxy.ssl", "${sahi.proxy.host}")' />
+                    <replacestring from="--proxy-server=localhost:9999"
+                                   to="--proxy-server=${sahi.proxy.host}:${sahi.proxy.port}" />
+                </tokenfilter>
+            </filterchain>
+        </copy>
+
+        <echo message="proxy.port=${sahi.proxy.port}"
+              append="true"
+              file="${sahi.userdata.dir}/config/userdata.properties" />
+    </target>
+
+</project>
