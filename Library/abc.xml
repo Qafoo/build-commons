@@ -19,6 +19,11 @@
     <property file="${abc.base.directory}/abc.properties" />
 
     <!--
+        Allow access to all environment variables
+    -->
+    <property environment="env" />
+
+    <!--
         Include all Configure time dependencies. Explicitly leaving out the lifecycle targets
      -->
     <import file="${abc.extensions.directory}/ABC/SDK/Ant-Contrib/Extension.xml" />
