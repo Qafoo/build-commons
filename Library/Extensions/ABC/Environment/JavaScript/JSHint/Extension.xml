@@ -17,8 +17,8 @@
         <attribute name="configuration" />
         <attribute name="failonerror" default="true" />
         <attribute name="parallel" default="false" />
-        <attribute name="visible-stdout" default="false" />
-        <attribute name="visible-stderr" default="false" />
+        <attribute name="visible-stdout" default="true" />
+        <attribute name="visible-stderr" default="true" />
         <attribute name="apply-taskname" default="jshint" />
         <element name="arguments" implicit="yes" />
         <sequential>
@@ -29,7 +29,8 @@
                        visible-stdout="@{visible-stdout}"
                        visible-stderr="@{visible-stderr}"
                        verbose="true">
-                <arg value="--config '@{configuration}'" />
+                <arg value="--config" />
+                <arg value="@{configuration}" />
                 <arguments />
             </abc:apply>
         </sequential>
