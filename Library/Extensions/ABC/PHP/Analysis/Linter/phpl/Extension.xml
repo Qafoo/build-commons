@@ -6,7 +6,8 @@
     <abc:extension-init name="ABC:PHP:Analysis:Linter:phpl:Extension" />
 
     <target name="-ABC:PHP:Analysis:Linter:phpl:Extension"
-            depends="-ABC:SDK:Core:Extension"
+            depends="-ABC:SDK:Core:Extension,
+                     -ABC:Environment:PHP:Php:Extension"
             extensionOf="-compile:before~hook">
 
         <abc:changed-fileset id="-ABC.PHP.Analysis.Linter.phpl.fileset"
@@ -14,16 +15,11 @@
             <include name="**/*.php" />
         </abc:changed-fileset>
 
-        <abc:apply apply-taskname="phpl"
-               executable="${abc.environment.executable.php}"
-               failonerror="true"
-               parallel="false"
-               visible-stdout="false"
-               visible-stderr="false"
-               verbose="true">
+        <abc:environment-php-apply apply-taskname="phpl"
+                                   dir="${abc.source.php.directory}">
             <arg value="-l" />
             <fileset refid="-ABC.PHP.Analysis.Linter.phpl.fileset" />
-        </abc:apply>
+        </abc:environment-php-apply>
 
         <abc:commit-changes id="-ABC.PHP.Analysis.Linter.phpl.fileset" />
     </target>

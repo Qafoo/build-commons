@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ABC:PHP:Analysis:Linter:phpl:Configure">
 
-    <target name="ABC:PHP:Analysis:Linter:phpl:Configure"
+    <target name="-ABC:PHP:Analysis:Linter:phpl:Configure"
+            depends="-ABC:Environment:PHP:Php:Configure"
             extensionOf="-configure:main~hook">
-
-        <echo>Yes it works :)</echo>
     </target>
 </project>
