@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">
+<!--
+    ABC:Environment:JavaScript:Node Configure Configuration
+-->
+<project name="ABC:Environment:JavaScript:Node:Configure"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:configure-init name="ABC:Environment:JavaScript:Node:Configure"
+                        has-resources="false" />
+
+    <target name="-ABC:Environment:JavaScript:Node:Configure">
+        <!-- We do not try to install node for now. Maybe this might change in the future -->
+        <ac:if>
+            <not>
+                <available file="${abc.environment.javascript.node.executable}" />
+            </not>
+            <ac:then>
+                <fail message="nodejs executable could not be found. Set a path to it using $${abc.environment.javascript.node.executable}" />
+            </ac:then>
+        </ac:if>
+    </target>
+</project>

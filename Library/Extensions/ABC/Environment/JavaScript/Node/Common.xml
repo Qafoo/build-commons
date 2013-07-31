@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "../../../../../Experiments/ant.dtd">
+<project name="ABC:Environment:JavaScript:Node:Common"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:macrodef name="environment-node">
+        <attribute name="dir" />
+        <element name="arguments" implicit="yes" />
+        <sequential>
+            <abc:exec executable="${abc.environment.javascript.node.executable}"
+                      failonerror="true"
+                      dir="@{dir}">
+                <arguments />
+            </abc:exec>
+        </sequential>
+    </abc:macrodef>
+</project>
