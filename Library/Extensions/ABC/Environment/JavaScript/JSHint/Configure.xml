@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:Environment:JavaScript:Npm Configure Configuration
+
+    This extension needs certain configure time dependencies
+-->
+<project name="ABC:Environment:JavaScript:JSHint:Configure"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:configure-init name="ABC:Environment:JavaScript:JSHint:Configure"
+                        has-resources="false" />
+
+    <target name="-ABC:Environment:JavaScript:JSHint:Configure"
+            depends="-ABC:Environment:JavaScript:Npm:Configure">
+
+        <mkdir dir="${abc.environment.javascript.jshint.application.directory}" />
+
+        <abc:environment-npm-single-install package="${abc.environment.javascript.jshint.package}"
+                                            version="${abc.environment.javascript.jshint.version}"
+                                            dir="${abc.environment.javascript.jshint.application.directory}" />
+    </target>
+</project>

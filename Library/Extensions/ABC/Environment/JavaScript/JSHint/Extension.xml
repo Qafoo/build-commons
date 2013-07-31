@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:Environment:JavaScript:Npm Extension
+
+    This extension does some awesome stuff
+-->
+<project name="ABC:Environment:JavaScript:JSHint:Extension"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:extension-init name="ABC:Environment:JavaScript:JSHint:Extension"
+                        has-resources="false" />
+
+    <abc:macrodef name="environment-jshint-apply">
+        <attribute name="dir" />
+        <attribute name="configuration" />
+        <attribute name="failonerror" default="true" />
+        <attribute name="parallel" default="false" />
+        <attribute name="visible-stdout" default="false" />
+        <attribute name="visible-stderr" default="false" />
+        <attribute name="apply-taskname" default="jshint" />
+        <element name="arguments" implicit="yes" />
+        <sequential>
+            <abc:apply apply-taskname="@{apply-taskname}"
+                       executable="${abc.environment.javascript.jshint.application.binary}"
+                       failonerror="@{failonerror}"
+                       parallel="@{parallel}"
+                       visible-stdout="@{visible-stdout}"
+                       visible-stderr="@{visible-stderr}"
+                       verbose="true">
+                <arg value="--config '@{configuration}'" />
+                <arguments />
+            </abc:apply>
+        </sequential>
+    </abc:macrodef>
+
+    <target name="-ABC:Environment:JavaScript:JSHint:Extension">
+    </target>
+</project>
