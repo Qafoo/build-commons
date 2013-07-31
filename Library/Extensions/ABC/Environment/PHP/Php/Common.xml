@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ABC:Environment:PHP:Php:Common"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:macrodef name="environment-php">
+        <attribute name="dir" />
+        <attribute name="failonerror" default="true" />
+        <element name="arguments" implicit="yes" />
+        <sequential>
+            <abc:exec executable="${abc.environment.php.php.executable}"
+                      failonerror="@{failonerror}"
+                      dir="@{dir}">
+                <arguments />
+            </abc:exec>
+        </sequential>
+    </abc:macrodef>
+</project>

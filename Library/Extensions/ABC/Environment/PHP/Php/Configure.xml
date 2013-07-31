@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ABC:Environment:PHP:Php Configure Configuration
+-->
+<project name="ABC:Environment:PHP:Php:Configure"
+         xmlns:ac="http://ant-contrib.sourceforge.net"
+         xmlns:abc="http://abc.tools.qafoo.com/abc.xsd"
+         xmlns:internal="http://abc.tools.qafoo.com/abc-internal.xsd">
+
+    <abc:configure-init name="ABC:Environment:PHP:Php:Configure"
+                        has-resources="false" />
+
+    <target name="-ABC:Environment:PHP:Php:Configure">
+        <!-- We do not try to install php for now. Maybe this might change in the future -->
+        <ac:if>
+            <not>
+                <available file="${abc.environment.php.php.executable}"
+                           filepath="${env.PATH}" />
+            </not>
+            <ac:then>
+                <fail message="php executable could not be found. Set a path to it using $${abc.environment.php.php.executable}" />
+            </ac:then>
+        </ac:if>
+    </target>
+</project>
