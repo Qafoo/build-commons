@@ -33,7 +33,7 @@ changes:manifest
   Generates the changelog section of a PEAR package manifest
   based on the entries in the xdocs/changes.xml file.
 &#x00A0;
-    - ${manifest} Input/Output manifest file.
+    - $${manifest} Input/Output manifest file.
 &#x00A0;
 changes:site
   Generates several files for the project's site from the
