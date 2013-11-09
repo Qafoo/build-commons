@@ -45,7 +45,7 @@
         <xsl:if test="count(*) &gt; 0">
             <xsl:element name="changelog">
                 <xsl:value-of select="$nl" />
-                <xsl:apply-templates select="*">
+                <xsl:apply-templates select="*[@date != '']">
                     <xsl:sort select="@date" order="descending" />
                 </xsl:apply-templates>
             </xsl:element>
@@ -55,7 +55,7 @@
     <xsl:template match="changes:release">
         <xsl:element name="release">
             <xsl:element name="date">
-                <xsl:value-of select="@date" />
+                <xsl:value-of select="translate(@date, '/', '-')" />
             </xsl:element>
             <xsl:element name="stability">
                 <xsl:element name="release">
