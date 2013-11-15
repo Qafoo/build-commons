@@ -380,7 +380,9 @@
         </antcall>
 
         <copy todir="${output.dir}/vendor">
-            <fileset dir="${basedir}/vendor" excludes="${vendor.dir.excludes}" />
+            <fileset dir="${basedir}/vendor"
+                     includes="${vendor.dir.includes}"
+                     excludes="${vendor.dir.excludes}" />
         </copy>
 
         <antcall target="~copy-vendor-dir-after">
