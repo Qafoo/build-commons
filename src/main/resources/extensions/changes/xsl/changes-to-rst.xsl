@@ -300,7 +300,7 @@
             <xsl:value-of select="@version" />
         </xsl:if>
 
-        <xsl:if test="$changes.pear.uri">
+        <xsl:if test="$changes.pear.uri and $changes.pear.uri != 'http://pear.example.com'">
             <xsl:text> through </xsl:text>
             <xsl:value-of select="$changes.project.name" />
             <xsl:text>'s `PEAR Channel Server`__</xsl:text>
@@ -314,13 +314,13 @@
             </xsl:choose>
         </xsl:if>
         <xsl:if test="$changes.static.uri">
-            <xsl:text>as a `Phar archive`__ here</xsl:text>
+            <xsl:text> as a `Phar archive`__ here</xsl:text>
         </xsl:if>
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$nl" />
         <xsl:value-of select="$nl" />
 
-        <xsl:if test="$changes.pear.uri">
+        <xsl:if test="$changes.pear.uri and $changes.pear.uri != 'http://pear.example.com'">
             <xsl:text>__ </xsl:text>
             <xsl:value-of select="$changes.pear.uri" />
         </xsl:if>
