@@ -135,11 +135,11 @@ pear:manifest
         Discovers a pear channel specified as parameter.
 
         Parameters
-          ${pear.channel.uri}
+          ${project.pear.uri}
     -->
     <target name="common-pear-channel-discover" depends="-common-pear-prepare">
         <antcall target="-pear:channel-discover">
-            <param name="-pear:in-channel-uri" value="${pear.channel.uri}" />
+            <param name="-pear:in-channel-uri" value="${project.pear.uri}" />
             <param name="-pear:in-conf" location="${common-pear-config}" />
         </antcall>
     </target>
@@ -517,9 +517,9 @@ pear:manifest
     <target name="-pear:is-enabled">
         <condition property="-pear:enabled">
             <and>
-                <isset property="pear.channel.uri" />
+                <isset property="project.pear.uri" />
                 <not>
-                    <equals arg1="pear.example.com" arg2="${pear.channel.uri}" />
+                    <equals arg1="pear.example.com" arg2="${project.pear.uri}" />
                 </not>
             </and>
         </condition>
