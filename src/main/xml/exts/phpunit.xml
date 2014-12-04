@@ -15,7 +15,6 @@
     -->
     <import file="enabled.xml" />
     <import file="availability.xml" />
-    <import file="pear.xml" />
 
     <!--
         Shortcut for the "phpunit:phpunit" target.
@@ -134,7 +133,7 @@
     </target>
 
     <!--
-        This target first tries to upgrade an existing local pear installation
+        This target first tries to upgrade an existing local installation
         or install a clean phpunit if no such installation exists. Then it
         delegates to one of the concrete run targets. Which target gets executed
         depends on the ${phpunit.testsuite.file}, if it is set and then if the
@@ -189,13 +188,13 @@
 
         <exec executable="${commons.executable.php}"
               failonerror="true"
-              dir="${commons.testdir.php}">
+              dir="${basedir}">
 
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bindir}/phpunit" />
+            <arg value="include_path=." />
+            <arg value="${user.home}/.ant-build-commons/phar/phpunit/${phpunit.package.name}.phar" />
             <arg value="--log-junit" />
             <arg value="${commons:logsdir}/junit.xml" />
             <arg line="${phpunit.include.path}" />
@@ -277,13 +276,13 @@
         <exec executable="${commons.executable.php}"
               taskname="phpunit:run-testdir"
               failonerror="true"
-              dir="${commons.testdir.php}">
+              dir="${basedir}">
 
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
             <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bindir}/phpunit" />
+            <arg value="include_path=." />
+            <arg value="${user.home}/.ant-build-commons/phar/phpunit/${phpunit.package.name}.phar" />
             <arg value="--log-junit" />
             <arg value="${commons:logsdir}/junit.xml" />
             <arg line="${phpunit.include.path}" />
@@ -331,64 +330,59 @@
     </target>
 
     <!--
-        This target will install a local version of phpunit in the project's
-        pear installation, so that we can use it in the project. If PHPUnit is
+        This target will install a local version of phpunit in the global binary
+        cache, so that we can use it in the project. If PHPUnit is
         already installed, this target will perform an upgrade of the PHPUnit
         package.
     -->
     <target name="-phpunit:install-or-upgrade"
-            depends="-phpunit:is-installed,
-                     -phpunit:install,
+            depends="-phpunit:install,
                      -phpunit:upgrade" />
 
-    <target name="-phpunit:install" unless="-phpunit:out-installed">
-        <antcall target="pear:install">
-            <param name="in.pear.package.name" value="${phpunit.package.name}" />
-            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
-        </antcall>
+    <target name="-phpunit:install" depends="-phpunit:needs-installation" if="-phpunit:needs.installation">
+        <mkdir dir="${user.home}/.ant-build-commons/phar/phpunit" />
 
-        <antcall target="pear:install">
-            <param name="in.pear.package.name" value="${phpunit.dbunit.package.name}" />
-            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
-        </antcall>
-
-        <antcall target="pear:install">
-            <param name="in.pear.package.name" value="${phpunit.selenium.package.name}" />
-            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
-        </antcall>
+        <get src="https://${phpunit.package.channel}/${phpunit.package.name}.phar"
+             dest="${user.home}/.ant-build-commons/phar/phpunit/${phpunit.package.name}.phar" />
     </target>
 
-    <target name="-phpunit:upgrade" if="-phpunit:out-installed">
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name" value="${phpunit.package.name}" />
-            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
-        </antcall>
+    <target name="-phpunit:upgrade" depends="-phpunit:needs-upgrade" if="-phpunit:needs.upgrade">
+        <mkdir dir="${user.home}/.ant-build-commons/phar/phpunit" />
 
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name" value="${phpunit.dbunit.package.name}" />
-            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
-        </antcall>
-
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name" value="${phpunit.selenium.package.name}" />
-            <param name="in.pear.package.channel" value="${phpunit.package.channel}" />
-        </antcall>
+        <get src="https://${phpunit.package.channel}/${phpunit.package.name}.phar"
+             dest="${user.home}/.ant-build-commons/phar/phpunit/${phpunit.package.name}.phar"
+             usetimestamp="true" />
     </target>
 
     <!--
-        Tests if phpunit is already installed and sets the a property named
-        ${-phpunit:out-installed} to true if it exists.
+        Tests if the required phpunit must be installed. This target will set the
+        property ${-phpunit:needs.installation} to true if the version does not exist.
 
         Defines:
-            ${-phpunit:out-installed} If phpunit is already installed locally.
+            ${-phpunit:needs.installation} If phpunit is not installed locally.
     -->
-    <target name="-phpunit:is-installed">
-        <condition property="-phpunit:out-installed">
-            <available file="${pear.local.bindir}/phpunit" />
+    <target name="-phpunit:needs-installation">
+        <condition property="-phpunit:needs.installation">
+            <not>
+                <available file="${user.home}/.ant-build-commons/phar/phpunit/${phpunit.package.name}.phar" />
+            </not>
         </condition>
     </target>
 
+    <!--
+        Tests if the requested phpunit version is latest. In that case we must
+        update the binary, otherwise we can keep the versioned binary file. This
+        target will the the property ${-phpunit:needs.upgrade} to TRUE if this
+        project uses the latest phpunit binary.
 
+        Defines:
+            ${-phpunit:needs.upgrade} If we should update the phpunit binary.
+    -->
+    <target name="-phpunit:needs-upgrade">
+        <condition property="-phpunit:needs.upgrade">
+            <equals arg1="phpunit" arg2="${phpunit.package.name}" />
+        </condition>
+    </target>
 
     <!--
         EXTENSION POINTS UTILIZED BY THIS MODULE
