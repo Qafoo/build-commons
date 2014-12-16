@@ -6,12 +6,13 @@
     -->
     <property file="${resourcedir}/extensions/phpmd/phpmd.properties" />
 
+    <property name="phpmd:binary" value="${user.home}/.ant-build-commons/phar/phpmd/${phpmd.package.name}-${phpmd.package.version}.phar" />
+
     <!--
         Import utilized extensions
     -->
     <import file="enabled.xml" />
     <import file="availability.xml" />
-    <import file="pear.xml" />
 
     <!--
         Shortcut for the "phpmd:phpmd" target
@@ -41,9 +42,7 @@
         <exec executable="${commons.executable.php}" failonerror="${phpmd.fail.on.violation}">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
-            <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bindir}/phpmd" />
+            <arg value="${phpmd:binary}" />
             <arg value="${commons.srcdir.php}" />
             <arg value="xml" />
             <arg value="${phpmd.rulesets}" />
@@ -53,27 +52,51 @@
     </target>
 
     <target name="-phpmd:install-or-upgrade"
-            depends="-phpmd:is-installed,
-                     -phpmd:install,
+            depends="-phpmd:install,
                      -phpmd:upgrade" />
 
-    <target name="-phpmd:install" unless="-phpmd:out-installed">
-        <antcall target="pear:install">
-            <param name="in.pear.package.name"    value="${phpmd.package.name}" />
-            <param name="in.pear.package.channel" value="${phpmd.package.channel}" />
-        </antcall>
+    <target name="-phpmd:install" depends="-phpmd:needs-installation" if="-phpmd:needs.installation">
+        <mkdir dir="${user.home}/.ant-build-commons/phar/phpmd" />
+
+        <get src="http://${phpmd.package.channel}/php/${phpmd.package.version}/${phpmd.package.name}.phar"
+             dest="${phpmd:binary}" />
     </target>
 
-    <target name="-phpmd:upgrade" if="-phpmd:out-installed">
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name"    value="${phpmd.package.name}" />
-            <param name="in.pear.package.channel" value="${phpmd.package.channel}" />
-        </antcall>
+    <target name="-phpmd:upgrade" depends="-phpmd:needs-upgrade" if="-phpmd:needs.upgrade">
+        <mkdir dir="${user.home}/.ant-build-commons/phar/phpmd" />
+
+        <get src="http://${phpmd.package.channel}/php/${phpmd.package.version}/${phpmd.package.name}.phar"
+             dest="${phpmd:binary}"
+             usetimestamp="true" />
     </target>
 
-    <target name="-phpmd:is-installed">
-        <condition property="-phpmd:out-installed">
-            <available file="${pear.local.bindir}/phpmd" />
+    <!--
+        Tests if the required phpmd must be installed. This target will set the
+        property ${-phpmd:needs.installation} to true if the version does not exist.
+
+        Defines:
+            ${-phpmd:needs.installation} If phpunit is not installed locally.
+    -->
+    <target name="-phpmd:needs-installation">
+        <condition property="-phpmd:needs.installation">
+            <not>
+                <available file="${phpmd:binary}" />
+            </not>
+        </condition>
+    </target>
+
+    <!--
+        Tests if the requested phpmd version is latest. In that case we must
+        update the binary, otherwise we can keep the versioned binary file. This
+        target will the the property ${-phpmd:needs.upgrade} to TRUE if this
+        project uses the latest phpmd binary.
+
+        Defines:
+            ${-phpmd:needs.upgrade} If we should update the phpunit binary.
+    -->
+    <target name="-phpmd:needs-upgrade">
+        <condition property="-phpmd:needs.upgrade">
+            <equals arg1="latest" arg2="${phpmd.package.version}" />
         </condition>
     </target>
 
