@@ -93,13 +93,15 @@
             depends="composer:phar-exists"
             unless="-composer:phar.exists">
 
+        <dirname property="-temp:composer:installdir" file="${composer.executable}" />
+
         <tempfile property="-temp:composer:installer"
-                  destdir="${basedir}"
+                  destdir="${-temp:composer:installdir}"
                   deleteonexit="true" />
 
         <get src="${composer.download.uri}" dest="${-temp:composer:installer}" />
 
-        <exec executable="${commons.executable.php}" failonerror="true">
+        <exec executable="${commons.executable.php}" dir="${-temp:composer:installdir}" failonerror="true">
             <arg value="${-temp:composer:installer}" />
         </exec>
 	</target>
