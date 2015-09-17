@@ -45,6 +45,9 @@
 
         <exec executable="${commons.executable.php}" failonerror="true">
             <arg value="${composer.executable}" />
+            <arg value="--prefer-dist" />
+            <arg value="--no-interaction" />
+            <arg value="--no-progress" />
             <arg value="install" />
             <arg line="${-composer:dependencies.install.dev}" />
         </exec>
