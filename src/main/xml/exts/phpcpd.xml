@@ -55,7 +55,7 @@
 
     <!--
         This target tries to a) install PHPCPD if it isn't already installed
-        in the project's local pear installation or b) upgrade a previous
+        in the project's local installation or b) upgrade a previous
         installed version of PHPCPD.
     -->
     <target name="-phpcpd:install-or-upgrade">

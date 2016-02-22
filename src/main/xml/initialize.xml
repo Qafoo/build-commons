@@ -7,7 +7,7 @@
     </description>
 
     <!--
-        Declare basedir for commons pear
+        Declare basedir for commons
     -->
     <dirname property="-initialize:basedir" file="${ant.file.ant-build-commons-initialize}" />
 
