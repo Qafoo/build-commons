@@ -11,7 +11,8 @@
     -->
     <import file="enabled.xml" />
     <import file="availability.xml" />
-    <import file="pear.xml" />
+
+    <property name="codesniffer:binary" value="${user.home}/.ant-build-commons/phar/codesniffer/${codesniffer.package.name}-${codesniffer.package.version}.phar" />
 
     <!--
         Shortcut for the "codesniffer:codesniffer" target
@@ -52,9 +53,7 @@
         <exec executable="${commons.executable.php}" resultproperty="-codesniffer:run-exit-code">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
-            <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bindir}/phpcs" />
+            <arg value="${codesniffer:binary}" />
             <arg value="--standard=${codesniffer.standard}" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${commons:logsdir}/checkstyle.xml" />
@@ -73,141 +72,71 @@
                 </and>
             </condition>
         </fail>
+
     </target>
 
     <!--
         This target tries to a) install CodeSniffer if it isn't already installed
-        in the project's local pear installation or b) upgrade a previous
+        in the project's local installation or b) upgrade a previous
         installed version of CodeSniffer.
     -->
     <target name="-codesniffer:install-or-upgrade"
-            depends="-codesniffer:is-installed,
-                     -codesniffer:install,
-                     -codesniffer:upgrade,
-                     -codesniffer:install-or-upgrade-standard" />
+            depends="-codesniffer:install,
+                     -codesniffer:upgrade" />
 
     <!--
         This target tries to install the CodeSniffer package into the project's
-        pear installation, but it will not be executed if CodeSniffer is already
+        installation, but it will not be executed if CodeSniffer is already
         installed.
     -->
-    <target name="-codesniffer:install"
-            unless="-codesniffer:out-installed"
-            depends="-codesniffer:is-installed">
+    <target name="-codesniffer:install" depends="-codesniffer:needs-installation" if="-codesniffer:needs.installation">
 
-        <antcall target="pear:install">
-            <param name="in.pear.package.name"    value="${codesniffer.package.name}" />
-            <param name="in.pear.package.channel" value="${codesniffer.package.channel}" />
-        </antcall>
+        <mkdir dir="${user.home}/.ant-build-commons/phar/codesniffer" />
+
+        <get src="https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar"
+             dest="${codesniffer:binary}" />
     </target>
 
     <!--
         This target tries to upgrade a previously installed CodeSniffer package.
         This target will no be executed if CodeSniffer wasn't installed before.
     -->
-    <target name="-codesniffer:upgrade"
-            if="-codesniffer:out-installed"
-            depends="-codesniffer:is-installed">
+    <target name="-codesniffer:upgrade" depends="-codesniffer:needs-upgrade" if="-codesniffer:needs.upgrade">
 
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name"    value="${codesniffer.package.name}" />
-            <param name="in.pear.package.channel" value="${codesniffer.package.channel}" />
-        </antcall>
+        <mkdir dir="${user.home}/.ant-build-commons/phar/codesniffer" />
+
+        <get src="https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar"
+             dest="${codesniffer:binary}"
+             usetimestamp="true" />
     </target>
 
     <!--
-        This target tests if CodeSniffer package is already installed in the project's
-        local pear installation. It will set the ${-codesniffer:out-installed}
-        property to TRUE if the CodeSniffer cli script is installed.
+        Tests if the required codesniffer must be installed. This target will set the
+        property ${-codesniffer:needs.installation} to true if the version does not exist.
+
+        Defines:
+            ${-codesniffer:needs.installation} If phpunit is not installed locally.
     -->
-    <target name="-codesniffer:is-installed">
-        <condition property="-codesniffer:out-installed">
-            <available file="${pear.local.bindir}/phpcs" />
+    <target name="-codesniffer:needs-installation">
+        <condition property="-codesniffer:needs.installation">
+            <not>
+                <available file="${codesniffer:binary}" />
+            </not>
         </condition>
     </target>
 
     <!--
-        This target tries to a) install an optional CodeSniffer standard from
-        a separate PEAR repository if the ${codesniffer.standard.package.channel}
-        property is set and it isn't already installed in the project's local
-        PEAR installation or b) upgrade a previous installed version of the
-        CodeSniffer standard.
+        Tests if the requested codesniffer version is latest. In that case we must
+        update the binary, otherwise we can keep the versioned binary file. This
+        target will the the property ${-codesniffer:needs.upgrade} to TRUE if this
+        project uses the latest codesniffer binary.
+
+        Defines:
+            ${-codesniffer:needs.upgrade} If we should update the phpunit binary.
     -->
-    <target name="-codesniffer:install-or-upgrade-standard"
-            if="-codesniffer:out-standard-configured"
-            depends="-codesniffer:is-standard-configured">
-
-        <antcall target="-codesniffer:standard-install-or-upgrade" />
-    </target>
-
-    <!--
-        This target tries to a) install an optional CodeSniffer standard from
-        a separate PEAR repository if the ${codesniffer.standard.package.channel}
-        property is set and it isn't already installed in the project's local
-        PEAR installation or b) upgrade a previous installed version of the
-        CodeSniffer standard.
-    -->
-    <target name="-codesniffer:standard-install-or-upgrade"
-            depends="-codesniffer:is-standard-installed,
-                     -codesniffer:standard-install,
-                     -codesniffer:standard-upgrade" />
-
-    <!--
-        This target tries to install a CodeSniffer standard package into the
-        project's PEAR installation, but it will not be executed if CodeSniffer
-        is already installed.
-    -->
-    <target name="-codesniffer:standard-install"
-            unless="-codesniffer:out-standard-installed"
-            depends="-codesniffer:is-standard-installed">
-
-        <antcall target="pear:install">
-            <param name="in.pear.package.name"    value="${codesniffer.standard.package.name}" />
-            <param name="in.pear.package.channel" value="${codesniffer.standard.package.channel}" />
-        </antcall>
-    </target>
-
-    <!--
-        This target tries to upgrade a previously installed CodeSniffer standard
-        package. This target will no be executed if CodeSniffer wasn't installed
-        before.
-    -->
-    <target name="-codesniffer:standard-upgrade"
-            if="-codesniffer:out-standard-installed"
-            depends="-codesniffer:is-standard-installed">
-
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name"    value="${codesniffer.standard.package.name}" />
-            <param name="in.pear.package.channel" value="${codesniffer.standard.package.channel}" />
-        </antcall>
-    </target>
-
-    <!--
-        This target tests if a special CodeSniffer standard package is already
-        installed in the project's local PEAR installation. It will set the
-        ${-codesniffer:out-standard-installed} property to TRUE if the
-        CodeSniffer cli script is installed.
-    -->
-    <target name="-codesniffer:is-standard-installed">
-        <condition property="-codesniffer:out-standard-installed">
-            <available file="${pear.local.phpdir}/PHP/CodeSniffer/Standards/${codesniffer.standard}" />
-        </condition>
-    </target>
-
-    <!--
-        This target tests if the project configuration contains a custom
-        CodeSniffer target that should be fetched from a separate PEAR repository.
-    -->
-    <target name="-codesniffer:is-standard-configured">
-        <condition property="-codesniffer:out-standard-configured">
-            <and>
-                <not>
-                    <equals arg1="${codesniffer.standard.package.name}" arg2="$${codesniffer.standard.package.name}" trim="true" />
-                </not>
-                <not>
-                    <equals arg1="${codesniffer.standard.package.name}" arg2="" trim="true" />
-                </not>
-            </and>
+    <target name="-codesniffer:needs-upgrade">
+        <condition property="-codesniffer:needs.upgrade">
+            <equals arg1="latest" arg2="${codesniffer.package.version}" />
         </condition>
     </target>
 

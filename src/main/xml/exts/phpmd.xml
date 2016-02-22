@@ -58,14 +58,14 @@
     <target name="-phpmd:install" depends="-phpmd:needs-installation" if="-phpmd:needs.installation">
         <mkdir dir="${user.home}/.ant-build-commons/phar/phpmd" />
 
-        <get src="http://${phpmd.package.channel}/php/${phpmd.package.version}/${phpmd.package.name}.phar"
+        <get src="https://${phpmd.package.channel}/php/${phpmd.package.version}/${phpmd.package.name}.phar"
              dest="${phpmd:binary}" />
     </target>
 
     <target name="-phpmd:upgrade" depends="-phpmd:needs-upgrade" if="-phpmd:needs.upgrade">
         <mkdir dir="${user.home}/.ant-build-commons/phar/phpmd" />
 
-        <get src="http://${phpmd.package.channel}/php/${phpmd.package.version}/${phpmd.package.name}.phar"
+        <get src="https://${phpmd.package.channel}/php/${phpmd.package.version}/${phpmd.package.name}.phar"
              dest="${phpmd:binary}"
              usetimestamp="true" />
     </target>

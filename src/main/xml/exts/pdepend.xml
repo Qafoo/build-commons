@@ -77,14 +77,14 @@
     <target name="-pdepend:install" depends="-pdepend:needs-installation" if="-pdepend:needs.installation">
         <mkdir dir="${user.home}/.ant-build-commons/phar/pdepend" />
 
-        <get src="http://${pdepend.package.channel}/php/${pdepend.package.version}/${pdepend.package.name}.phar"
+        <get src="https://${pdepend.package.channel}/php/${pdepend.package.version}/${pdepend.package.name}.phar"
              dest="${pdepend:binary}" />
     </target>
 
     <target name="-pdepend:upgrade" depends="-pdepend:needs-upgrade" if="-pdepend:needs.upgrade">
         <mkdir dir="${user.home}/.ant-build-commons/phar/pdepend" />
 
-        <get src="http://${pdepend.package.channel}/php/${pdepend.package.version}/${pdepend.package.name}.phar"
+        <get src="https://${pdepend.package.channel}/php/${pdepend.package.version}/${pdepend.package.name}.phar"
              dest="${pdepend:binary}"
              usetimestamp="true" />
     </target>

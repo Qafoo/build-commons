@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    This build file contains all targets for the PHPLOC extension package. So
-    that you can use PHPLOC without any trouble in your project.
+    This build file contains all targets for the phploc extension package. So
+    that you can use phploc without any trouble in your project.
 -->
 <project name="ant-build-commons-extensions-phploc" basedir=".">
 
@@ -15,7 +15,8 @@
     -->
     <import file="enabled.xml" />
     <import file="availability.xml" />
-    <import file="pear.xml" />
+
+    <property name="phploc:binary" value="${user.home}/.ant-build-commons/phar/phploc/${phploc.package.name}-${phploc.package.version}.phar" />
 
     <!--
         Shortcut for the "phploc:phploc" target
@@ -43,9 +44,7 @@
     <target name="-phploc:run" depends="-phploc:install-or-upgrade">
 
         <exec executable="${commons.executable.php}" failonerror="${phploc.fail.on.violation}">
-            <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bindir}/phploc" />
+            <arg value="${phploc:binary}" />
             <arg value="--log-xml" />
             <arg value="${commons:logsdir}/phploc.xml" />
             <arg value="--log-csv" />
@@ -54,29 +53,9 @@
         </exec>
     </target>
 
-    <target name="-phploc:install-or-upgrade"
-            depends="-phploc:is-installed,
-                     -phploc:install,
-                     -phploc:upgrade" />
-
-    <target name="-phploc:install" unless="-phploc:out-installed">
-        <antcall target="pear:install">
-            <param name="in.pear.package.name"    value="${phploc.package.name}" />
-            <param name="in.pear.package.channel" value="${phploc.package.channel}" />
-        </antcall>
-    </target>
-
-    <target name="-phploc:upgrade" if="-phploc:out-installed">
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name"    value="${phploc.package.name}" />
-            <param name="in.pear.package.channel" value="${phploc.package.channel}" />
-        </antcall>
-    </target>
-
-    <target name="-phploc:is-installed">
-        <condition property="-phploc:out-installed">
-            <available file="${pear.local.bindir}/phploc" />
-        </condition>
+    <target name="-phploc:install-or-upgrade">
+        <mkdir dir="${user.home}/.ant-build-commons/phar/phploc" />
+        <get src="https://phar.phpunit.de/phploc.phar" dest="${phploc:binary}" usetimestamp="true" />
     </target>
 
     <extension-point name="-phploc:before~hook" />
