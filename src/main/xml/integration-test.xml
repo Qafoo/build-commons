@@ -26,7 +26,6 @@
             depends="package,
                      -integration-test:before~hook,
                      -integration-test:source,
-                     -integration-test:pear,
                      -integration-test:phar,
                      -integration-test:after~hook" />
 
@@ -34,20 +33,6 @@
         Runs the project's integration tests against the current source checkout.
     -->
     <target name="-integration-test:source" depends="phpunit:integration" />
-
-    <!--
-        Runs the project's integration tests against a generated and installed
-        pear archive.
-    -->
-    <target name="-integration-test:pear"
-            if="-pear:enabled"
-            depends="-pear:is-enabled,
-                     -pear:define-source-path">
-
-        <antcall target="phpunit:integration">
-            <param name="in.phpunit.include.path" location="${pear.source.path}" />
-        </antcall>
-    </target>
 
     <!--
         Runs the project's integration tests against a generated phar archive.

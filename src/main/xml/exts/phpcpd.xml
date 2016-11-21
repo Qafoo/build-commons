@@ -11,7 +11,8 @@
     -->
     <import file="enabled.xml" />
     <import file="availability.xml" />
-    <import file="pear.xml" />
+
+    <property name="phpcpd:binary" value="${user.home}/.ant-build-commons/phar/phpcpd/${phpcpd.package.name}-${phpcpd.package.version}.phar" />
 
     <!--
         Shortcut for the "phpcpd:phpcpd" target
@@ -45,9 +46,7 @@
         <exec executable="${commons.executable.php}" failonerror="${phpcpd.fail.on.violation}">
             <arg value="-d" />
             <arg value="memory_limit=1024M" />
-            <arg value="-d" />
-            <arg value="include_path=${pear.local.include.path}" />
-            <arg value="${pear.local.bindir}/phpcpd" />
+            <arg value="${phpcpd:binary}" />
             <arg value="--log-pmd" />
             <arg value="${commons:logsdir}/cpd.xml" />
             <arg value="${commons.srcdir.php}" />
@@ -56,51 +55,12 @@
 
     <!--
         This target tries to a) install PHPCPD if it isn't already installed
-        in the project's local pear installation or b) upgrade a previous
+        in the project's local installation or b) upgrade a previous
         installed version of PHPCPD.
     -->
-    <target name="-phpcpd:install-or-upgrade"
-            depends="-phpcpd:is-installed,
-                     -phpcpd:install,
-                     -phpcpd:upgrade" />
-
-    <!--
-        This target tries to install the PHPCPD package into the project's pear
-        installation, but it will not be executed if PHPCPD is already installed.
-    -->
-    <target name="-phpcpd:install"
-            unless="-phpcpd:out-installed"
-            depends="-phpcpd:is-installed">
-
-        <antcall target="pear:install">
-            <param name="in.pear.package.name"    value="${phpcpd.package.name}" />
-            <param name="in.pear.package.channel" value="${phpcpd.package.channel}" />
-        </antcall>
-    </target>
-
-    <!--
-        This target tries to upgrade a previously installed PHPCPD package. This
-        target will no be executed if PHPCPD wasn't installed before.
-    -->
-    <target name="-phpcpd:upgrade"
-            if="-phpcpd:out-installed"
-            depends="-phpcpd:is-installed">
-
-        <antcall target="pear:upgrade">
-            <param name="in.pear.package.name"    value="${phpcpd.package.name}" />
-            <param name="in.pear.package.channel" value="${phpcpd.package.channel}" />
-        </antcall>
-    </target>
-
-    <!--
-        This target tests if PHPCPD package is already installed in the project's
-        local pear installation. It will set the ${-phpcpd:out-installed}
-        property to TRUE if the PHPCPD cli script is installed.
-    -->
-    <target name="-phpcpd:is-installed">
-        <condition property="-phpcpd:out-installed">
-            <available file="${pear.local.bindir}/phpcpd" />
-        </condition>
+    <target name="-phpcpd:install-or-upgrade">
+        <mkdir dir="${user.home}/.ant-build-commons/phar/phpcpd" />
+        <get src="https://phar.phpunit.de/phpcpd.phar" dest="${phpcpd:binary}" usetimestamp="true" />
     </target>
 
     <!--
