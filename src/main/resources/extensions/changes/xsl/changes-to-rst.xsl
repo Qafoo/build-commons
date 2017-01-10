@@ -315,7 +315,7 @@
         </xsl:if>
 
         <xsl:if test="$changes.static.uri">
-            <xsl:text> as a `Phar archive`__ here</xsl:text>
+            <xsl:text> as a `Phar archive`__ (`bz2`__) here</xsl:text>
         </xsl:if>
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$nl" />
@@ -335,8 +335,15 @@
             <xsl:text>/</xsl:text>
             <xsl:value-of select="$changes.project.name" />
             <xsl:text>.phar</xsl:text>
+            <xsl:value-of select="$nl" />
+            <xsl:text>__ </xsl:text>
+            <xsl:value-of select="$changes.static.uri" />
+            <xsl:text>/php/</xsl:text>
+            <xsl:value-of select="@version" />
+            <xsl:text>/</xsl:text>
+            <xsl:value-of select="$changes.project.name" />
+            <xsl:text>.bz2.phar</xsl:text>
         </xsl:if>
-        <xsl:value-of select="$nl" />
 
     </xsl:template>
 

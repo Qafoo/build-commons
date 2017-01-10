@@ -80,6 +80,7 @@
     -->
     <target name="-package:phar:prepare-properties">
         <property name="-package:phar:filename" value="${commons:distdir}/${build.file}.phar" />
+        <property name="-package:phar:filename.bz2" value="${commons:distdir}/${build.file}.bz2.phar" />
         <property name="-package:phar:builddir" value="${commons:builddir}/phar-archive" />
     </target>
 
@@ -127,9 +128,23 @@
             <arg value="${resourcedir}/extensions/phar/phar.phar" />
             <arg value="pack" />
             <arg value="-f" />
-            <arg value="${-package:phar:filename}" />
+            <arg value="${-package:phar:filename.bz2}" />
             <arg value="-c" />
             <arg value="bz2" />
+            <arg value="-h" />
+            <arg value="sha512" />
+            <arg value="-s" />
+            <arg value="${-package:phar:builddir}/${project.name}.php" />
+            <arg value="${-package:phar:builddir}" />
+        </exec>
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="-d" />
+            <arg value="phar.readonly=0" />
+            <arg value="${resourcedir}/extensions/phar/phar.phar" />
+            <arg value="pack" />
+            <arg value="-f" />
+            <arg value="${-package:phar:filename}" />
             <arg value="-h" />
             <arg value="sha512" />
             <arg value="-s" />
@@ -364,31 +379,34 @@
         <available file="${basedir}/vendor" property="vendor-dir-exists" />
     </target>
 
+    <target name="copy-vendor-dir" if="vendor-dir-exists">
+        <property name="vendor.dir" value="${output.dir}/vendor" />
+
+        <antcall target="-copy-vendor-dir">
+            <param name="output.dir" value="${output.dir}" />
+            <param name="vendor.dir" value="${vendor.dir}" />
+        </antcall>
+    </target>
+
+    <target name="-copy-vendor-dir"
+            depends="-copy-vendor-dir:before~hook,
+                     -copy-vendor-dir:main,
+                     -copy-vendor-dir:after~hook" />
+
     <!--
         Copies the vendor directory of the current project into a temporary
         build source tree.
 
         Parameters:
-            output.dir      Output directory for the temporary build tree.
+            output.dir  Output directory for the temporary build tree.
+            vendor.dir  The vendor directory in the temporary build tree.
     -->
-    <target name="copy-vendor-dir" if="vendor-dir-exists">
-        <property name="vendor.dir" value="${output.dir}/vendor" />
-
-        <antcall target="~copy-vendor-dir-before">
-            <param name="output.dir" value="${output.dir}" />
-            <param name="vendor.dir" value="${vendor.dir}" />
-        </antcall>
-
+    <target name="-copy-vendor-dir:main">
         <copy todir="${output.dir}/vendor">
             <fileset dir="${basedir}/vendor"
                      includes="${vendor.dir.includes}"
                      excludes="${vendor.dir.excludes}" />
         </copy>
-
-        <antcall target="~copy-vendor-dir-after">
-            <param name="output.dir" value="${output.dir}" />
-            <param name="vendor.dir" value="${vendor.dir}" />
-        </antcall>
     </target>
 
     <!--
@@ -409,25 +427,6 @@
             library.dir     The library directory in the temporary build tree.
     -->
     <target name="~copy-library-dir-after" />
-
-    <!--
-        Hook that will be called before we copy the project's vendor directory.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-            vendor.dir     The vendor directory in the temporary build tree.
-    -->
-    <target name="~copy-vendor-dir-before" />
-
-    <!--
-        Hook that will be called after we have copied the project's vendor
-        directory.
-
-        Parameters:
-            output.dir      Output directory for the temporary build tree.
-            vendor.dir     The vendor directory in the temporary build tree.
-    -->
-    <target name="~copy-vendor-dir-after" />
 
     <!--
         Optionally copies a documentation directory into a temporary build
@@ -525,5 +524,13 @@
             ${-package:phar:filename}  Name of the created phar file.
     -->
     <extension-point name="-package:phar:after~hook" />
+
+    <!--
+        Parameters:
+            output.dir  Output directory for the temporary build tree.
+            vendor.dir  The vendor directory in the temporary build tree.
+    -->
+    <extension-point name="-copy-vendor-dir:before~hook" />
+    <extension-point name="-copy-vendor-dir:after~hook" />
 
 </project>
