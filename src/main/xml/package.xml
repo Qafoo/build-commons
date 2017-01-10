@@ -30,7 +30,6 @@
             depends="bundle:bundle,
                      -package:before~hook,
                      -package:main~hook,
-                     package:phar,
                      package:pear,
                      -package:after~hook" />
 
@@ -49,111 +48,7 @@
 
 <!-- {{{ PHAR SUPPORT -->
 
-    <!--
-        Creates a phar archive of the project source
-    -->
-    <target name="package:phar"
-            if="-phar:enabled"
-            depends="initialize, -phar:is-enabled">
 
-        <antcall target="-package:phar" />
-    </target>
-
-    <!--
-        Executes all steps required to generate a phar archive.
-    -->
-    <target name="-package:phar"
-            depends="-package:phar:prepare,
-                     -package:phar:before~hook,
-                     -package:phar:main,
-                     -package:phar:after~hook" />
-
-    <!--
-        Initializes the required environment to generate a phar archive
-    -->
-    <target name="-package:phar:prepare"
-            depends="-package:phar:prepare-properties,
-                     -package:phar:prepare-files" />
-
-    <!--
-        Initializes the required phar archive properties
-    -->
-    <target name="-package:phar:prepare-properties">
-        <property name="-package:phar:filename" value="${commons:distdir}/${build.file}.phar" />
-        <property name="-package:phar:filename.bz2" value="${commons:distdir}/${build.file}.bz2.phar" />
-        <property name="-package:phar:builddir" value="${commons:builddir}/phar-archive" />
-    </target>
-
-    <!--
-        Copies all files for the project's phar archive.
-    -->
-    <target name="-package:phar:prepare-files">
-        <copy todir="${-package:phar:builddir}">
-            <fileset dir="${bundle:commons.srcdir.php}" />
-            <filterchain>
-                <replacestring from="@package_version@" to="${build.version.release}" />
-            </filterchain>
-        </copy>
-
-        <antcall target="copy-library-dir-if-exists">
-            <param name="output.dir" value="${-package:phar:builddir}" />
-        </antcall>
-
-        <antcall target="copy-vendor-dir-if-exists">
-            <param name="output.dir" value="${-package:phar:builddir}" />
-        </antcall>
-
-        <antcall target="do-copy-files-for-xyz-archive">
-            <param name="output.dir" value="${-package:phar:builddir}" />
-        </antcall>
-    </target>
-
-    <!--
-        Primary ant target for the phar archive generation. This target will
-        generate the project's archive.
-    -->
-    <target name="-package:phar:main">
-
-        <copy file="${project.root}/${package.phar.bootstrap.file}"
-              tofile="${-package:phar:builddir}/${project.name}.php">
-
-            <filterchain>
-                <replacestring from="$${archive.alias}" to="${project.name}.phar" />
-            </filterchain>
-        </copy>
-
-        <exec executable="${commons.executable.php}" failonerror="true">
-            <arg value="-d" />
-            <arg value="phar.readonly=0" />
-            <arg value="${resourcedir}/extensions/phar/phar.phar" />
-            <arg value="pack" />
-            <arg value="-f" />
-            <arg value="${-package:phar:filename.bz2}" />
-            <arg value="-c" />
-            <arg value="bz2" />
-            <arg value="-h" />
-            <arg value="sha512" />
-            <arg value="-s" />
-            <arg value="${-package:phar:builddir}/${project.name}.php" />
-            <arg value="${-package:phar:builddir}" />
-        </exec>
-
-        <exec executable="${commons.executable.php}" failonerror="true">
-            <arg value="-d" />
-            <arg value="phar.readonly=0" />
-            <arg value="${resourcedir}/extensions/phar/phar.phar" />
-            <arg value="pack" />
-            <arg value="-f" />
-            <arg value="${-package:phar:filename}" />
-            <arg value="-h" />
-            <arg value="sha512" />
-            <arg value="-s" />
-            <arg value="${-package:phar:builddir}/${project.name}.php" />
-            <arg value="${-package:phar:builddir}" />
-        </exec>
-
-        <chmod file="${-package:phar:filename}" perm="755" />
-    </target>
 
 <!-- }}} PHAR SUPPORT -->
 
@@ -508,22 +403,6 @@
             ${package.pear.builddir}  Root directory with PEAR styled source
     -->
 	<extension-point name="-package:pear:after~hook" />
-
-    <!--
-		Hook target that will be called before the phar archive will be created.
-
-        Parameters:
-            ${-package:phar:filename}  Name of the phar file to create.
-    -->
-    <extension-point name="-package:phar:before~hook" />
-
-    <!--
-        Hook target that will be called after the phar archive was created.
-
-        Parameters:
-            ${-package:phar:filename}  Name of the created phar file.
-    -->
-    <extension-point name="-package:phar:after~hook" />
 
     <!--
         Parameters:
